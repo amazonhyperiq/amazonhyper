@@ -18,7 +18,27 @@ Name your file... index.html
 <h1>🛒 أمازون هايبر ماركت</h1>
 <p>خدمة التوصيل إلى باب المنزل</p>
 </header>
+<div class="cart-box">
+    <h2>🛒 سلة المشتريات</h2>
 
+    <p>عدد المنتجات:
+        <span id="cart-count">0</span>
+    </p>
+
+    <div id="cart-items">
+        لا توجد منتجات في السلة
+    </div>
+
+    <h3>
+        المجموع:
+        <span id="cart-total">0</span>
+        د.ع
+    </h3>
+
+    <button onclick="sendToWhatsApp()">
+        📲 إرسال الطلب إلى واتساب
+    </button>
+</div>
 <div class="container">
 
 <div class="box">
