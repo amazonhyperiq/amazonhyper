@@ -1,6 +1,14 @@
-function addToCart(name, price) {function addToCart(name, price) {function addToCart(name, price) {
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
-    let found = cart.find(item => item.name === name);
+function saveCart() {
+    localStorage.setItem("cart", JSON.stringify(cart));
+}
+
+function addToCart(name, price) {
+
+    let found = cart.find(function(item) {
+        return item.name === name;
+    });
 
     if (found) {
         found.quantity++;
@@ -12,67 +20,152 @@ function addToCart(name, price) {function addToCart(name, price) {function addTo
         });
     }
 
+    saveCart();
     updateCart();
 }
 
+function increase(index) {
+    cart[index].quantity++;
+    saveCart();
+    updateCart();
+}
+
+function decrease(index) {
+
+    if (cart[index].quantity > 1) {
+        cart[index].quantity--;
+    } else {
+        cart.splice(index,1);
+    }
+
+    saveCart();
+    updateCart();
+}
+
+function removeItem(index){
+    cart.splice(index,1);
+    saveCart();
+    updateCart();
+}
 function updateCart() {
 
     let items = document.getElementById("cart-items");
     let count = document.getElementById("cart-count");
     let total = document.getElementById("cart-total");
 
+    if (!items || !count || !total) return;
+
     items.innerHTML = "";
 
     let sum = 0;
 
-    cart.forEach(function(item){
+    if (cart.length === 0) {
 
-       function addToCart(name, price) {
+        items.innerHTML = "<p>لا توجد منتجات في السلة</p>";
 
-    let found = cart.find(item => item.name === name);
+        count.textContent = "0";
+        total.textContent = "0";
 
-    if (found) {
-        found.quantity++;
-    } else {
-        cart.push({
-            name: name,
-            price: price,
-            quantity: 1
-        });
+        return;
     }
 
-    updateCart();
-}
+    cart.forEach(function(item,index){
 
-     sum += item.price * item.quantity;
+        let itemTotal = item.price * item.quantity;
+
+        sum += itemTotal;
+
+        items.innerHTML += `
+        <div class="cart-item">
+
+            <b>${item.name}</b><br>
+
+            السعر: ${item.price.toLocaleString()} د.ع<br>
+
+            الكمية:
+            <button onclick="decrease(${index})">➖</button>
+
+            <b>${item.quantity}</b>
+
+            <button onclick="increase(${index})">➕</button>
+
+            <button onclick="removeItem(${index})">🗑️</button>
+
+            <br>
+
+            المجموع:
+            ${itemTotal.toLocaleString()} د.ع
+
+            <hr>
+
+        </div>
+        `;
 
     });
 
-    count.innerHTML = cart.length;
-    total.innerHTML = sum.toLocaleString();
+    count.textContent = cart.length;
 
-    if(cart.length == 0){
-        items.innerHTML = "لا توجد منتجات في السلة";
-    }
+    total.textContent = sum.toLocaleString();
 
 }
-
 function sendToWhatsApp(){
 
-    if(cart.length == 0){
+    if(cart.length === 0){
         alert("السلة فارغة");
         return;
     }
 
-    let message = "السلام عليكم، أريد طلب:\n\n";
+    let message = "السلام عليكم، أرغب بطلب المنتجات التالية:%0A%0A";
+
+    let total = 0;
 
     cart.forEach(function(item){
-        message += item.name + " - " + item.price.toLocaleString() + " د.ع\n";
+
+        let itemTotal = item.price * item.quantity;
+
+        total += itemTotal;
+
+        message +=
+        "• " + item.name +
+        " × " + item.quantity +
+        " = " + itemTotal.toLocaleString() +
+        " د.ع%0A";
+
     });
 
-    let total = cart.reduce((a,b)=>a+b.price,0);
+    message += "%0Aالمجموع الكلي: " + total.toLocaleString() + " د.ع";
 
-    message += "\nالمجموع: " + total.toLocaleString() + " د.ع";
+    // ضع رقم واتساب متجرك هنا
+    let phone = "9647842000516";
 
-    window.open("https://wa.me/9647700000000?text="+encodeURIComponent(message));
+    window.location.href =
+    "https://wa.me/" + phone + "?text=" + message;
+
+}
+
+window.onload = function () {
+    updateCart();
+};
+// تحديث السلة إذا تغير التخزين
+window.addEventListener("storage", function () {
+    let saved = localStorage.getItem("cart");
+
+    if (saved) {
+        cart = JSON.parse(saved);
+    } else {
+        cart = [];
+    }
+
+    updateCart();
+});
+
+// تفريغ السلة بعد إرسال الطلب (اختياري)
+function clearCart() {
+
+    cart = [];
+
+    saveCart();
+
+    updateCart();
+
 }
