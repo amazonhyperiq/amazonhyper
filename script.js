@@ -53,7 +53,7 @@ function sendToWhatsApp() {
     }
 
     // استبدل هذا الرقم برقم الواتساب الخاص بك (مع المفتاح الدولي بدون +)
-    let phoneNumber = "9647XXXXXXXXX"; 
+    let phoneNumber = "9647842000516"; 
 
     let message = "مرحباً، أرغب بتأكيد الطلب التالي من الموقع:\n\n";
     let total = 0;
