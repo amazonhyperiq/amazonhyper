@@ -113,7 +113,7 @@ let customerName = document.getElementById("customer-name").value;
 let customerPhone = document.getElementById("customer-phone").value;
 let customerAddress = document.getElementById("customer-address").value;
 let customerNote = document.getElementById("customer-note").value;
-
+}
 if(customerName=="" || customerPhone=="" || customerAddress==""){
     alert("يرجى إدخال الاسم ورقم الهاتف والعنوان");
     return;
