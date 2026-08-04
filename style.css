@@ -1,80 +1,448 @@
-body {
-    font-family: system-ui, -apple-system, sans-serif;
-    background-color: #f4f4f9;
-    margin: 0;
-    padding: 15px;
-    direction: rtl;
+/* ========================= */
+/* Amazon Hyper Market V2 */
+/* ========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
 }
 
-header {
-    text-align: center;
-    background: #232f3e;
-    color: white;
-    padding: 15px;
-    border-radius: 8px;
-    margin-bottom: 15px;
+body{
+
+    background:#f4f4f4;
+
+    direction:rtl;
+
 }
 
-.cart-box {
-    background: #fff;
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    margin-bottom: 20px;
-    border: 2px solid #ff9900;
+/* ================= Header ================= */
+
+.header{
+
+    background:#198754;
+
+    color:#fff;
+
+    padding:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
 }
 
-.cart-box input {
-    width: 100%;
-    padding: 10px;
-    margin: 5px 0;
-    box-sizing: border-box;
-    border: 1px solid #ccc;
-    border-radius: 4px;
+.logo h1{
+
+    font-size:32px;
+
 }
 
-.product {
-    background: #fff;
-    padding: 12px;
-    margin-bottom: 10px;
-    border-radius: 6px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+.logo p{
+
+    margin-top:8px;
+
 }
 
-.product h3 {
-    margin: 0 0 5px 0;
-    font-size: 16px;
+.cart-info{
+
+    background:#fff;
+
+    color:#198754;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
 }
 
-.product p {
-    margin: 0;
-    color: #666;
-    font-size: 14px;
+/* ================= Search ================= */
+
+.search-box{
+
+    width:90%;
+
+    margin:20px auto;
+
 }
 
-button {
-    background-color: #ffd814;
-    border: 1px solid #fcd200;
-    padding: 8px 14px;
-    border-radius: 20px;
-    cursor: pointer;
-    font-weight: bold;
+.search-box input{
+
+    width:100%;
+
+    padding:14px;
+
+    border-radius:10px;
+
+    border:1px solid #ccc;
+
+    font-size:18px;
+
 }
 
-button:hover {
-    background-color: #f7ca00;
+/* ================= Container ================= */
+
+.container{
+
+    width:95%;
+
+    margin:auto;
+
 }
 
-.whatsapp-btn {
-    background-color: #25d366 !important;
-    color: white !important;
-    border: none !important;
-    width: 100%;
-    padding: 12px;
-    font-size: 16px;
-    margin-top: 10px;
-    border-radius: 6px !important;
+.section-title{
+
+    margin:30px 0 20px;
+
+    color:#198754;
+
+}
+
+/* ================= Products ================= */
+
+.products{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+
+    gap:20px;
+
+}
+
+.product{
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:15px;
+
+    text-align:center;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+    transition:.3s;
+
+}
+
+.product:hover{
+
+    transform:translateY(-5px);
+
+}
+
+.product img{
+
+    width:100%;
+
+    height:180px;
+
+    object-fit:cover;
+
+    border-radius:10px;
+
+}
+
+.product h3{
+
+    margin:12px 0;
+
+}
+
+.product p{
+
+    color:#198754;
+
+    font-size:20px;
+
+    font-weight:bold;
+
+}
+[7:16 م، 2026/8/4] Omar: * ========================= */
+/* Amazon Hyper Market V2 */
+/* ========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Tahoma,Arial,sans-serif;
+}
+
+body{
+
+    background:#f4f4f4;
+
+    direction:rtl;
+
+}
+
+/* ================= Header ================= */
+
+.header{
+
+    background:#198754;
+
+    color:#fff;
+
+    padding:20px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    flex-wrap:wrap;
+
+}
+
+.logo h1{
+
+    font-size:32px;
+
+}
+
+.logo p{
+
+    margin-top:8px;
+
+}
+
+.cart-info{
+
+    background:#fff;
+
+    color:#198754;
+
+    padding:12px 18px;
+
+    border-radius:10px;
+
+    font-weight:bold;
+
+}
+
+/* ================= Search ================= */
+
+.search-box{
+
+    width:90%;
+
+    margin:2…
+[7:16 م، 2026/8/4] Omar: /* ================= Cart ================= */
+
+.cart-box{
+
+    width:95%;
+
+    margin:25px auto;
+
+    background:#fff;
+
+    border-radius:12px;
+
+    padding:20px;
+
+    box-shadow:0 2px 8px rgba(0,0,0,.15);
+
+}
+
+.cart-box h2{
+
+    color:#198754;
+
+    margin-bottom:15px;
+
+}
+
+#cart-items{
+
+    margin:15px 0;
+
+}
+
+.cart-item{
+
+    padding:10px;
+
+    border-bottom:1px solid #ddd;
+
+}
+
+.cart-box h3{
+
+    margin:20px 0;
+
+    color:#198754;
+
+}
+
+/* ================= Inputs ================= */
+
+.cart-box input,
+.cart-box textarea{
+
+    width:100%;
+
+    padding:12px;
+
+    margin:8px 0;
+
+    border:1px solid #ccc;
+
+    border-radius:8px;
+
+    font-size:16px;
+
+}
+
+.cart-box textarea{
+
+    height:90px;
+
+    resize:none;
+
+}
+
+/* ================= Buttons ================= */
+
+button{
+
+    cursor:pointer;
+
+    border:none;
+
+    border-radius:8px;
+
+    transition:.3s;
+
+}
+
+.product button{
+
+    width:100%;
+
+    padding:12px;
+
+    background:#198754;
+
+    color:#fff;
+
+    font-size:16px;
+
+    margin-top:10px;
+
+}
+
+.product button:hover{
+
+    background:#157347;
+
+}
+
+.send-btn{
+
+    width:100%;
+
+    padding:15px;
+
+    background:#25D366;
+
+    color:#fff;
+
+    font-size:18px;
+
+    margin-top:15px;
+
+}
+
+.send-btn:hover{
+
+    background:#1EBE5D;
+
+}
+
+/* ================= Categories ================= */
+
+.categories{
+
+    display:grid;
+
+    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
+
+    gap:15px;
+
+    margin:30px 0;
+
+}
+
+.categories button{
+
+    background:#198754;
+
+    color:#fff;
+
+    padding:15px;
+
+    font-size:17px;
+
+}
+
+/* ================= Footer ================= */
+
+footer{
+
+    background:#198754;
+
+    color:#fff;
+
+    text-align:center;
+
+    padding:20px;
+
+    margin-top:40px;
+
+}
+
+/* ================= Mobile ================= */
+
+@media(max-width:768px){
+
+.header{
+
+    text-align:center;
+
+    justify-content:center;
+
+    gap:15px;
+
+}
+
+.logo h1{
+
+    font-size:24px;
+
+}
+
+.products{
+
+    grid-template-columns:1fr;
+
+}
+
+.product img{
+
+    height:220px;
+
+}
+
 }
