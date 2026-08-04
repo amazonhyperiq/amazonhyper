@@ -1,269 +1,273 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمازون هايبر ماركت</title>
-    <style>
-        body {
-            font-family: system-ui, -apple-system, sans-serif;
-            background-color: #f4f4f9;
-            margin: 0;
-            padding: 15px;
-            direction: rtl;
-        }
 
-        header {
-            text-align: center;
-            background: #232f3e;
-            color: white;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 15px;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-        .cart-box {
-            background: #fff;
-            padding: 15px;
-            border-radius: 8px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
-            border: 2px solid #ff9900;
-        }
+<title>أمازون هايبر ماركت</title>
 
-        .cart-box input {
-            width: 100%;
-            padding: 10px;
-            margin: 5px 0;
-            box-sizing: border-box;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-        }
+<link rel="stylesheet" href="style.css?v=2.0">
 
-        .product {
-            background: #fff;
-            padding: 12px;
-            margin-bottom: 10px;
-            border-radius: 6px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .product h3 {
-            margin: 0 0 5px 0;
-            font-size: 16px;
-        }
-
-        .product p {
-            margin: 0;
-            color: #666;
-            font-size: 14px;
-        }
-
-        button {
-            background-color: #ffd814;
-            border: 1px solid #fcd200;
-            padding: 8px 14px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-
-        button:hover {
-            background-color: #f7ca00;
-        }
-
-        .whatsapp-btn {
-            background-color: #25d366 !important;
-            color: white !important;
-            border: none !important;
-            width: 100%;
-            padding: 12px;
-            font-size: 16px;
-            margin-top: 10px;
-            border-radius: 6px !important;
-        }
-    </style>
 </head>
+
 <body>
-<h1 style="color: red; text-align: center;">نسخة تجريبية جديدة 100%</h1>
-<header>
-    <h1>🛒 أمازون هايبر ماركت</h1>
-    <p>خدمة التوصيل إلى باب المنزل</p>
+
+<header class="header">
+
+<div class="logo">
+
+<h1>🛒 أمازون هايبر ماركت</h1>
+
+<p>جودة عالية • أسعار منافسة • توصيل سريع</p>
+
+</div>
+
+<div class="cart-info">
+
+<span>🛒 السلة</span>
+
+<span id="cart-count">0</span>
+
+</div>
+
 </header>
 
-<div class="cart-box">
-    <h2>🛒 سلة المشتريات</h2>
-    <p>عدد المنتجات: <span id="cart-count">0</span></p>
+<div class="search-box">
 
-    <div id="cart-items">
-        لا توجد منتجات في السلة
-    </div>
+<input
+type="text"
+id="search"
+placeholder="🔍 ابحث عن أي منتج..."
+onkeyup="searchProducts()">
 
-    <h3>المجموع: <span id="cart-total">0</span> د.ع</h3>
-
-    <input type="text" id="customer-name" placeholder="الاسم الكامل">
-    <input type="text" id="customer-address" placeholder="العنوان بالتفصيل">
-    <input type="text" id="customer-phone" placeholder="رقم الهاتف">
-    
-    <button type="button" onclick="sendToWhatsApp()" class="whatsapp-btn">📲 إرسال الطلب إلى واتساب</button>
 </div>
+
+<section class="cart-box">
+
+<h2>🛒 سلة المشتريات</h2>
+
+<div id="cart-items">
+
+لا توجد منتجات في السلة
+
+</div>
+
+<h3>
+
+المجموع :
+
+<span id="cart-total">
+
+0
+
+</span>
+
+د.ع
+
+</h3>
+
+<input
+type="text"
+id="customer-name"
+placeholder="👤 الاسم الكامل">
+
+<input
+type="text"
+id="customer-phone"
+placeholder="📞 رقم الهاتف">
+
+<input
+type="text"
+id="customer-address"
+placeholder="📍 العنوان">
+
+<textarea
+id="customer-note"
+placeholder="📝 ملاحظات إضافية"></textarea>
+
+<button class="send-btn"
+onclick="sendToWhatsApp()">
+
+📲 إرسال الطلب إلى واتساب
+
+</button>
+
+</section>
 
 <div class="container">
-    <h2>قسم اللحوم</h2>
-    
-    <div class="product">
-        <div>
-            <h3>لحم غنم بالعظم</h3>
-            <p>22,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('لحم غنم بالعظم', 22000)">🛒 أضف للسلة</button>
-    </div>
 
-    <div class="product">
-        <div>
-            <h3>لحم غنم شرح</h3>
-            <p>27,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('لحم غنم شرح', 27000)">🛒 أضف للسلة</button>
-    </div>
+<h2 class="section-title">
 
-    <div class="product">
-        <div>
-            <h3>ضلوع غنم</h3>
-            <p>25,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('ضلوع غنم', 25000)">🛒 أضف للسلة</button>
-    </div>
+🥩 قسم اللحوم
 
-    <div class="product">
-        <div>
-            <h3>لية غنم</h3>
-            <p>16,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('لية غنم', 16000)">🛒 أضف للسلة</button>
-    </div>
+</h2>
 
-    <div class="product">
-        <div>
-            <h3>معلاك غنم</h3>
-            <p>16,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('معلاك غنم', 16000)">🛒 أضف للسلة</button>
-    </div>
-
-    <div class="product">
-        <div>
-            <h3>لحم مثروم غنم وعجل</h3>
-            <p>19,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('لحم مثروم غنم وعجل', 19000)">🛒 أضف للسلة</button>
-    </div>
-
-    <div class="product">
-        <div>
-            <h3>لحم مثروم عجل</h3>
-            <p>19,000 د.ع / كغم</p>
-        </div>
-        <button type="button" onclick="addToCart('لحم مثروم عجل', 19000)">🛒 أضف للسلة</button>
-    </div>
-
-    <div class="product">
-        <div>
-            <h3>بركر لحم عراقي</h3>
-            <p>18,500 د.ع</p>
-        </div>
-        <button type="button" onclick="addToCart('بركر لحم عراقي', 18500)">🛒 أضف للسلة</button>
-    </div>
-
-    <div class="product">
-        <div>
-            <h3>باجة غنم</h3>
-            <p>12,000 د.ع</p>
-        </div>
-        <button type="button" onclick="addToCart('باجة غنم', 12000)">🛒 أضف للسلة</button>
-    </div>
+<div class="products" id="meat-products">
+    <div class="products" id="meat-products">
+        <div class="product" data-name="لحم غنم بالعظم">
+    <img src="images/sheep-bone.jpg" alt="لحم غنم بالعظم">
+    <h3>لحم غنم بالعظم</h3>
+    <p>22,000 د.ع / كغم</p>
+    <button onclick="addToCart('لحم غنم بالعظم',22000)">🛒 أضف إلى السلة</button>
 </div>
 
-<script>
-    let cart = [];
+<div class="product" data-name="لحم غنم شرح">
+    <img src="images/sheep-meat.jpg" alt="لحم غنم شرح">
+    <h3>لحم غنم شرح</h3>
+    <p>27,000 د.ع / كغم</p>
+    <button onclick="addToCart('لحم غنم شرح',27000)">🛒 أضف إلى السلة</button>
+</div>
 
-    function addToCart(name, price) {
-        let item = cart.find(i => i.name === name);
-        if (item) {
-            item.qty++;
-        } else {
-            cart.push({ name: name, price: price, qty: 1 });
-        }
-        updateCartUI();
-    }
+<div class="product" data-name="ضلوع غنم">
+    <img src="images/ribs.jpg" alt="ضلوع غنم">
+    <h3>ضلوع غنم</h3>
+    <p>25,000 د.ع / كغم</p>
+    <button onclick="addToCart('ضلوع غنم',25000)">🛒 أضف إلى السلة</button>
+</div>
 
-    function updateCartUI() {
-        let cartItemsDiv = document.getElementById('cart-items');
-        let cartCount = document.getElementById('cart-count');
-        let cartTotal = document.getElementById('cart-total');
+<div class="product" data-name="لية غنم">
+    <img src="images/fat.jpg" alt="لية غنم">
+    <h3>لية غنم</h3>
+    <p>16,000 د.ع / كغم</p>
+    <button onclick="addToCart('لية غنم',16000)">🛒 أضف إلى السلة</button>
+</div>
 
-        if (cart.length === 0) {
-            cartItemsDiv.innerHTML = "لا توجد منتجات في السلة";
-            cartCount.innerText = "0";
-            cartTotal.innerText = "0";
-            return;
-        }
+<div class="product" data-name="معلاك غنم">
+    <img src="images/offal.jpg" alt="معلاك غنم">
+    <h3>معلاك غنم</h3>
+    <p>16,000 د.ع / كغم</p>
+    <button onclick="addToCart('معلاك غنم',16000)">🛒 أضف إلى السلة</button>
+</div>
 
-        let total = 0;
-        let count = 0;
-        cartItemsDiv.innerHTML = "";
+<div class="product" data-name="لحم مثروم غنم وعجل">
+    <img src="images/mince-mix.jpg" alt="لحم مثروم غنم وعجل">
+    <h3>لحم مثروم غنم وعجل</h3>
+    <p>19,000 د.ع / كغم</p>
+    <button onclick="addToCart('لحم مثروم غنم وعجل',19000)">🛒 أضف إلى السلة</button>
+</div>
 
-        cart.forEach(item => {
-            let itemTotal = item.price * item.qty;
-            total += itemTotal;
-            count += item.qty;
-            
-            cartItemsDiv.innerHTML += `
-                <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px;">
-                    <span>${item.name} (x${item.qty})</span>
-                    <span>${itemTotal.toLocaleString()} د.ع</span>
-                </div>
-            `;
-        });
+<div class="product" data-name="لحم مثروم عجل">
+    <img src="images/beef-mince.jpg" alt="لحم مثروم عجل">
+    <h3>لحم مثروم عجل</h3>
+    <p>19,000 د.ع / كغم</p>
+    <button onclick="addToCart('لحم مثروم عجل',19000)">🛒 أضف إلى السلة</button>
+</div>
 
-        cartCount.innerText = count;
-        cartTotal.innerText = total.toLocaleString();
-    }
+<div class="product" data-name="بركر لحم عراقي">
+    <img src="images/burger.jpg" alt="بركر لحم عراقي">
+    <h3>بركر لحم عراقي</h3>
+    <p>18,500 د.ع</p>
+    <button onclick="addToCart('بركر لحم عراقي',18500)">🛒 أضف إلى السلة</button>
+</div>
 
-    function sendToWhatsApp() {
-        if (cart.length === 0) {
-            alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
-            return;
-        }
+<div class="product" data-name="باجة غنم">
+    <img src="images/pacha.jpg" alt="باجة غنم">
+    <h3>باجة غنم</h3>
+    <p>12,000 د.ع</p>
+    <button onclick="addToCart('باجة غنم',12000)">🛒 أضف إلى السلة</button>
+</div>
 
-        let name = document.getElementById('customer-name').value;
-        let address = document.getElementById('customer-address').value;
-        let phone = document.getElementById('customer-phone').value;
+</div>
 
-        let phoneNumber = "9647842000516"; 
+<h2 class="section-title">
+🐔 قسم الدجاج
+</h2>
 
-        let message = "🛒 طلب جديد من أمازون هايبر ماركت\n\n";
-        if (name) message += 👤 *الاسم:* ${name}\n;
-        if (phone) message += 📞 *الهاتف:* ${phone}\n;
-        if (address) message += 📍 *العنوان:* ${address}\n;
-        
-        message += "\n📋 تفاصيل الطلب:\n";
-        let total = 0;
+<div class="products" id="chicken-products">
 
-        cart.forEach(item => {
-            let itemTotal = item.price * item.qty;
-            total += itemTotal;
-            message += • ${item.name} × ${item.qty} = ${itemTotal.toLocaleString()} د.ع\n;
-        });
+<div class="product" data-name="دجاج ذبح عراقي">
+    <img src="images/chicken.jpg" alt="دجاج ذبح عراقي">
+    <h3>دجاج ذبح عراقي</h3>
+    <p>5,750 د.ع</p>
+    <button onclick="addToCart('دجاج ذبح عراقي',5750)">🛒 أضف إلى السلة</button>
+</div>
 
-        message += \n💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع;
+<div class="product" data-name="صدر دجاج عراقي">
+    <img src="images/chicken-breast.jpg" alt="صدر دجاج عراقي">
+    <h3>صدر دجاج عراقي</h3>
+    <p>8,000 د.ع</p>
+    <button onclick="addToCart('صدر دجاج عراقي',8000)">🛒 أضف إلى السلة</button>
+</div>
 
-        let encodedMessage = encodeURIComponent(message);
-        window.open(https://wa.me/${phoneNumber}?text=${encodedMessage}, '_blank');
-    }
-</script>
+<div class="product" data-name="أجنحة دجاج عراقي">
+    <img src="images/wings.jpg" alt="أجنحة دجاج عراقي">
+    <h3>أجنحة دجاج عراقي</h3>
+    <p>5,500 د.ع</p>
+    <button onclick="addToCart('أجنحة دجاج عراقي',5500)">🛒 أضف إلى السلة</button>
+</div>
+
+<div class="product" data-name="أفخاذ دجاج عراقي">
+    <img src="images/thigh.jpg" alt="أفخاذ دجاج عراقي">
+    <h3>أفخاذ دجاج عراقي</h3>
+    <p>6,000 د.ع</p>
+    <button onclick="addToCart('أفخاذ دجاج عراقي',6000)">🛒 أضف إلى السلة</button>
+</div>
+
+<div class="product" data-name="كبدة دجاج عراقي">
+    <img src="images/liver.jpg" alt="كبدة دجاج عراقي">
+    <h3>كبدة دجاج عراقي</h3>
+    <p>6,000 د.ع</p>
+    <button onclick="addToCart('كبدة دجاج عراقي',6000)">🛒 أضف إلى السلة</button>
+</div>
+
+<div class="product" data-name="مثروم دجاج">
+    <img src="images/chicken-mince.jpg" alt="مثروم دجاج">
+    <h3>مثروم دجاج</h3>
+    <p>9,000 د.ع</p>
+    <button onclick="addToCart('مثروم دجاج',9000)">🛒 أضف إلى السلة</button>
+</div>
+
+</div>
+<h2 class="section-title">
+🥛 بقية الأقسام
+</h2>
+
+<div class="categories">
+
+<button>🥛 الألبان</button>
+
+<button>🥤 المشروبات</button>
+
+<button>🥫 المواد الغذائية</button>
+
+<button>🧴 المنظفات</button>
+
+<button>🍪 البسكويت والشوكولاتة</button>
+
+<button>🍟 الشبس والسناك</button>
+
+<button>🥬 الخضراوات والفواكه</button>
+
+<button>🌰 الكرزات والبهارات</button>
+
+<button>🌾 البقوليات</button>
+
+<button>🥫 المعلبات</button>
+
+</div>
+
+</div>
+
+<footer>
+
+<p>
+
+© 2026 أمازون هايبر ماركت
+
+</p>
+
+<p>
+
+جميع الحقوق محفوظة
+
+</p>
+
+</footer>
+
+<script src="script.js?v=2.0"></script>
+
 </body>
+
 </html>
