@@ -1,78 +1,51 @@
-let cart = [];
+<h2 class="section-title">
+🥛 بقية الأقسام
+</h2>
 
-function addToCart(name, price) {
-    let item = cart.find(i => i.name === name);
-    if (item) {
-        item.qty++;
-    } else {
-        cart.push({ name: name, price: price, qty: 1 });
-    }
-    updateCartUI();
-}
+<div class="categories">
 
-function updateCartUI() {
-    let cartItemsDiv = document.getElementById('cart-items');
-    let cartCount = document.getElementById('cart-count');
-    let cartTotal = document.getElementById('cart-total');
-    
-    if (!cartItemsDiv || !cartCount || !cartTotal) return;
+<button>🥛 الألبان</button>
 
-    if (cart.length === 0) {
-        cartItemsDiv.innerHTML = "لا توجد منتجات في السلة";
-        cartCount.innerText = "0";
-        cartTotal.innerText = "0";
-        return;
-    }
+<button>🥤 المشروبات</button>
 
-    let total = 0;
-    let count = 0;
-    cartItemsDiv.innerHTML = "";
+<button>🥫 المواد الغذائية</button>
 
-    cart.forEach(item => {
-        let itemTotal = item.price * item.qty;
-        total += itemTotal;
-        count += item.qty;
-        
-        cartItemsDiv.innerHTML += `
-            <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px;">
-                <span>${item.name} (x${item.qty})</span>
-                <span>${itemTotal.toLocaleString()} د.ع</span>
-            </div>
-        `;
-    });
+<button>🧴 المنظفات</button>
 
-    cartCount.innerText = count;
-    cartTotal.innerText = total.toLocaleString();
-}
+<button>🍪 البسكويت والشوكولاتة</button>
 
-function sendToWhatsApp() {
-    if (cart.length === 0) {
-        alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
-        return;
-    }
+<button>🍟 الشبس والسناك</button>
 
-    let name = document.getElementById('customer-name') ? document.getElementById('customer-name').value : '';
-    let address = document.getElementById('customer-address') ? document.getElementById('customer-address').value : '';
-    let phone = document.getElementById('customer-phone') ? document.getElementById('customer-phone').value : '';
+<button>🥬 الخضراوات والفواكه</button>
 
-    let phoneNumber = "9647842000516"; 
+<button>🌰 الكرزات والبهارات</button>
 
-    let message = "🛒 طلب جديد من أمازون هايبر ماركت\n\n";
-    if (name) message += 👤 *الاسم:* ${name}\n;
-    if (phone) message += 📞 *الهاتف:* ${phone}\n;
-    if (address) message += 📍 *العنوان:* ${address}\n;
-    
-    message += "\n📋 تفاصيل الطلب:\n";
-    let total = 0;
+<button>🌾 البقوليات</button>
 
-    cart.forEach(item => {
-        let itemTotal = item.price * item.qty;
-        total += itemTotal;
-        message += • ${item.name} × ${item.qty} = ${itemTotal.toLocaleString()} د.ع\n;
-    });
+<button>🥫 المعلبات</button>
 
-    message += \n💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع;
+</div>
 
-    let encodedMessage = encodeURIComponent(message);
-    window.open(https://wa.me/${phoneNumber}?text=${encodedMessage}, '_blank');
-}
+</div>
+
+<footer>
+
+<p>
+
+© 2026 أمازون هايبر ماركت
+
+</p>
+
+<p>
+
+جميع الحقوق محفوظة
+
+</p>
+
+</footer>
+
+<script src="script.js?v=2.0"></script>
+
+</body>
+
+</html>
