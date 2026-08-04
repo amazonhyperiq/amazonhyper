@@ -1,13 +1,16 @@
-function addToCart(name, price) {
+function addToCart(name, price) {function addToCart(name, price) {
 
-    alert("بدأ التنفيذ");
+    let found = cart.find(item => item.name === name);
 
-    cart.push({
-        name: name,
-        price: price
-    });
-
-    alert(cart.length);
+    if (found) {
+        found.quantity++;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
+    }
 
     updateCart();
 }
