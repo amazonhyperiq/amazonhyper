@@ -156,9 +156,8 @@ function updateCart() {
 
     let phone = "9647842000516"; // ضع رقم واتساب متجرك هنا
 
-    window.open(
-        "https://wa.me/" + phone + "?text=" + encodeURIComponent(message),
-        "_blank"
+    location.href =
+"https://wa.me/" + phone + "?text=" + encodeURIComponent(message)
     );
 
 }
