@@ -107,33 +107,34 @@ function updateCart() {
 
     total.textContent = sum.toLocaleString();
 
-}
-function sendToWhatsApp(){
-let customerName = document.getElementById("customer-name").value;
-let customerPhone = document.getElementById("customer-phone").value;
-let customerAddress = document.getElementById("customer-address").value;
-let customerNote = document.getElementById("customer-note").value;
-}
-if(customerName=="" || customerPhone=="" || customerAddress==""){
-    alert("يرجى إدخال الاسم ورقم الهاتف والعنوان");
-    return;
-}
-    if(cart.length === 0){
+}function sendToWhatsApp(){
+
+    let customerName = document.getElementById("customer-name").value;
+    let customerPhone = document.getElementById("customer-phone").value;
+    let customerAddress = document.getElementById("customer-address").value;
+    let customerNote = document.getElementById("customer-note").value;
+
+    if(customerName=="" || customerPhone=="" || customerAddress==""){
+        alert("يرجى إدخال الاسم ورقم الهاتف والعنوان");
+        return;
+    }
+
+    if(cart.length===0){
         alert("السلة فارغة");
         return;
     }
 
-   let message =
-"🛒 طلب جديد%0A%0A" +
-"👤 الاسم: " + customerName + "%0A" +
-"📞 الهاتف: " + customerPhone + "%0A" +
-"📍 العنوان: " + customerAddress + "%0A";
+    let message =
+    "🛒 طلب جديد\n\n" +
+    "👤 الاسم: " + customerName + "\n" +
+    "📞 الهاتف: " + customerPhone + "\n" +
+    "📍 العنوان: " + customerAddress + "\n";
 
-if(customerNote!=""){
-    message += "📝 ملاحظات: " + customerNote + "%0A";
-}
+    if(customerNote!=""){
+        message += "📝 ملاحظات: " + customerNote + "\n";
+    }
 
-message += "%0A📦 المنتجات:%0A";
+    message += "\n📦 المنتجات:\n\n";
 
     let total = 0;
 
@@ -147,17 +148,18 @@ message += "%0A📦 المنتجات:%0A";
         "• " + item.name +
         " × " + item.quantity +
         " = " + itemTotal.toLocaleString() +
-        " د.ع%0A";
+        " د.ع\n";
 
     });
 
-    message += "%0Aالمجموع الكلي: " + total.toLocaleString() + " د.ع";
+    message += "\n💰 المجموع: " + total.toLocaleString() + " د.ع";
 
-    // ضع رقم واتساب متجرك هنا
-    let phone = "9647842000516";
+    let phone = "9647701234567"; // ضع رقم واتساب متجرك هنا
 
-    window.location.href =
-    "https://wa.me/" + phone + "?text=" + message;
+    window.open(
+        "https://wa.me/" + phone + "?text=" + encodeURIComponent(message),
+        "_blank"
+    );
 
 }
 
