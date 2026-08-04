@@ -1,107 +1,35 @@
-/ =======================================
-// Amazon Hyper Market V2
-// =======================================
+function showCategory(category){
 
-let cart = [];
+    let content = document.getElementById("content");
 
-// =========================
-// إضافة منتج إلى السلة
-// =========================
+    if(category=="meat"){
 
-function addToCart(name, price) {
+        content.innerHTML=`
+        <h2>🥩 قسم اللحوم</h2>
 
-    let found = cart.find(item => item.name === name);
-
-    if (found) {
-
-        found.quantity++;
-
-    } else {
-
-        cart.push({
-
-            name: name,
-
-            price: price,
-
-            quantity: 1
-
-        });
+        <p>سيتم إضافة منتجات اللحوم هنا.</p>
+        `;
 
     }
 
-    updateCart();
+    else if(category=="chicken"){
 
-}
+        content.innerHTML=`
+        <h2>🐔 قسم الدجاج</h2>
 
-// =========================
-// تحديث السلة
-// =========================
-
-function updateCart() {
-
-    let items = document.getElementById("cart-items");
-    let count = document.getElementById("cart-count");
-    let total = document.getElementById("cart-total");
-
-    items.innerHTML = "";
-
-    let sum = 0;
-
-    if(cart.length===0){
-
-        items.innerHTML="لا توجد منتجات في السلة";
-
-        count.innerHTML="0";
-
-        total.innerHTML="0";
-
-        return;
+        <p>سيتم إضافة منتجات الدجاج هنا.</p>
+        `;
 
     }
 
-    cart.forEach(function(item){
+    else{
 
-        let itemTotal=item.price*item.quantity;
+        content.innerHTML=`
+        <h2>🚧</h2>
 
-        sum+=itemTotal;
+        <p>هذا القسم سيتم إضافته قريباً.</p>
+        `;
 
-        items.innerHTML +=`
-
-<div class="cart-item">
-
-<b>${item.name}</b>
-
-<br><br>
-
-<button onclick="decreaseQuantity('${item.name}')">➖</button>
-
-<b>${item.quantity}</b>
-
-<button onclick="increaseQuantity('${item.name}')">➕</button>
-
-<br><br>
-
-${itemTotal.toLocaleString()} د.ع
-
-<br><br>
-
-<button onclick="removeItem('${item.name}')">
-
-🗑️ حذف
-
-</button>
-
-<hr>
-
-</div>
-
-`;
-
-    });
-
-    count.innerHTML=cart.length;
-
-    total.innerHTML=sum.toLocaleString();
+    }
 
 }
