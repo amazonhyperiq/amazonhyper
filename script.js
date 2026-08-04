@@ -109,13 +109,31 @@ function updateCart() {
 
 }
 function sendToWhatsApp(){
+let customerName = document.getElementById("customer-name").value;
+let customerPhone = document.getElementById("customer-phone").value;
+let customerAddress = document.getElementById("customer-address").value;
+let customerNote = document.getElementById("customer-note").value;
 
+if(customerName=="" || customerPhone=="" || customerAddress==""){
+    alert("يرجى إدخال الاسم ورقم الهاتف والعنوان");
+    return;
+}
     if(cart.length === 0){
         alert("السلة فارغة");
         return;
     }
 
-    let message = "السلام عليكم، أرغب بطلب المنتجات التالية:%0A%0A";
+   let message =
+"🛒 طلب جديد%0A%0A" +
+"👤 الاسم: " + customerName + "%0A" +
+"📞 الهاتف: " + customerPhone + "%0A" +
+"📍 العنوان: " + customerAddress + "%0A";
+
+if(customerNote!=""){
+    message += "📝 ملاحظات: " + customerNote + "%0A";
+}
+
+message += "%0A📦 المنتجات:%0A";
 
     let total = 0;
 
