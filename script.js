@@ -1,51 +1,107 @@
-<h2 class="section-title">
-🥛 بقية الأقسام
-</h2>
+/ =======================================
+// Amazon Hyper Market V2
+// =======================================
 
-<div class="categories">
+let cart = [];
 
-<button>🥛 الألبان</button>
+// =========================
+// إضافة منتج إلى السلة
+// =========================
 
-<button>🥤 المشروبات</button>
+function addToCart(name, price) {
 
-<button>🥫 المواد الغذائية</button>
+    let found = cart.find(item => item.name === name);
 
-<button>🧴 المنظفات</button>
+    if (found) {
 
-<button>🍪 البسكويت والشوكولاتة</button>
+        found.quantity++;
 
-<button>🍟 الشبس والسناك</button>
+    } else {
 
-<button>🥬 الخضراوات والفواكه</button>
+        cart.push({
 
-<button>🌰 الكرزات والبهارات</button>
+            name: name,
 
-<button>🌾 البقوليات</button>
+            price: price,
 
-<button>🥫 المعلبات</button>
+            quantity: 1
+
+        });
+
+    }
+
+    updateCart();
+
+}
+
+// =========================
+// تحديث السلة
+// =========================
+
+function updateCart() {
+
+    let items = document.getElementById("cart-items");
+    let count = document.getElementById("cart-count");
+    let total = document.getElementById("cart-total");
+
+    items.innerHTML = "";
+
+    let sum = 0;
+
+    if(cart.length===0){
+
+        items.innerHTML="لا توجد منتجات في السلة";
+
+        count.innerHTML="0";
+
+        total.innerHTML="0";
+
+        return;
+
+    }
+
+    cart.forEach(function(item){
+
+        let itemTotal=item.price*item.quantity;
+
+        sum+=itemTotal;
+
+        items.innerHTML +=`
+
+<div class="cart-item">
+
+<b>${item.name}</b>
+
+<br><br>
+
+<button onclick="decreaseQuantity('${item.name}')">➖</button>
+
+<b>${item.quantity}</b>
+
+<button onclick="increaseQuantity('${item.name}')">➕</button>
+
+<br><br>
+
+${itemTotal.toLocaleString()} د.ع
+
+<br><br>
+
+<button onclick="removeItem('${item.name}')">
+
+🗑️ حذف
+
+</button>
+
+<hr>
 
 </div>
 
-</div>
+`;
 
-<footer>
+    });
 
-<p>
+    count.innerHTML=cart.length;
 
-© 2026 أمازون هايبر ماركت
+    total.innerHTML=sum.toLocaleString();
 
-</p>
-
-<p>
-
-جميع الحقوق محفوظة
-
-</p>
-
-</footer>
-
-<script src="script.js?v=2.0"></script>
-
-</body>
-
-</html>
+}
