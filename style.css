@@ -26,7 +26,7 @@ header {
 
 .cart-box input {
     width: 100%;
-    padding: 8px;
+    padding: 10px;
     margin: 5px 0;
     box-sizing: border-box;
     border: 1px solid #ccc;
@@ -44,10 +44,21 @@ header {
     align-items: center;
 }
 
+.product h3 {
+    margin: 0 0 5px 0;
+    font-size: 16px;
+}
+
+.product p {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+}
+
 button {
     background-color: #ffd814;
     border: 1px solid #fcd200;
-    padding: 8px 12px;
+    padding: 8px 14px;
     border-radius: 20px;
     cursor: pointer;
     font-weight: bold;
@@ -57,12 +68,13 @@ button:hover {
     background-color: #f7ca00;
 }
 
-.cart-box button {
-    background-color: #25d366;
-    color: white;
-    border: none;
+.whatsapp-btn {
+    background-color: #25d366 !important;
+    color: white !important;
+    border: none !important;
     width: 100%;
-    padding: 10px;
+    padding: 12px;
     font-size: 16px;
     margin-top: 10px;
+    border-radius: 6px !important;
 }
