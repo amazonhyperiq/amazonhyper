@@ -1,4 +1,4 @@
-function addToCart(name, price) {function addToCart(name, price) {
+function addToCart(name, price) {function addToCart(name, price) {function addToCart(name, price) {
 
     let found = cart.find(item => item.name === name);
 
@@ -27,11 +27,24 @@ function updateCart() {
 
     cart.forEach(function(item){
 
-        items.innerHTML += `
-        <p>${item.name} - ${item.price.toLocaleString()} د.ع</p>
-        `;
+       function addToCart(name, price) {
 
-        sum += item.price;
+    let found = cart.find(item => item.name === name);
+
+    if (found) {
+        found.quantity++;
+    } else {
+        cart.push({
+            name: name,
+            price: price,
+            quantity: 1
+        });
+    }
+
+    updateCart();
+}
+
+     sum += item.price * item.quantity;
 
     });
 
