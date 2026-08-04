@@ -4,7 +4,88 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
-    <link rel="stylesheet" href="style.css?v=10">
+    <style>
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 15px;
+            direction: rtl;
+        }
+
+        header {
+            text-align: center;
+            background: #232f3e;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+        }
+
+        .cart-box {
+            background: #fff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+            border: 2px solid #ff9900;
+        }
+
+        .cart-box input {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        .product {
+            background: #fff;
+            padding: 12px;
+            margin-bottom: 10px;
+            border-radius: 6px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .product h3 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+
+        .product p {
+            margin: 0;
+            color: #666;
+            font-size: 14px;
+        }
+
+        button {
+            background-color: #ffd814;
+            border: 1px solid #fcd200;
+            padding: 8px 14px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        button:hover {
+            background-color: #f7ca00;
+        }
+
+        .whatsapp-btn {
+            background-color: #25d366 !important;
+            color: white !important;
+            border: none !important;
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            margin-top: 10px;
+            border-radius: 6px !important;
+        }
+    </style>
 </head>
 <body>
 
@@ -106,6 +187,83 @@
     </div>
 </div>
 
-<script src="script.js?v=10"></script>
+<script>
+    let cart = [];
+
+    function addToCart(name, price) {
+        let item = cart.find(i => i.name === name);
+        if (item) {
+            item.qty++;
+        } else {
+            cart.push({ name: name, price: price, qty: 1 });
+        }
+        updateCartUI();
+    }
+
+    function updateCartUI() {
+        let cartItemsDiv = document.getElementById('cart-items');
+        let cartCount = document.getElementById('cart-count');
+        let cartTotal = document.getElementById('cart-total');
+
+        if (cart.length === 0) {
+            cartItemsDiv.innerHTML = "لا توجد منتجات في السلة";
+            cartCount.innerText = "0";
+            cartTotal.innerText = "0";
+            return;
+        }
+
+        let total = 0;
+        let count = 0;
+        cartItemsDiv.innerHTML = "";
+
+        cart.forEach(item => {
+            let itemTotal = item.price * item.qty;
+            total += itemTotal;
+            count += item.qty;
+            
+            cartItemsDiv.innerHTML += `
+                <div style="display:flex; justify-content:space-between; margin-bottom:8px; border-bottom:1px solid #eee; padding-bottom:5px;">
+                    <span>${item.name} (x${item.qty})</span>
+                    <span>${itemTotal.toLocaleString()} د.ع</span>
+                </div>
+            `;
+        });
+
+        cartCount.innerText = count;
+        cartTotal.innerText = total.toLocaleString();
+    }
+
+    function sendToWhatsApp() {
+        if (cart.length === 0) {
+            alert("السلة فارغة! يرجى إضافة منتجات أولاً.");
+            return;
+        }
+
+        let name = document.getElementById('customer-name').value;
+        let address = document.getElementById('customer-address').value;
+        let phone = document.getElementById('customer-phone').value;
+
+        let phoneNumber = "9647842000516"; 
+
+        let message = "🛒 طلب جديد من أمازون هايبر ماركت\n\n";
+        if (name) message += 👤 *الاسم:* ${name}\n;
+        if (phone) message += 📞 *الهاتف:* ${phone}\n;
+        if (address) message += 📍 *العنوان:* ${address}\n;
+        
+        message += "\n📋 تفاصيل الطلب:\n";
+        let total = 0;
+
+        cart.forEach(item => {
+            let itemTotal = item.price * item.qty;
+            total += itemTotal;
+            message += • ${item.name} × ${item.qty} = ${itemTotal.toLocaleString()} د.ع\n;
+        });
+
+        message += \n💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع;
+
+        let encodedMessage = encodeURIComponent(message);
+        window.open(https://wa.me/${phoneNumber}?text=${encodedMessage}, '_blank');
+    }
+</script>
 </body>
 </html>
