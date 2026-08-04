@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
     <title>أمازون هايبر ماركت</title>
+    <link rel="stylesheet" href="style.css?v=10">
 </head>
 <body>
 
@@ -15,7 +15,6 @@
 
 <div class="cart-box">
     <h2>🛒 سلة المشتريات</h2>
-
     <p>عدد المنتجات: <span id="cart-count">0</span></p>
 
     <div id="cart-items">
@@ -24,98 +23,89 @@
 
     <h3>المجموع: <span id="cart-total">0</span> د.ع</h3>
 
-    <input type="text" id="customer-name" placeholder="الاسم">
-    <input type="text" id="customer-address" placeholder="العنوان">
+    <input type="text" id="customer-name" placeholder="الاسم الكامل">
+    <input type="text" id="customer-address" placeholder="العنوان بالتفصيل">
     <input type="text" id="customer-phone" placeholder="رقم الهاتف">
     
-    <button onclick="sendToWhatsApp()">📲 إرسال الطلب إلى واتساب</button>
+    <button type="button" onclick="sendToWhatsApp()" class="whatsapp-btn">📲 إرسال الطلب إلى واتساب</button>
 </div>
 
 <div class="container">
-
-    <div class="box">
-        <h2>العروض اليومية</h2>
-        <p>سيتم إضافة العروض هنا.</p>
-    </div>
-
-    <div class="box">
-        <h2>الأقسام</h2>
-        <button>🥩 اللحوم</button>
-
-        <div class="product">
+    <h2>قسم اللحوم</h2>
+    
+    <div class="product">
+        <div>
             <h3>لحم غنم بالعظم</h3>
-            <p>السعر: 22,000 د.ع / كغم</p>
-            <button onclick="addToCart('لحم غنم بالعظم', 22000)">🛒 أضف إلى السلة</button>
+            <p>22,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('لحم غنم بالعظم', 22000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>لحم غنم شرح</h3>
-            <p>السعر: 27,000 د.ع / كغم</p>
-            <button onclick="addToCart('لحم غنم شرح', 27000)">🛒 أضف إلى السلة</button>
+            <p>27,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('لحم غنم شرح', 27000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>ضلوع غنم</h3>
-            <p>السعر: 25,000 د.ع / كغم</p>
-            <button onclick="addToCart('ضلوع غنم', 25000)">🛒 أضف إلى السلة</button>
+            <p>25,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('ضلوع غنم', 25000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>لية غنم</h3>
-            <p>السعر: 16,000 د.ع / كغم</p>
-            <button onclick="addToCart('لية غنم', 16000)">🛒 أضف إلى السلة</button>
+            <p>16,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('لية غنم', 16000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>معلاك غنم</h3>
-            <p>السعر: 16,000 د.ع / كغم</p>
-            <button onclick="addToCart('معلاك غنم', 16000)">🛒 أضف إلى السلة</button>
+            <p>16,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('معلاك غنم', 16000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>لحم مثروم غنم وعجل</h3>
-            <p>السعر: 19,000 د.ع / كغم</p>
-            <button onclick="addToCart('لحم مثروم غنم وعجل', 19000)">🛒 أضف إلى السلة</button>
+            <p>19,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('لحم مثروم غنم وعجل', 19000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>لحم مثروم عجل</h3>
-            <p>السعر: 19,000 د.ع / كغم</p>
-            <button onclick="addToCart('لحم مثروم عجل', 19000)">🛒 أضف إلى السلة</button>
+            <p>19,000 د.ع / كغم</p>
         </div>
+        <button type="button" onclick="addToCart('لحم مثروم عجل', 19000)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>بركر لحم عراقي</h3>
-            <p>السعر: 18,500 د.ع</p>
-            <button onclick="addToCart('بركر لحم عراقي', 18500)">🛒 أضف إلى السلة</button>
+            <p>18,500 د.ع</p>
         </div>
+        <button type="button" onclick="addToCart('بركر لحم عراقي', 18500)">🛒 أضف للسلة</button>
+    </div>
 
-        <div class="product">
+    <div class="product">
+        <div>
             <h3>باجة غنم</h3>
-            <p>السعر: 12,000 د.ع</p>
-            <button onclick="addToCart('باجة غنم', 12000)">🛒 أضف إلى السلة</button>
+            <p>12,000 د.ع</p>
         </div>
+        <button type="button" onclick="addToCart('باجة غنم', 12000)">🛒 أضف للسلة</button>
     </div>
-
-    <div class="box">
-        <h2>🛒 باقي الأقسام</h2>
-        <button>🐔 الدواجن</button>
-        <button>🥛 الألبان</button>
-        <button>🥤 المشروبات</button>
-        <button>🥫 المواد الغذائية</button>
-        <button>🧴 المنظفات</button>
-        <button>🍪 البسكويت والشوكولاتة</button>
-        <button>🍟 الشبس والسناك</button>
-        <button>🥛 الألبان والأجبان الطازجة</button>
-        <button>🥓 اللحوم الباردة</button>
-        <button>🥬 الخضراوات والفواكه</button>
-        <button>🌰 الكرزات والبهارات</button>
-        <button>🌾 البقوليات</button>
-        <button>🥫 المعلبات</button>
-    </div>
-
 </div>
 
-<script src="script.js?v=4"></script>
+<script src="script.js?v=10"></script>
 </body>
 </html>
