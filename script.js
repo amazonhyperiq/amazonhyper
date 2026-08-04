@@ -1,11 +1,13 @@
-let cart = [];
-
 function addToCart(name, price) {
+
+    alert("بدأ التنفيذ");
 
     cart.push({
         name: name,
         price: price
     });
+
+    alert(cart.length);
 
     updateCart();
 }
