@@ -1,448 +1,87 @@
-/* ========================= */
-/* Amazon Hyper Market V2 */
-/* ========================= */
-
 *{
     margin:0;
     padding:0;
     box-sizing:border-box;
-    font-family:Tahoma,Arial,sans-serif;
+    font-family:Tahoma, Arial, sans-serif;
 }
 
 body{
-
     background:#f4f4f4;
-
     direction:rtl;
-
 }
 
-/* ================= Header ================= */
-
-.header{
-
+header{
     background:#198754;
-
-    color:#fff;
-
-    padding:20px;
-
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    flex-wrap:wrap;
-
-}
-
-.logo h1{
-
-    font-size:32px;
-
-}
-
-.logo p{
-
-    margin-top:8px;
-
-}
-
-.cart-info{
-
-    background:#fff;
-
-    color:#198754;
-
-    padding:12px 18px;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-}
-
-/* ================= Search ================= */
-
-.search-box{
-
-    width:90%;
-
-    margin:20px auto;
-
-}
-
-.search-box input{
-
-    width:100%;
-
-    padding:14px;
-
-    border-radius:10px;
-
-    border:1px solid #ccc;
-
-    font-size:18px;
-
-}
-
-/* ================= Container ================= */
-
-.container{
-
-    width:95%;
-
-    margin:auto;
-
-}
-
-.section-title{
-
-    margin:30px 0 20px;
-
-    color:#198754;
-
-}
-
-/* ================= Products ================= */
-
-.products{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
-
-    gap:20px;
-
-}
-
-.product{
-
-    background:#fff;
-
-    border-radius:12px;
-
-    padding:15px;
-
+    color:white;
     text-align:center;
-
-    box-shadow:0 2px 8px rgba(0,0,0,.15);
-
-    transition:.3s;
-
+    padding:25px;
 }
 
-.product:hover{
-
-    transform:translateY(-5px);
-
+header h1{
+    font-size:34px;
+    margin-bottom:10px;
 }
 
-.product img{
-
-    width:100%;
-
-    height:180px;
-
-    object-fit:cover;
-
-    border-radius:10px;
-
+header p{
+    font-size:18px;
 }
 
-.product h3{
-
-    margin:12px 0;
-
-}
-
-.product p{
-
-    color:#198754;
-
-    font-size:20px;
-
-    font-weight:bold;
-
-}
-[7:16 م، 2026/8/4] Omar: * ========================= */
-/* Amazon Hyper Market V2 */
-/* ========================= */
-
-*{
-    margin:0;
-    padding:0;
-    box-sizing:border-box;
-    font-family:Tahoma,Arial,sans-serif;
-}
-
-body{
-
-    background:#f4f4f4;
-
-    direction:rtl;
-
-}
-
-/* ================= Header ================= */
-
-.header{
-
-    background:#198754;
-
-    color:#fff;
-
-    padding:20px;
-
+nav{
+    background:white;
+    padding:15px;
     display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
     flex-wrap:wrap;
-
-}
-
-.logo h1{
-
-    font-size:32px;
-
-}
-
-.logo p{
-
-    margin-top:8px;
-
-}
-
-.cart-info{
-
-    background:#fff;
-
-    color:#198754;
-
-    padding:12px 18px;
-
-    border-radius:10px;
-
-    font-weight:bold;
-
-}
-
-/* ================= Search ================= */
-
-.search-box{
-
-    width:90%;
-
-    margin:2…
-[7:16 م، 2026/8/4] Omar: /* ================= Cart ================= */
-
-.cart-box{
-
-    width:95%;
-
-    margin:25px auto;
-
-    background:#fff;
-
-    border-radius:12px;
-
-    padding:20px;
-
+    justify-content:center;
+    gap:12px;
     box-shadow:0 2px 8px rgba(0,0,0,.15);
-
 }
 
-.cart-box h2{
-
-    color:#198754;
-
-    margin-bottom:15px;
-
-}
-
-#cart-items{
-
-    margin:15px 0;
-
-}
-
-.cart-item{
-
-    padding:10px;
-
-    border-bottom:1px solid #ddd;
-
-}
-
-.cart-box h3{
-
-    margin:20px 0;
-
-    color:#198754;
-
-}
-
-/* ================= Inputs ================= */
-
-.cart-box input,
-.cart-box textarea{
-
-    width:100%;
-
-    padding:12px;
-
-    margin:8px 0;
-
-    border:1px solid #ccc;
-
-    border-radius:8px;
-
-    font-size:16px;
-
-}
-
-.cart-box textarea{
-
-    height:90px;
-
-    resize:none;
-
-}
-
-/* ================= Buttons ================= */
-
-button{
-
-    cursor:pointer;
-
+nav button{
+    background:#198754;
+    color:white;
     border:none;
-
+    padding:12px 22px;
     border-radius:8px;
-
-    transition:.3s;
-
-}
-
-.product button{
-
-    width:100%;
-
-    padding:12px;
-
-    background:#198754;
-
-    color:#fff;
-
-    font-size:16px;
-
-    margin-top:10px;
-
-}
-
-.product button:hover{
-
-    background:#157347;
-
-}
-
-.send-btn{
-
-    width:100%;
-
-    padding:15px;
-
-    background:#25D366;
-
-    color:#fff;
-
-    font-size:18px;
-
-    margin-top:15px;
-
-}
-
-.send-btn:hover{
-
-    background:#1EBE5D;
-
-}
-
-/* ================= Categories ================= */
-
-.categories{
-
-    display:grid;
-
-    grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-
-    gap:15px;
-
-    margin:30px 0;
-
-}
-
-.categories button{
-
-    background:#198754;
-
-    color:#fff;
-
-    padding:15px;
-
+    cursor:pointer;
     font-size:17px;
-
+    transition:.3s;
 }
 
-/* ================= Footer ================= */
+nav button:hover{
+    background:#157347;
+}
 
-footer{
+main{
+    width:90%;
+    margin:40px auto;
+}
 
-    background:#198754;
-
-    color:#fff;
-
+#content{
+    background:white;
+    border-radius:12px;
+    padding:40px;
     text-align:center;
-
-    padding:20px;
-
-    margin-top:40px;
-
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
 }
 
-/* ================= Mobile ================= */
+#content h2{
+    color:#198754;
+    margin-bottom:15px;
+}
+
+#content p{
+    font-size:18px;
+    color:#555;
+}
 
 @media(max-width:768px){
 
-.header{
+    nav{
+        flex-direction:column;
+    }
 
-    text-align:center;
-
-    justify-content:center;
-
-    gap:15px;
-
-}
-
-.logo h1{
-
-    font-size:24px;
-
-}
-
-.products{
-
-    grid-template-columns:1fr;
-
-}
-
-.product img{
-
-    height:220px;
-
-}
+    nav button{
+        width:100%;
+    }
 
 }
