@@ -51,28 +51,28 @@ function sendToWhatsApp() {
         return;
     }
 
-    let name = document.getElementById('customer-name').value;
-    let address = document.getElementById('customer-address').value;
-    let phone = document.getElementById('customer-phone').value;
+    let name = document.getElementById('customer-name') ? document.getElementById('customer-name').value : '';
+    let address = document.getElementById('customer-address') ? document.getElementById('customer-address').value : '';
+    let phone = document.getElementById('customer-phone') ? document.getElementById('customer-phone').value : '';
 
     let phoneNumber = "9647842000516"; 
 
-    let message = "🛒 *طلب جديد من أمازون هايبر ماركت*\n\n";
-    if (name) message += `👤 *الاسم:* ${name}\n`;
-    if (phone) message += `📞 *الهاتف:* ${phone}\n`;
-    if (address) message += `📍 *العنوان:* ${address}\n`;
+    let message = "🛒 طلب جديد من أمازون هايبر ماركت\n\n";
+    if (name) message += 👤 *الاسم:* ${name}\n;
+    if (phone) message += 📞 *الهاتف:* ${phone}\n;
+    if (address) message += 📍 *العنوان:* ${address}\n;
     
-    message += "\n📋 *تفاصيل الطلب:*\n";
+    message += "\n📋 تفاصيل الطلب:\n";
     let total = 0;
 
     cart.forEach(item => {
         let itemTotal = item.price * item.qty;
         total += itemTotal;
-        message += `• ${item.name} × ${item.qty} = ${itemTotal.toLocaleString()} د.ع\n`;
+        message += • ${item.name} × ${item.qty} = ${itemTotal.toLocaleString()} د.ع\n;
     });
 
-    message += `\n💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع`;
+    message += \n💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع;
 
     let encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+    window.open(https://wa.me/${phoneNumber}?text=${encodedMessage}, '_blank');
 }
