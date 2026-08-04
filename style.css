@@ -126,3 +126,48 @@ transform:translateY(-5px);
 background:#157347;
 
 }
+.cart-box{
+
+background:white;
+
+margin:20px;
+
+padding:20px;
+
+border-radius:15px;
+
+box-shadow:0 3px 10px rgba(0,0,0,.15);
+
+}
+
+.cart-box h2{
+
+color:#198754;
+
+margin-bottom:15px;
+
+}
+
+#cart-items{
+
+margin:15px 0;
+
+padding:10px;
+
+background:#f7f7f7;
+
+border-radius:10px;
+
+min-height:50px;
+
+}
+
+#cart-total{
+
+color:#198754;
+
+font-weight:bold;
+
+font-size:24px;
+
+}
