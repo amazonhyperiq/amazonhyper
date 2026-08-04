@@ -1,42 +1,68 @@
-body{
-    margin:0;
-    font-family:Tahoma,Arial,sans-serif;
-    background:#f4f4f4;
-    direction:rtl;
+body {
+    font-family: system-ui, -apple-system, sans-serif;
+    background-color: #f4f4f9;
+    margin: 0;
+    padding: 15px;
+    direction: rtl;
 }
 
-header{
-    background:#39b54a;
-    color:#fff;
-    text-align:center;
-    padding:20px;
+header {
+    text-align: center;
+    background: #232f3e;
+    color: white;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
 }
 
-.container{
-    width:90%;
-    margin:20px auto;
+.cart-box {
+    background: #fff;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    margin-bottom: 20px;
+    border: 2px solid #ff9900;
 }
 
-.box{
-    background:#fff;
-    padding:20px;
-    margin-bottom:20px;
-    border-radius:10px;
-    box-shadow:0 2px 8px rgba(0,0,0,.1);
+.cart-box input {
+    width: 100%;
+    padding: 8px;
+    margin: 5px 0;
+    box-sizing: border-box;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
-button{
-    background:#39b54a;
-    color:#fff;
-    border:none;
-    padding:10px 18px;
-    margin:5px;
-    border-radius:8px;
-    cursor:pointer;
-    font-size:15px;
-    transition:.3s;
+.product {
+    background: #fff;
+    padding: 12px;
+    margin-bottom: 10px;
+    border-radius: 6px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-button:hover{
-    background:#2d913b;
+button {
+    background-color: #ffd814;
+    border: 1px solid #fcd200;
+    padding: 8px 12px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-weight: bold;
+}
+
+button:hover {
+    background-color: #f7ca00;
+}
+
+.cart-box button {
+    background-color: #25d366;
+    color: white;
+    border: none;
+    width: 100%;
+    padding: 10px;
+    font-size: 16px;
+    margin-top: 10px;
 }
