@@ -154,7 +154,7 @@ function updateCart() {
 
     message += "\n💰 المجموع: " + total.toLocaleString() + " د.ع";
 
-    let phone = "9647701234567"; // ضع رقم واتساب متجرك هنا
+    let phone = "9647842000516"; // ضع رقم واتساب متجرك هنا
 
     window.open(
         "https://wa.me/" + phone + "?text=" + encodeURIComponent(message),
