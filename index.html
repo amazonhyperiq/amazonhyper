@@ -1,115 +1,411 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
-
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمازون هايبر ماركت</title>
 
-<title>أمازون هايبر ماركت</title>
+    <meta name="description" content="أمازون هايبر ماركت - تسوق واطلب منتجاتك بسهولة">
+    <meta name="theme-color" content="#168a45">
 
-<link rel="stylesheet" href="style.css">
-
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<header>
+    <!-- رأس الموقع -->
+    <header class="site-header">
 
-<h1>🛒 أمازون هايبر ماركت</h1>
+        <div class="header-inner">
 
-<p>جودة عالية • أسعار منافسة • توصيل سريع</p>
+            <div class="brand">
+                <div class="brand-icon">🛒</div>
 
-</header>
-<nav class="categories">
+                <div>
+                    <h1>أمازون هايبر ماركت</h1>
+                    <p>كل احتياجاتك في مكان واحد</p>
+                </div>
+            </div>
 
-<button onclick="showCategory('meat')">
-🥩
-<br>
-اللحوم
-</button>
+            <button
+                type="button"
+                class="cart-button"
+                onclick="openCart()"
+                aria-label="فتح سلة المشتريات">
 
-<button onclick="showCategory('chicken')">
-🐔
-<br>
-الدجاج
-</button>
+                🛒
+                <span>السلة</span>
+                <b id="cart-count">0</b>
 
-<button onclick="showCategory('dairy')">
-🥛
-<br>
-الألبان
-</button>
+            </button>
 
-<button onclick="showCategory('drinks')">
-🥤
-<br>
-المشروبات
-</button>
+        </div>
 
-<button onclick="showCategory('cleaning')">
-🧴
-<br>
-المنظفات
-</button>
+    </header>
 
-<button onclick="showCategory('snacks')">
-🍪
-<br>
-البسكويت والشوكولاتة
-</button>
 
-<button onclick="showCategory('food')">
-🥫
-<br>
-المواد الغذائية
-</button>
+    <!-- المحتوى الرئيسي -->
+    <main class="container">
 
-<button onclick="showCategory('vegetables')">
-🥬
-<br>
-الخضراوات والفواكه
-</button>
+        <!-- البحث -->
+        <section class="search-section">
 
-</nav
-<div class="cart-box">
+            <input
+                type="search"
+                id="search-input"
+                placeholder="🔎 ابحث عن منتج..."
+                autocomplete="off">
 
-<h2>🛒 سلة المشتريات</h2>
+        </section>
 
-<p>
-عدد المنتجات:
-<span id="cart-count">0</span>
-</p>
 
-<div id="cart-items">
-لا توجد منتجات
-</div>
+        <!-- الأقسام -->
+        <section class="categories-section">
 
-<h3>
-المجموع:
-<span id="cart-total">0</span>
-د.ع
-</h3>
+            <h2>أقسام المتجر</h2>
 
-</div>
-<main>
+            <div class="categories-grid">
 
-<section id="content">
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('meat')">
 
-<h2>مرحباً بكم في أمازون هايبر ماركت</h2>
+                    <span>🥩</span>
+                    <strong>اللحوم</strong>
 
-<p>
+                </button>
 
-اختر أحد الأقسام من الأعلى لعرض المنتجات.
 
-</p>
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('chicken')">
 
-</section>
+                    <span>🐔</span>
+                    <strong>الدجاج</strong>
 
-</main>
+                </button>
 
-<script src="script.js"></script>
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('produce')">
+
+                    <span>🥬</span>
+                    <strong>الفواكه والخضراوات</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('legumes')">
+
+                    <span>🫘</span>
+                    <strong>البقوليات والمواد بالوزن</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('food')">
+
+                    <span>🍚</span>
+                    <strong>المواد الغذائية</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('eggs')">
+
+                    <span>🥚</span>
+                    <strong>البيض</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('dairy')">
+
+                    <span>🥛</span>
+                    <strong>الألبان</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('drinks')">
+
+                    <span>🥤</span>
+                    <strong>المشروبات</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('cleaning')">
+
+                    <span>🧴</span>
+                    <strong>المنظفات</strong>
+
+                </button>
+
+
+                <button
+                    type="button"
+                    class="category-card"
+                    onclick="showCategory('other')">
+
+                    <span>📦</span>
+                    <strong>أقسام أخرى</strong>
+
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <!-- المنتجات -->
+        <section class="products-section">
+
+            <div class="section-title-row">
+
+                <h2 id="category-title">
+                    مرحباً بك في أمازون هايبر ماركت
+                </h2>
+
+                <button
+                    type="button"
+                    id="back-home"
+                    class="back-button"
+                    onclick="showHome()"
+                    hidden>
+
+                    ← الرئيسية
+
+                </button>
+
+            </div>
+
+
+            <div id="content">
+
+                <div class="welcome-box">
+
+                    <div class="welcome-icon">🛒</div>
+
+                    <h2>أهلاً وسهلاً بكم</h2>
+
+                    <p>
+                        اختر أحد الأقسام أعلاه لعرض المنتجات
+                    </p>
+
+                    <p class="welcome-note">
+                        المنتجات التي لا يظهر لها سعر يتم احتساب سعرها
+                        حسب سعر اليوم عند تجهيز الطلب.
+                    </p>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+
+    <!-- زر السلة العائم -->
+    <button
+        type="button"
+        class="floating-cart"
+        onclick="openCart()"
+        aria-label="فتح سلة المشتريات">
+
+        🛒
+
+        <span id="floating-cart-count">
+            0
+        </span>
+
+    </button>
+
+
+    <!-- نافذة السلة -->
+    <div
+        id="cart-modal"
+        class="modal"
+        aria-hidden="true">
+
+        <div class="modal-overlay" onclick="closeCart()"></div>
+
+        <div class="cart-panel">
+
+            <div class="cart-header">
+
+                <h2>🛒 سلة المشتريات</h2>
+
+                <button
+                    type="button"
+                    onclick="closeCart()"
+                    class="close-button"
+                    aria-label="إغلاق">
+
+                    ×
+
+                </button>
+
+            </div>
+
+
+            <div id="cart-items">
+
+                <div class="empty-cart">
+                    السلة فارغة
+                </div>
+
+            </div>
+
+
+            <div class="cart-summary">
+
+                <div class="summary-row">
+
+                    <span>عدد المنتجات:</span>
+
+                    <strong id="cart-total-items">
+                        0
+                    </strong>
+
+                </div>
+
+
+                <div class="summary-row total-row">
+
+                    <span>المجموع:</span>
+
+                    <strong id="cart-total-price">
+                        0 د.ع
+                    </strong>
+
+                </div>
+
+            </div>
+
+
+            <!-- بيانات الزبون -->
+            <div class="customer-form">
+
+                <h3>بيانات الزبون</h3>
+
+
+                <label for="customer-name">
+                    الاسم
+                </label>
+
+                <input
+                    type="text"
+                    id="customer-name"
+                    placeholder="اكتب اسمك">
+
+
+                <label for="customer-phone">
+                    رقم الهاتف
+                </label>
+
+                <input
+                    type="tel"
+                    id="customer-phone"
+                    placeholder="07XXXXXXXXX"
+                    inputmode="tel">
+
+
+                <label for="customer-address">
+                    العنوان
+                </label>
+
+                <textarea
+                    id="customer-address"
+                    rows="3"
+                    placeholder="المحافظة، المنطقة، الشارع، أقرب نقطة دالة"></textarea>
+
+
+                <label for="customer-note">
+                    ملاحظات إضافية
+                </label>
+
+                <textarea
+                    id="customer-note"
+                    rows="3"
+                    placeholder="مثلاً: اتصل قبل الوصول"></textarea>
+
+
+                <!-- مواد إضافية -->
+                <div class="extra-products">
+
+                    <h3>📝 مواد أخرى</h3>
+
+                    <p>
+                        إذا لم تجد المنتج الذي تريده، اكتبه هنا.
+                    </p>
+
+                    <textarea
+                        id="extra-products"
+                        rows="4"
+                        placeholder="مثال:
+شامبو
+معجون أسنان
+مياه
+أي منتج آخر..."></textarea>
+
+                </div>
+
+
+                <button
+                    type="button"
+                    class="whatsapp-button"
+                    onclick="sendToWhatsApp()">
+
+                    💬 إرسال الطلب عبر واتساب
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+
+    <!-- إشعار -->
+    <div
+        id="toast"
+        class="toast"
+        role="status"
+        aria-live="polite">
+
+        تمت إضافة المنتج إلى السلة
+
+    </div>
+
+
+    <!-- JavaScript -->
+    <script src="script.js"></script>
 
 </body>
-
 </html>
