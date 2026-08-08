@@ -10,7 +10,7 @@
 
 // ضع رقم واتساب المتجر هنا لاحقًا.
 // مثال العراق: 9647XXXXXXXXX
-const WHATSAPP_NUMBER = "9647XXXXXXXXX";
+const WHATSAPP_NUMBER = "9647842000516";
 
 
 /* =========================
