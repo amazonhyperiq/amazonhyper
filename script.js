@@ -10,12 +10,7 @@
 
 
 const WHATSAPP_NUMBER = "9647842000516";
-const SUPABASE_URL = "https://uqrfssmbxnucnlgaqphl.supabase.co";
-const SUPABASE_KEY = "sb_publishable_VyD4demcdOZ3u_UJrqQEgg_hvAg_0v2
-const supabaseClient = window.supabase.createClient(
-  SUPABASE_URL,
-  SUPABASE_KEY
-);
+
 
 /* =========================
    السلة
