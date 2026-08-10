@@ -8,8 +8,9 @@
    إعدادات المتجر
    ========================= */
 
-
-const WHATSAPP_NUMBER = "9647842000516";
+// ضع رقم واتساب المتجر هنا لاحقًا.
+// مثال العراق: 9647XXXXXXXXX
+const WHATSAPP_NUMBER = "9647XXXXXXXXX";
 
 
 /* =========================
@@ -1093,243 +1094,184 @@ function closeCart() {
    إرسال الطلب إلى واتساب
    ========================= */
 
-async function sendToWhatsApp() {
+function sendToWhatsApp() {
 
     if (cart.length === 0) {
+
         showToast("السلة فارغة");
+
         return;
     }
 
+
     const customerName =
-        document.getElementById("customer-name").value.trim();
+        document
+            .getElementById("customer-name")
+            .value
+            .trim();
+
 
     const customerPhone =
-        document.getElementById("customer-phone").value.trim();
+        document
+            .getElementById("customer-phone")
+            .value
+            .trim();
+
 
     const customerAddress =
-        document.getElementById("customer-address").value.trim();
+        document
+            .getElementById("customer-address")
+            .value
+            .trim();
+
 
     const customerNote =
-        document.getElementById("customer-note").value.trim();
+        document
+            .getElementById("customer-note")
+            .value
+            .trim();
+
 
     const extraProducts =
-        document.getElementById("extra-products").value.trim();
+        document
+            .getElementById("extra-products")
+            .value
+            .trim();
 
 
     if (!customerName) {
+
         showToast("اكتب اسم الزبون أولاً");
+
         return;
     }
+
 
     if (!customerPhone) {
+
         showToast("اكتب رقم الهاتف أولاً");
+
         return;
     }
+
 
     if (!customerAddress) {
+
         showToast("اكتب العنوان أولاً");
+
         return;
     }
 
 
-    /* =========================
-       حساب المجموع
-       ========================= */
+    let message = "";
 
-    let total = 0;
+    message += "🛒 *طلب جديد - أمازون هايبر ماركت*";
+    message += "\n";
+    message += "━━━━━━━━━━━━━━━━";
+    message += "\n\n";
 
-    cart.forEach(item => {
+
+    message += "👤 *بيانات الزبون*";
+    message += "\n";
+    message += `الاسم: ${customerName}`;
+    message += "\n";
+    message += `الهاتف: ${customerPhone}`;
+    message += "\n";
+    message += `العنوان: ${customerAddress}`;
+    message += "\n";
+
+
+    if (customerNote) {
+
+        message += `الملاحظات: ${customerNote}`;
+        message += "\n";
+
+    }
+
+
+    message += "\n";
+    message += "🛍️ *المنتجات*";
+    message += "\n";
+    message += "━━━━━━━━━━━━━━━━";
+    message += "\n";
+
+
+    let pricedTotal = 0;
+
+
+    cart.forEach((item, index) => {
+
+        message += `${index + 1}. ${item.name}`;
+        message += "\n";
+
+        message += `الكمية: ${formatQuantity(item.quantity)} ${item.unit}`;
+        message += "\n";
+
 
         if (
             item.type === "priced" &&
             typeof item.price === "number"
         ) {
-            total += item.price * item.quantity;
+
+            const itemTotal =
+                item.price * item.quantity;
+
+
+            pricedTotal += itemTotal;
+
+
+            message += `السعر: ${formatPrice(item.price)} د.ع / كغم`;
+            message += "\n";
+
+            message += `الإجمالي: ${formatPrice(itemTotal)} د.ع`;
+            message += "\n";
+
+        } else {
+
+            message += "السعر: يحدد حسب سعر اليوم";
+            message += "\n";
+
         }
+
+
+        message += "\n";
 
     });
 
 
-    /* =========================
-       تجهيز بيانات الطلب
-       ========================= */
-
-    const orderItems = cart.map(item => ({
-        name: item.name,
-        quantity: item.quantity,
-        unit: item.unit,
-        price: item.price,
-        type: item.type
-    }));
+    message += "━━━━━━━━━━━━━━━━";
+    message += "\n";
 
 
-    /* إضافة المواد الإضافية */
+    message += `💰 مجموع المنتجات ذات الأسعار الثابتة: ${formatPrice(pricedTotal)} د.ع`;
+    message += "\n";
+
+
+    message += "\n";
+
 
     if (extraProducts) {
-        orderItems.push({
-            name: extraProducts,
-            quantity: 1,
-            unit: "طلب إضافي",
-            price: null,
-            type: "extra"
-        });
-    }
 
-
-    /* =========================
-       حفظ الطلب في Supabase
-       ========================= */
-
-    try {
-
-        const { data, error } =
-            await supabaseClient
-                .from("orders")
-                .insert([{
-                    phone: customerPhone,
-                    address: customerAddress,
-                    items: {
-                        customer_name: customerName,
-                        customer_note: customerNote,
-                        products: orderItems
-                    },
-                    total: total,
-                    status: "new"
-                }])
-                .select();
-
-
-        if (error) {
-
-            console.error("Supabase Error:", error);
-
-            showToast("حدث خطأ في حفظ الطلب");
-
-            return;
-        }
-
-
-        /* =========================
-           إنشاء رسالة واتساب
-           ========================= */
-
-        let message = "";
-
-        message += "🛒 *طلب جديد - أمازون هايبر ماركت*";
+        message += "📝 *مواد أخرى طلبها الزبون*";
         message += "\n";
-        message += "━━━━━━━━━━━━━━━━";
+        message += extraProducts;
         message += "\n\n";
 
-        message += "👤 *بيانات الزبون*";
-        message += "\n";
-
-        message += `الاسم: ${customerName}`;
-        message += "\n";
-
-        message += `الهاتف: ${customerPhone}`;
-        message += "\n";
-
-        message += `العنوان: ${customerAddress}`;
-        message += "\n";
-
-
-        if (customerNote) {
-
-            message += `الملاحظات: ${customerNote}`;
-            message += "\n";
-
-        }
-
-
-        message += "\n";
-        message += "🛍️ *المنتجات*";
-        message += "\n";
-        message += "━━━━━━━━━━━━━━━━";
-        message += "\n";
-
-
-        cart.forEach((item, index) => {
-
-            message += `${index + 1}. ${item.name}`;
-            message += "\n";
-
-            message += `الكمية: ${formatQuantity(item.quantity)} ${item.unit}`;
-            message += "\n";
-
-
-            if (
-                item.type === "priced" &&
-                typeof item.price === "number"
-            ) {
-
-                const itemTotal =
-                    item.price * item.quantity;
-
-                message +=
-                    `السعر: ${formatPrice(item.price)} د.ع / كغم`;
-
-                message += "\n";
-
-                message +=
-                    `الإجمالي: ${formatPrice(itemTotal)} د.ع`;
-
-                message += "\n";
-
-            } else {
-
-                message +=
-                    "السعر: يحدد حسب سعر اليوم";
-
-                message += "\n";
-
-            }
-
-            message += "\n";
-
-        });
-
-
-        message += "━━━━━━━━━━━━━━━━";
-        message += "\n";
-
-        message +=
-            `💰 مجموع المنتجات ذات الأسعار الثابتة: ${formatPrice(total)} د.ع`;
-
-        message += "\n";
-
-
-        if (extraProducts) {
-
-            message += "\n";
-            message += "📝 *مواد أخرى طلبها الزبون*";
-            message += "\n";
-            message += extraProducts;
-            message += "\n";
-
-        }
-
-
-        message += "\n";
-        message += "شكراً لتسوقكم من أمازون هايبر ماركت 🛒";
-
-
-        /* =========================
-           فتح واتساب
-           ========================= */
-
-        const encodedMessage = encodeURIComponent(message);
-
-const whatsappURL = https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage};
-
-window.open(whatsappURL, "_blank");
-           
-    } catch (error) {
-
-        console.error("Order Error:", error);
-
-        showToast("حدث خطأ، حاول مرة أخرى");
-
     }
+
+
+    message += "شكراً لتسوقكم من أمازون هايبر ماركت 🛒";
+
+
+    const encodedMessage =
+        encodeURIComponent(message);
+
+
+    const whatsappURL =
+        `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+
+
+    window.location.href = whatsappURL;
 
 }
 
