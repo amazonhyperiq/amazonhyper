@@ -1317,15 +1317,12 @@ async function sendToWhatsApp() {
            فتح واتساب
            ========================= */
 
-        const encodedMessage =
-            encodeURIComponent(message);
+        const encodedMessage = encodeURIComponent(message);
 
-       const whatsappURL =
-https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)};
+const whatsappURL = https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage};
 
 window.open(whatsappURL, "_blank");
-        window.location.href = whatsappURL;
-
+           
     } catch (error) {
 
         console.error("Order Error:", error);
