@@ -1093,7 +1093,7 @@ function closeCart() {
    إرسال الطلب إلى واتساب
    ========================= */
 
-function sendToWhatsApp() {
+async function sendToWhatsApp() {
 
     if (cart.length === 0) {
         showToast("السلة فارغة");
