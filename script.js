@@ -1320,9 +1320,10 @@ async function sendToWhatsApp() {
         const encodedMessage =
             encodeURIComponent(message);
 
-        const whatsappURL =
-            `https://wa.me/${WHATSAPP_NUMBER}?text=${encodedMessage}`;
+       const whatsappURL =
+https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)};
 
+window.open(whatsappURL, "_blank");
         window.location.href = whatsappURL;
 
     } catch (error) {
