@@ -26,14 +26,103 @@ let cart = [];
 
 const products = {
 
-    meat: [
-        {
-            id: "meat-lamb-bone",
-            name: "لحم غنم بالعظم",
-            price: 22000
-        }
-    ],
-
+meat: [
+    {
+        id: "meat-lamb-bone",
+        name: "لحم غنم بالعظم",
+        price: 22000
+    },
+    {
+        id: "meat-minced-lamb-beef",
+        name: "لحم مثروم غنم وعجل",
+        price: 19000
+    },
+    {
+        id: "meat-minced-beef-no-fat",
+        name: "لحم مثروم عجل بدون دهن",
+        price: 19000
+    },
+    {
+        id: "meat-beef-cubes",
+        name: "لحم عجل قطع مكعبات",
+        price: 19000
+    },
+    {
+        id: "meat-lamb-boneless",
+        name: "لحم غنم شرح",
+        price: 27000
+    },
+    {
+        id: "meat-lamb-offal",
+        name: "معلاك غنم",
+        price: 16000
+    },
+    {
+        id: "meat-lamb-fat",
+        name: "لية غنم",
+        price: 16000
+    },
+    {
+        id: "meat-jalfray",
+        name: "جلفراي لحم",
+        price: 23000
+    },
+    {
+        id: "meat-lamb-ribs",
+        name: "ضلوع غنم",
+        price: 25000
+    },
+    {
+        id: "meat-lamb-pacha",
+        name: "باجة غنم",
+        price: 12000
+    },
+    {
+        id: "meat-lamb-shanks",
+        name: "زنود غنم",
+        price: 25000
+    },
+    {
+        id: "meat-steak",
+        name: "ستيك لحم",
+        price: 23000
+    },
+    {
+        id: "meat-beef-backstrap",
+        name: "حبل ظهر عجل خشن",
+        price: 25000
+    },
+    {
+        id: "meat-kas",
+        name: "كص لحم",
+        price: 23000
+    },
+    {
+        id: "meat-beef-trotters",
+        name: "كوارع عجل",
+        price: 13000
+    },
+    {
+        id: "meat-lamb-eggs",
+        name: "بيض غنم",
+        price: 0
+    },
+    {
+        id: "meat-lamb-tikka",
+        name: "تكة غنم",
+        price: 27000
+    },
+    {
+        id: "meat-iraqi-burger",
+        name: "بركر لحم عراقي",
+        price: 18500
+    },
+    {
+        id: "meat-iraqi-pastrami",
+        name: "باسطرما لحم عراقي",
+        price: 18500
+    }
+],
     chicken: [
         {
             id: "chicken-slaughter",
