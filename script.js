@@ -335,7 +335,7 @@ function showHome() {
 
     backButton.hidden = true;
 
-    content.innerHTML = `
+    content.products.map = `
         <div class="welcome-box">
 
             <div class="welcome-icon">🛒</div>
