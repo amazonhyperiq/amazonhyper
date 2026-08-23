@@ -4,22 +4,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
-    <!-- مكتبة Supabase -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: Tahoma, sans-serif; background: #f8f9fa; margin: 0; padding: 0; color: #333; }
         header { background: #131921; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
         .container { max-width: 800px; margin: 0 auto; padding: 15px; }
         .search-box { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
-        .categories { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 10px; margin-bottom: 15px; }
-        .cat-btn { background: #e9ecef; border: none; padding: 8px 15px; border-radius: 20px; cursor: pointer; white-space: nowrap; font-weight: bold; }
-        .cat-btn.active { background: #febd69; color: #111; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        
+        /* تصميم الأقسام القابلة للطي */
+        .category-section { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
+        .category-header { background: #232f3e; color: white; padding: 14px 18px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+        .category-header:hover { background: #37474f; }
+        .category-content { padding: 12px; display: none; background: #fafafa; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
+        .category-content.active { display: grid; }
+
         .product-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .product-card h4 { font-size: 14px; margin: 8px 0; }
         .product-card .price { color: #b12704; font-weight: bold; font-size: 15px; margin-bottom: 8px; }
         .add-btn { background: #ffd814; border: 1px solid #fcd200; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
         .add-btn:hover { background: #f7ca00; }
+        
         .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #232f3e; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
         .whatsapp-btn { background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 15px; }
     </style>
@@ -29,14 +33,10 @@
     <header>🛒 أمازون هايبر ماركت</header>
 
     <div class="container" style="padding-bottom: 80px;">
-        <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج..." oninput="filterProducts()">
+        <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج في كل الأقسام..." oninput="filterProducts()">
         
-        <div class="categories" id="categoriesContainer">
-            <button class="cat-btn active" onclick="filterCategory('الكل', this)">الكل</button>
-        </div>
-
-        <div class="products-grid" id="productsGrid">
-            <!-- المنتجات ستظهر هنا تلقائياً -->
+        <div id="categoriesWrapper">
+            <!-- الأقسام ومنتجاتها ستُبنى تلقائياً هنا -->
         </div>
     </div>
 
@@ -47,11 +47,11 @@
 
 <script>
     const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB'; 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPswug_XwiKt2bB';
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
     let allProducts = [];
     let cart = {};
-    let currentCategory = 'الكل';
 
     async function fetchProducts() {
         let { data, error } = await supabaseClient.from('products').select('*');
@@ -60,48 +60,65 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             return;
         }
         allProducts = data || [];
-        buildCategories();
-        renderProducts(allProducts);
+        renderCategories(allProducts);
     }
 
-    function buildCategories() {
-        const cats = ['الكل', ...new Set(allProducts.map(p => p.category))];
-        const container = document.getElementById('categoriesContainer');
-        container.innerHTML = cats.map(c => `<button class="cat-btn ${c === 'الكل' ? 'active' : ''}" onclick="filterCategory('${c}', this)">${c}</button>`).join('');
+    function renderCategories(products) {
+        const wrapper = document.getElementById('categoriesWrapper');
+        if (products.length === 0) {
+            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات متاحة حالياً</p>';
+            return;
+        }
+
+        // تجميع المنتجات حسب القسم
+        const categories = {};
+        products.forEach(p => {
+            let cat = p.category || 'أقسام أخرى';
+            if (!categories[cat]) categories[cat] = [];
+            categories[cat].push(p);
+        });
+
+        let html = '';
+        for (let cat in categories) {
+            html += `
+                <div class="category-section">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <span>📁 ${cat}</span>
+                        <span>▼</span>
+                    </div>
+                    <div class="category-content">
+                        ${categories[cat].map(p => `
+                            <div class="product-card">
+                                <div>
+                                    <h4>${p.name}</h4>
+                                    <div class="price">${p.price ? Number(p.price).toLocaleString() + ' د.ع' : 'غير متوفر'}</div>
+                                </div>
+                                <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price || 0})">إضافة للسلة</button>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+        wrapper.innerHTML = html;
     }
 
-    function filterCategory(cat, btn) {
-        currentCategory = cat;
-        document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        filterProducts();
+    function toggleCategory(header) {
+        const content = header.nextElementSibling;
+        content.classList.toggle('active');
+        header.querySelector('span:last-child').textContent = content.classList.contains('active') ? '▲' : '▼';
     }
 
     function filterProducts() {
         const query = document.getElementById('searchBox').value.toLowerCase();
-        const filtered = allProducts.filter(p => {
-            const matchesCat = (currentCategory === 'الكل' || p.category === currentCategory);
-            const matchesQuery = p.name.toLowerCase().includes(query);
-            return matchesCat && matchesQuery;
-        });
-        renderProducts(filtered);
-    }
-
-    function renderProducts(products) {
-        const grid = document.getElementById('productsGrid');
-        if (products.length === 0) {
-            grid.innerHTML = '<p style="text-align:center; grid-column: 1/-1; color:#777;">لا توجد منتجات متاحة حالياً</p>';
+        if (!query) {
+            renderCategories(allProducts);
             return;
         }
-        grid.innerHTML = products.map(p => `
-            <div class="product-card">
-                <div>
-                    <h4>${p.name}</h4>
-                    <div class="price">${Number(p.price).toLocaleString()} د.ع</div>
-                </div>
-                <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">إضافة للسلة</button>
-            </div>
-        `).join('');
+        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
+        renderCategories(filtered);
+        // فتح كل الأقسام تلقائياً عند البحث لسهولة الرؤية
+        document.querySelectorAll('.category-content').forEach(c => c.classList.add('active'));
     }
 
     function addToCart(id, name, price) {
@@ -134,8 +151,6 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
             return;
         }
         text += `%0A💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع`;
-        
-        // ضع رقم الواتساب الخاص بالهايبر ماركت هنا (مثلاً مع رمز الدولة 964...)
         let whatsappNumber = "9647826311408"; 
         window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
     }
