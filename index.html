@@ -5,132 +5,830 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f8f9fa; margin: 0; padding: 0; color: #333; }
-        header { background: #131921; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
-        .container { max-width: 800px; margin: 0 auto; padding: 15px; }
-        .search-box { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
-        
-        .category-section { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
-        .category-header { background: #232f3e; color: white; padding: 14px 18px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
-        .category-header:hover { background: #37474f; }
-        .category-content { padding: 12px; display: grid; background: #fafafa; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-
-        .product-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card h4 { font-size: 14px; margin: 8px 0; }
-        .product-card .price { color: #b12704; font-weight: bold; font-size: 15px; margin-bottom: 8px; }
-        .add-btn { background: #ffd814; border: 1px solid #fcd200; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold; width: 100%; }
-        .add-btn:hover { background: #f7ca00; }
-        
-        .cart-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #232f3e; color: white; padding: 15px; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 -2px 10px rgba(0,0,0,0.2); }
-        .whatsapp-btn { background: #25d366; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: bold; cursor: pointer; text-decoration: none; font-size: 15px; }
+        :root {
+            --primary-color: #232f3e;
+            --secondary-color: #ff9900;
+            --accent-color: #131a22;
+            --bg-color: #f3f3f3;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --success-color: #2e7d32;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding-bottom: 90px;
+        }
+        header {
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .logo h1 {
+            font-size: 1.4rem;
+            color: var(--secondary-color);
+        }
+        .search-container {
+            flex: 1;
+            margin: 0 20px;
+            max-width: 500px;
+        }
+        .search-container input {
+            width: 100%;
+            padding: 10px 15px;
+            border-radius: 4px;
+            border: none;
+            font-size: 1rem;
+            outline: none;
+        }
+        .cart-btn {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 1rem;
+        }
+        .categories-nav {
+            background-color: white;
+            padding: 10px 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 60px;
+            z-index: 900;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .category-tab {
+            background-color: #eef2f5;
+            border: 1px solid var(--border-color);
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 0.95rem;
+            transition: all 0.3s;
+            color: #444;
+        }
+        .category-tab.active {
+            background-color: var(--primary-color);
+            color: white;
+            border-color: var(--primary-color);
+        }
+        .main-container {
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 0 15px;
+        }
+        .category-section {
+            margin-bottom: 30px;
+        }
+        .category-title {
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            padding-bottom: 5px;
+            border-bottom: 2px solid var(--secondary-color);
+            color: var(--primary-color);
+        }
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+        .product-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .product-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        .product-name {
+            font-size: 1.05rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #222;
+        }
+        .product-price {
+            color: #b12704;
+            font-weight: bold;
+            font-size: 1.1rem;
+            margin-bottom: 12px;
+        }
+        .controls {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 5px;
+        }
+        .btn-qty {
+            background-color: #febd69;
+            border: 1px solid #f3a847;
+            color: #111;
+            width: 35px;
+            height: 35px;
+            border-radius: 4px;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .btn-qty:active {
+            background-color: #f3a847;
+        }
+        .qty-input, .weight-input {
+            width: 70px;
+            text-align: center;
+            padding: 6px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        .cart-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background-color: var(--primary-color);
+            color: white;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            z-index: 1000;
+        }
+        .cart-summary {
+            font-size: 1.1rem;
+        }
+        .whatsapp-btn {
+            background-color: #25d366;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            font-weight: bold;
+            font-size: 1.1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: background 0.3s;
+        }
+        .whatsapp-btn:hover {
+            background-color: #20ba5a;
+        }
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 25px;
+            border-radius: 8px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+        }
+        .modal-content h3 {
+            color: #b12704;
+            margin-bottom: 15px;
+        }
+        .modal-content p {
+            margin-bottom: 20px;
+            line-height: 1.6;
+            color: #444;
+        }
+        .modal-btns {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+        .modal-btns button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+            font-size: 1rem;
+        }
+        .btn-confirm {
+            background-color: #25d366;
+            color: white;
+        }
+        .btn-cancel {
+            background-color: #ccc;
+            color: #333;
+        }
+        @media(max-width: 768px) {
+            header { flex-direction: column; gap: 10px; }
+            .search-container { width: 100%; margin: 0; }
+        }
     </style>
 </head>
 <body>
 
-    <header>🛒 أمازون هايبر ماركت</header>
+    <header>
+        <div class="logo">
+            <h1>أمازون هايبر ماركت</h1>
+        </div>
+        <div class="search-container">
+            <input type="text" id="searchInput" placeholder="ابحث عن أي منتج..." oninput="filterProducts()">
+        </div>
+        <button class="cart-btn" onclick="openCartSummary()">
+            🛒 السلة (<span id="cartCount">0</span>)
+        </button>
+    </header>
 
-    <div class="container" style="padding-bottom: 80px;">
-        <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج..." oninput="filterProducts()">
-        <div id="productsWrapper"></div>
+    <nav class="categories-nav" id="categoriesNav">
+        <!-- Dynamically filled -->
+    </nav>
+
+    <div class="main-container" id="mainContainer">
+        <!-- Products injected via JS -->
     </div>
 
-    <div class="cart-bar" id="cartBar">
-        <div>المجموع: <span id="cartTotal" style="font-weight: bold; color: #febd69;">0</span> د.ع</div>
-        <button class="whatsapp-btn" onclick="sendToWhatsApp()">إرسال الطلب عبر الواتساب 💬</button>
+    <div class="cart-bar">
+        <div class="cart-summary">
+            المجموع الكلي المقدر: <span id="totalPrice">0</span> د.ع
+        </div>
+        <button class="whatsapp-btn" onclick="checkoutWhatsApp()">
+            إرسال الطلب عبر الواتساب 📱
+        </button>
     </div>
 
-<script>
-    const products = [
-        { id: 1, name: 'لحم غنم بالعظم', category: 'اللحوم الطازجة', price: 22000 },
-        { id: 2, name: 'لحم مثروم غنم وعجل', category: 'اللحوم الطازجة', price: 19000 },
-        { id: 3, name: 'لحم مثروم عجل بدون دهن', category: 'اللحوم الطازجة', price: 19000 },
-        { id: 4, name: 'لحم عجل قطع مكعبات', category: 'اللحوم الطازجة', price: 19000 },
-        { id: 5, name: 'لحم غنم شرح', category: 'اللحوم الطازجة', price: 27000 },
-        { id: 6, name: 'معلاك غنم', category: 'اللحوم الطازجة', price: 16000 },
-        { id: 7, name: 'لية غنم', category: 'اللحوم الطازجة', price: 16000 },
-        { id: 8, name: 'جلفراي لحم', category: 'اللحوم الطازجة', price: 23000 },
-        { id: 9, name: 'ضلوع غنم', category: 'اللحوم الطازجة', price: 25000 },
-        { id: 10, name: 'باجة غنم', category: 'اللحوم الطازجة', price: 12000 },
-        { id: 11, name: 'زنود غنم', category: 'اللحوم الطازجة', price: 25000 },
-        { id: 12, name: 'ستيك لحم', category: 'اللحوم الطازجة', price: 23000 },
-        { id: 13, name: 'حبل ظهر عجل خشن', category: 'اللحوم الطازجة', price: 25000 },
-        { id: 14, name: 'كص لحم', category: 'اللحوم الطازجة', price: 23000 },
-        { id: 15, name: 'كوارع عجل', category: 'اللحوم الطازجة', price: 13000 },
-        { id: 16, name: 'بيض غنم', category: 'اللحوم الطازجة', price: 0 },
-        { id: 17, name: 'تكة غنم', category: 'اللحوم الطازجة', price: 27000 },
-        { id: 18, name: 'بركر لحم عراقي', category: 'اللحوم الطازجة', price: 18500 },
-        { id: 19, name: 'باسطرما لحم عراقي', category: 'اللحوم الطازجة', price: 18500 }
-    ];
+    <!-- Weight Warning Modal -->
+    <div class="modal" id="weightModal">
+        <div class="modal-content">
+            <h3>⚠️ تنبيه بخصوص الوزن</h3>
+            <p>ملاحظة: الكميات المختارة التي تباع بالوزن (مثل اللحوم، الدجاج، الخضراوات والفواكه، ومواد الوزن) قد يكون هناك اختلاف بسيط في سعرها النهائي حسب الوزن الفعلي عند التجهيز.</p>
+            <div class="modal-btns">
+                <button class="btn-confirm" onclick="proceedToWhatsApp()">موافق وإرسال</button>
+                <button class="btn-cancel" onclick="closeModal()">إلغاء</button>
+            </div>
+        </div>
+    </div>
 
-    let cart = {};
+    <script>
+        // Database of categories and products
+        const storeData = [
+            {
+                category: "قسم اللحوم الطازجة",
+                isWeight: true,
+                products: [
+                    { name: "لحم عجل هندي طازج (كيلو)", price: 14000 },
+                    { name: "لحم غنم عراقي طازج (كيلو)", price: 18000 },
+                    { name: "لحم مثروم عجل طازج (كيلو)", price: 15000 },
+                    { name: "شص / كص لحم (كيلو)", price: 16000 }
+                ]
+            },
+            {
+                category: "قسم الدجاج الفريش",
+                isWeight: true,
+                products: [
+                    { name: "دجاج ذبح عراقي", price: 5750 },
+                    { name: "صدر دجاج عراقي", price: 8000 },
+                    { name: "أجنحة", price: 5500 },
+                    { name: "أفخاذ", price: 6000 },
+                    { name: "كبدة", price: 6000 },
+                    { name: "مثروم", price: 9000 }
+                ]
+            },
+            {
+                category: "قسم البيض الطازج",
+                isWeight: false,
+                products: [
+                    { name: "بيض احمر طبقة", price: 6000 },
+                    { name: "بيض احمر نصف طبقة", price: 3100 },
+                    { name: "بيض ابيض طبقة", price: 5800 },
+                    { name: "بيض ابيض نصف طبقة", price: 3000 },
+                    { name: "بيض نباتي احمر طبقة", price: 6200 },
+                    { name: "بيض نباتي احمر نصف طبقة", price: 3200 },
+                    { name: "بيض عرب نصف طبقة", price: 4500 }
+                ]
+            },
+            {
+                category: "قسم المواد الغذائية",
+                isWeight: false,
+                products: [
+                    { name: "رز محمود 4.5 كيلو", price: 12500 },
+                    { name: "رز محمود 9 كيلو", price: 24000 },
+                    { name: "رز جوكر 4.5 كيلو", price: 11000 },
+                    { name: "رز جوكر 9 كيلو", price: 21500 },
+                    { name: "رز 272 4.5 كيلو", price: 10500 },
+                    { name: "رز ريزي 5 كيلو", price: 9500 },
+                    { name: "رز كرجية 4.5 كيلو", price: 11500 },
+                    { name: "رز سفرة 4.5 كيلو", price: 9000 },
+                    { name: "رز ذهب الذهب 4 كيلو", price: 8500 },
+                    { name: "رز كلبهار 4.5 كيلو", price: 11000 },
+                    { name: "رز ابو كاس 4.5 كيلو", price: 13000 },
+                    { name: "تمن عنبر 1 كيلو", price: 3500 },
+                    { name: "تمن عنبر 5 كيلو", price: 16500 },
+                    { name: "دهن جنة 700 غم معدني", price: 4500 },
+                    { name: "زيت عافية 1.5 لتر", price: 5000 },
+                    { name: "طحين بشلر", price: 2500 },
+                    { name: "طحين الفاخر", price: 2700 },
+                    { name: "ملح كيس", price: 500 },
+                    { name: "ملح علبة", price: 1000 },
+                    { name: "سكر 1 كيلو", price: 1750 },
+                    { name: "زيت زير 1 لتر", price: 2750 },
+                    { name: "زيت الدار 1 لتر", price: 2750 },
+                    { name: "زيت التونسا 1 لتر", price: 3000 },
+                    { name: "معجون زير كبير", price: 2500 },
+                    { name: "معجون زير صغير", price: 1250 },
+                    { name: "معجون التونسا كبير", price: 2750 },
+                    { name: "معجون التونسا صغير", price: 1500 }
+                ]
+            },
+            {
+                category: "قسم مواد الوزن",
+                isWeight: true,
+                products: [
+                    { name: "حمص (كيلو)", price: 3000 },
+                    { name: "عدس (كيلو)", price: 2800 },
+                    { name: "عدس اخضر (كيلو)", price: 3000 },
+                    { name: "فريكا (كيلو)", price: 4500 },
+                    { name: "سكر (كيلو)", price: 1750 },
+                    { name: "رز (كيلو)", price: 2500 },
+                    { name: "حليب (كيلو)", price: 6000 },
+                    { name: "جريش (كيلو)", price: 2200 },
+                    { name: "برغل (كيلو)", price: 2000 },
+                    { name: "برغل ناعم (كيلو)", price: 2100 },
+                    { name: "برغل خشن (كيلو)", price: 2100 },
+                    { name: "شوفان (كيلو)", price: 4000 },
+                    { name: "فاصوليا يابسة (كيلو)", price: 4000 },
+                    { name: "طرشانه (كيلو)", price: 5000 },
+                    { name: "علوجة (كيلو)", price: 3500 },
+                    { name: "نشاء (كيلو)", price: 3000 },
+                    { name: "سميد (كيلو)", price: 2500 },
+                    { name: "نومي بصرة اسود (كيلو)", price: 4000 },
+                    { name: "نومي بصرة اشگر (كيلو)", price: 4000 },
+                    { name: "نومي بصره عصير (كيلو)", price: 4500 },
+                    { name: "لوبيا حمراء (كيلو)", price: 3800 },
+                    { name: "ماش (كيلو)", price: 3500 },
+                    { name: "حبية (كيلو)", price: 3000 },
+                    { name: "سمسم محمص (كيلو)", price: 7000 },
+                    { name: "سمسم خام (كيلو)", price: 6500 },
+                    { name: "طحين حمص (كيلو)", price: 4500 },
+                    { name: "طحين تمن (كيلو)", price: 3500 },
+                    { name: "فول (كيلو)", price: 3500 },
+                    { name: "شاي خلطة خاصة (كيلو)", price: 12000 },
+                    { name: "هيل (يبدأ من 50 غم)", price: 25000 },
+                    { name: "هيل مطحون (يبدأ من 50 غم)", price: 26000 }
+                ]
+            },
+            {
+                category: "قسم الخضراوات والفواكه",
+                isWeight: true,
+                products: [
+                    { name: "طماطم (كيلو)", price: 1500 },
+                    { name: "بطاطا (كيلو)", price: 1500 },
+                    { name: "خيار (كيلو)", price: 1750 },
+                    { name: "باذنجان (كيلو)", price: 1250 },
+                    { name: "بروكلي (كيلو)", price: 3500 },
+                    { name: "بصل احمر (كيلو)", price: 1500 },
+                    { name: "بصل كرستال (كيلو)", price: 2000 },
+                    { name: "بصل اصفر (كيلو)", price: 1500 },
+                    { name: "بصل اخضر (كيلو)", price: 2000 },
+                    { name: "شجر (كيلو)", price: 1500 },
+                    { name: "خس (كيلو)", price: 2000 },
+                    { name: "لهانه حمراء (كيلو)", price: 2000 },
+                    { name: "لهانه خضراء (كيلو)", price: 1750 },
+                    { name: "قرنابيط (كيلو)", price: 2500 },
+                    { name: "زنجبيل طازج (كيلو)", price: 6000 },
+                    { name: "طماطة كرزية (علبة)", price: 2000, isBox: true },
+                    { name: "رقي (كيلو)", price: 1000 },
+                    { name: "فلفل بارد (كيلو)", price: 2500 },
+                    { name: "فلفل حار (كيلو)", price: 3000 },
+                    { name: "فلفل الوان (علبة)", price: 2500, isBox: true },
+                    { name: "فلفل مزحلط الوان (كيلو)", price: 3000 },
+                    { name: "تمر عراقي وزن (كيلو)", price: 4000 },
+                    { name: "تفاح احمر (كيلو)", price: 2500 },
+                    { name: "تفاح اصفر (كيلو)", price: 2500 },
+                    { name: "تفاح اخضر (كيلو)", price: 2750 },
+                    { name: "تفاح عراقي (كيلو)", price: 2000 },
+                    { name: "موز (كيلو)", price: 2500 },
+                    { name: "كيوي (كيلو)", price: 3500 },
+                    { name: "كرز (كيلو)", price: 8000 },
+                    { name: "برتقال (كيلو)", price: 2000 },
+                    { name: "لالنكي (كيلو)", price: 2000 },
+                    { name: "الو احمر (كيلو)", price: 4000 },
+                    { name: "الو اصفر (كيلو)", price: 4000 },
+                    { name: "بطيخ (كيلو)", price: 1500 },
+                    { name: "رمان (كيلو)", price: 3000 },
+                    { name: "خوخ مسكي (كيلو)", price: 4500 },
+                    { name: "خوخ صوفي (كيلو)", price: 4000 },
+                    { name: "خوخ كعكي (كيلو)", price: 5000 },
+                    { name: "مشمش (كيلو)", price: 5000 },
+                    { name: "منكة (كيلو)", price: 4500 },
+                    { name: "افكادو (كيلو)", price: 7000 },
+                    { name: "عنب اسود (كيلو)", price: 4500 },
+                    { name: "عنب ابيض (كيلو)", price: 4000 },
+                    // الرفيل ونيوزيلندا (تباع بالعلب رغم وجودها في القسم)
+                    { name: "الرفيل علبة باقلاء", price: 1500, isBox: true },
+                    { name: "الرفيل باميا", price: 2000, isBox: true },
+                    { name: "الرفيل علبة محاشي", price: 2500, isBox: true },
+                    { name: "الرفيل خس صيني", price: 1750, isBox: true },
+                    { name: "الرفيل اسبيناغ", price: 1500, isBox: true },
+                    { name: "الرفيل رشاد", price: 1000, isBox: true },
+                    { name: "الرفيل كرفس", price: 1000, isBox: true },
+                    { name: "الرفيل معدنوس", price: 1000, isBox: true },
+                    { name: "الرفيل فجل", price: 1000, isBox: true },
+                    { name: "الرفيل لهانه", price: 1500, isBox: true },
+                    { name: "نيوزلندة حفريات", price: 2000, isBox: true },
+                    { name: "نيوز لندة خس صيني", price: 2000, isBox: true },
+                    { name: "نيوزلندة باقلاء وشبنت", price: 1750, isBox: true },
+                    { name: "نيوزلندا باميا", price: 2250, isBox: true },
+                    { name: "نيوز لندة جرجير", price: 1250, isBox: true },
+                    { name: "نيوزلندا معدنوس", price: 1250, isBox: true },
+                    { name: "نيوزلندا كرفس", price: 1250, isBox: true },
+                    { name: "نيوزلندة رشاد", price: 1250, isBox: true },
+                    { name: "نيوزلندة نعناع", price: 1250, isBox: true },
+                    { name: "نيوزلندة ريحان", price: 1250, isBox: true },
+                    { name: "نيوزلندة جزر", price: 1500, isBox: true },
+                    { name: "نيوز لندة كراث", price: 1250, isBox: true }
+                ]
+            },
+            {
+                category: "قسم المشروبات والعصائر",
+                isWeight: false,
+                products: [
+                    { name: "عصير برتقال طبيعي 1 لتر", price: 3000 },
+                    { name: "مشروب غازي كوكاكولا 2.25 لتر", price: 2250 },
+                    { name: "مياه معدنية كرتون 12 قنينة", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم المنظفات العامة",
+                isWeight: false,
+                products: [
+                    { name: "مسحوق غسيل تايد 2.5 كيلو", price: 6500 },
+                    { name: "سائل غسيل الصحون فيري 1.5 لتر", price: 4000 },
+                    { name: "مطهر ديتول 1 لتر", price: 5500 }
+                ]
+            },
+            {
+                category: "قسم الورقيات والكليسنس",
+                isWeight: false,
+                products: [
+                    { name: "مناديل وجه فاين (شدة 10 باكيت)", price: 6000 },
+                    { name: "رولات توالت فاميليا (شدة 12)", price: 5500 },
+                    { name: "مفارش سفره بلاستيك رول", price: 2000 }
+                ]
+            },
+            {
+                category: "قسم العناية بالشعر",
+                isWeight: false,
+                products: [
+                    { name: "شامبو بانتين 400 مل", price: 5000 },
+                    { name: "بلسم هيدز آند شولدرز", price: 5500 },
+                    { name: "سيروم للشعر زيت الأرغان", price: 7500 }
+                ]
+            },
+            {
+                category: "قسم المخللات",
+                isWeight: false,
+                products: [
+                    { name: "مخلل طرشي مشكل علبة كبيرة", price: 4000 },
+                    { name: "خيار مخلل برطمان", price: 2500 },
+                    { name: "زيتون اسشوان مخلل", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم المصنعات المجمدة",
+                isWeight: false,
+                products: [
+                    { name: "برجر لحم بقري مجمد 1 كيلو", price: 7000 },
+                    { name: "ناغيت دجاج مجمد 750 غم", price: 5500 },
+                    { name: "ببازيا وبطاطا مجمدة كيس", price: 2500 }
+                ]
+            },
+            {
+                category: "قسم المعلبات",
+                isWeight: false,
+                products: [
+                    { name: "حمص الكسيح علب معدني", price: 1250 },
+                    { name: "فاصوليا زجاج", price: 1750 },
+                    { name: "حمص زجاج", price: 1750 },
+                    { name: "باقلاء علب معدني", price: 1250 },
+                    { name: "فطر مقطع علب معدني", price: 1500 },
+                    { name: "فطر كامل علب معدني", price: 1750 },
+                    { name: "بزاليا معدني", price: 1250 },
+                    { name: "بزاليا وجزر معدني", price: 1350 },
+                    { name: "خضراوات وبزاليا وجزر معدني", price: 1400 },
+                    { name: "حمص بطحينة معدني", price: 1500 },
+                    { name: "لانشون تغذية لحم كبير", price: 3000 },
+                    { name: "لانشون تغذية لحم صغير", price: 1750 },
+                    { name: "لانشون تغذية دجاج كبير", price: 2750 },
+                    { name: "لانشون تغذية دجاج صغير", price: 1500 },
+                    { name: "صوصج تغذية دجاج", price: 2500 },
+                    { name: "صوصج تغذية لحم", price: 2750 },
+                    { name: "لحم مثروم اكزيتر معدني", price: 4500 },
+                    { name: "سردين حار", price: 1500 },
+                    { name: "سردين بارد", price: 1500 }
+                ]
+            },
+            {
+                category: "قسم الأجباس",
+                isWeight: false,
+                products: [
+                    { name: "جبن قشقوان تركي (قالب)", price: 6500 },
+                    { name: "جبن حلوم طبيعي", price: 4500 },
+                    { name: "جبنة مثلثات كيري عبوة", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم الحلويات والبسكويت",
+                isWeight: false,
+                products: [
+                    { name: "بسكويت أولكر بالشوكولاتة (شدة)", price: 3000 },
+                    { name: "شوكولاتة جالاكسي سادة", price: 1250 },
+                    { name: "معمول تمر دايجستف", price: 2500 }
+                ]
+            }
+        ];
 
-    function renderProducts(items) {
-        const wrapper = document.getElementById('productsWrapper');
-        if (items.length === 0) {
-            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات مطابقة للبحث</p>';
-            return;
+        // Load saved products from LocalStorage if modified in admin panel
+        function loadStoreData() {
+            const saved = localStorage.getItem('amazon_hyper_products');
+            if (saved) {
+                try {
+                    return JSON.parse(saved);
+                } catch(e) {
+                    return storeData;
+                }
+            }
+            return storeData;
         }
 
-        let html = '<div class="category-section"><div class="category-header"><span>📁 اللحوم الطازجة</span></div><div class="category-content">';
-        
-        items.forEach(p => {
-            let priceText = p.price > 0 ? p.price.toLocaleString() + ' د.ع' : '—';
-            html += `
-                <div class="product-card">
-                    <div>
-                        <h4>${p.name}</h4>
-                        <div class="price">${priceText}</div>
-                    </div>
-                    <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">إضافة للسلة</button>
-                </div>
-            `;
-        });
+        let currentData = loadStoreData();
+        let cart = {}; // key: productName, value: {name, price, qty, isWeight}
 
-        html += '</div></div>';
-        wrapper.innerHTML = html;
-    }
-
-    function filterProducts() {
-        const query = document.getElementById('searchBox').value.toLowerCase();
-        const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-        renderProducts(filtered);
-    }
-
-    function addToCart(id, name, price) {
-        if (!cart[id]) {
-            cart[id] = { name, price, qty: 0 };
+        function initApp() {
+            renderNav();
+            renderProducts();
+            updateCartUI();
         }
-        cart[id].qty++;
-        updateCartTotal();
-    }
 
-    function updateCartTotal() {
-        let total = 0;
-        for (let id in cart) {
-            total += cart[id].price * cart[id].qty;
+        function renderNav() {
+            const nav = document.getElementById('categoriesNav');
+            nav.innerHTML = '<div class="category-tab active" onclick="scrollToCategory(\'all\', this)">الكل</div>';
+            currentData.forEach((cat, index) => {
+                nav.innerHTML += `<div class="category-tab" onclick="scrollToCategory('cat-${index}', this)">${cat.category}</div>`;
+            });
         }
-        document.getElementById('cartTotal').textContent = total.toLocaleString();
-    }
 
-    function sendToWhatsApp() {
-        let text = "🛒 *طلب جديد من أمازون هايبر ماركت*%0A%0A";
-        let total = 0;
-        for (let id in cart) {
-            let item = cart[id];
-            let subtotal = item.price * item.qty;
-            total += subtotal;
-            text += `- ${item.name} (${item.qty}) : ${subtotal.toLocaleString()} د.ع%0A`;
+        function scrollToCategory(id, el) {
+            document.querySelectorAll('.category-tab').forEach(t => t.classList.remove('active'));
+            el.classList.add('active');
+            if (id === 'all') {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            } else {
+                const element = document.getElementById(id);
+                if (element) {
+                    const headerOffset = 120;
+                    const elementPosition = element.getBoundingClientRect().top;
+                    const offsetPosition = elementPosition + window.pageYOffset - headerOffset;
+                    window.scrollTo({ top: offsetPosition, behavior: 'smooth' });
+                }
+            }
         }
-        if (total === 0) {
-            alert('السلة فارغة!');
-            return;
-        }
-        text += `%0A💰 *المجموع الكلي:* ${total.toLocaleString()} د.ع`;
-        let whatsappNumber = "9647842000516"; 
-        window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
-    }
 
-    renderProducts(products);
-</script>
+        function renderProducts(filterText = '') {
+            const container = document.getElementById('mainContainer');
+            container.innerHTML = '';
+
+            currentData.forEach((cat, catIndex) => {
+                const filteredProducts = cat.products.filter(p => p.name.toLowerCase().includes(filterText.toLowerCase()));
+                if (filteredProducts.length === 0) return;
+
+                let sectionHtml = `<div class="category-section" id="cat-${catIndex}">
+                    <h2 class="category-title">${cat.category}</h2>
+                    <div class="products-grid">`;
+
+                filteredProducts.forEach(prod => {
+                    // Determine if item uses weight or piece
+                    // If cat.isWeight is true AND item is NOT explicitly a box (isBox), it's weight-based.
+                    const isItemWeight = cat.isWeight && !prod.isBox;
+                    const cartKey = prod.name;
+                    const currentQty = cart[cartKey] ? cart[cartKey].qty : (isItemWeight ? 1 : 0);
+
+                    sectionHtml += `
+                        <div class="product-card">
+                            <div>
+                                <div class="product-name">${prod.name}</div>
+                                <div class="product-price">${prod.price.toLocaleString()} د.ع ${isItemWeight ? '/ كيلو' : ''}</div>
+                            </div>
+                            <div class="controls">
+                    `;
+
+                    if (isItemWeight) {
+                        sectionHtml += `
+                            <button class="btn-qty" onclick="changeWeight('${prod.name}', ${prod.price}, -0.5)">-</button>
+                            <input type="number" step="0.25" min="0.25" class="weight-input" id="qty-${escapeId(prod.name)}" value="${currentQty}" onchange="updateWeightQty('${prod.name}', ${prod.price}, this.value)">
+                            <button class="btn-qty" onclick="changeWeight('${prod.name}', ${prod.price}, 0.5)">+</button>
+                            <span style="font-size:0.85rem; color:#666;">كيلو</span>
+                        `;
+                    } else {
+                        sectionHtml += `
+                            <button class="btn-qty" onclick="updateQty('${prod.name}', ${prod.price}, -1, false)">-</button>
+                            <input type="text" readonly class="qty-input" id="qty-${escapeId(prod.name)}" value="${currentQty}">
+                            <button class="btn-qty" onclick="updateQty('${prod.name}', ${prod.price}, 1, false)">+</button>
+                        `;
+                    }
+
+                    sectionHtml += `
+                            </div>
+                        </div>
+                    `;
+                });
+
+                sectionHtml += `</div></div>`;
+                container.innerHTML += sectionHtml;
+            });
+        }
+
+        function escapeId(name) {
+            return btoa(unescape(encodeURIComponent(name))).replace(/=/g, '');
+        }
+
+        function updateQty(name, price, delta, isWeight) {
+            if (!cart[name]) {
+                cart[name] = { name, price, qty: 0, isWeight };
+            }
+            cart[name].qty += delta;
+            if (cart[name].qty < 0) cart[name].qty = 0;
+
+            if (cart[name].qty === 0) {
+                delete cart[name];
+            }
+
+            // update input field
+            const inputId = 'qty-' + escapeId(name);
+            const inputEl = document.getElementById(inputId);
+            if (inputEl) inputEl.value = cart[name] ? cart[name].qty : 0;
+
+            updateCartUI();
+        }
+
+        function changeWeight(name, price, delta) {
+            if (!cart[name]) {
+                cart[name] = { name, price, qty: 1, isWeight: true };
+            }
+            cart[name].qty += delta;
+            if (cart[name].qty < 0.25) cart[name].qty = 0.25;
+
+            const inputId = 'qty-' + escapeId(name);
+            const inputEl = document.getElementById(inputId);
+            if (inputEl) inputEl.value = cart[name].qty;
+
+            updateCartUI();
+        }
+
+        function updateWeightQty(name, price, val) {
+            let num = parseFloat(val);
+            if (isNaN(num) || num <= 0) {
+                delete cart[name];
+            } else {
+                if (!cart[name]) {
+                    cart[name] = { name, price, qty: num, isWeight: true };
+                } else {
+                    cart[name].qty = num;
+                }
+            }
+            updateCartUI();
+        }
+
+        function updateCartUI() {
+            let totalCount = 0;
+            let totalPrice = 0;
+
+            for (let key in cart) {
+                let item = cart[key];
+                totalCount += item.isWeight ? 1 : item.qty; // count unique weight items or total pieces
+                totalPrice += item.price * item.qty;
+            }
+
+            document.getElementById('cartCount').innerText = Object.keys(cart).length;
+            document.getElementById('totalPrice').innerText = totalPrice.toLocaleString();
+        }
+
+        function filterProducts() {
+            const query = document.getElementById('searchInput').value;
+            renderProducts(query);
+            // Re-sync input values from cart state after render
+            for (let key in cart) {
+                const inputId = 'qty-' + escapeId(key);
+                const inputEl = document.getElementById(inputId);
+                if (inputEl) inputEl.value = cart[key].qty;
+            }
+        }
+
+        function openCartSummary() {
+            if (Object.keys(cart).length === 0) {
+                alert('سلة التسوق فارغة حالياً!');
+                return;
+            }
+            let summaryText = "محتويات سلة التسوق:\n";
+            let totalPrice = 0;
+            for (let key in cart) {
+                let item = cart[key];
+                let itemTotal = item.price * item.qty;
+                totalPrice += itemTotal;
+                summaryText += `- ${item.name}: ${item.qty} ${item.isWeight ? 'كيلو' : 'قطعة'} (${itemTotal.toLocaleString()} د.ع)\n`;
+            }
+            summaryText += `\nالمجموع الكلي: ${totalPrice.toLocaleString()} د.ع`;
+            alert(summaryText);
+        }
+
+        function checkoutWhatsApp() {
+            if (Object.keys(cart).length === 0) {
+                alert('الرجاء اختيار بعض المنتجات قبل إرسال الطلب!');
+                return;
+            }
+            // Check if any weight item is in cart to show weight warning modal
+            let hasWeightItem = false;
+            for (let key in cart) {
+                if (cart[key].isWeight) {
+                    hasWeightItem = true;
+                    break;
+                }
+            }
+
+            if (hasWeightItem) {
+                document.getElementById('weightModal').style.display = 'flex';
+            } else {
+                proceedToWhatsApp();
+            }
+        }
+
+        function closeModal() {
+            document.getElementById('weightModal').style.display = 'none';
+        }
+
+        function proceedToWhatsApp() {
+            closeModal();
+            let message = "🛒 *طلب جديد من أمازون هايبر ماركت*\n\n";
+            let totalPrice = 0;
+
+            for (let key in cart) {
+                let item = cart[key];
+                let itemTotal = item.price * item.qty;
+                totalPrice += itemTotal;
+                message += `▪️ ${item.name}\n   الكمية: ${item.qty} ${item.isWeight ? 'كيلو' : 'قطعة'} — السعر: ${itemTotal.toLocaleString()} د.ع\n\n`;
+            }
+
+            message += `━━━━━━━━━━━━━━━\n`;
+            message += `💰 *المجموع الكلي المقدر: ${totalPrice.toLocaleString()} د.ع*\n`;
+            message += `*(ملاحظة: الأسعار للكميات التي تباع بالوزن قابلة لتغيير بسيط حسب الوزن الفعلي)*`;
+
+            const phone = "009647842000516";
+            const encodedMessage = encodeURIComponent(message);
+            window.open(`https://wa.me/${phone}?text=${encodedMessage}`, '_blank');
+        }
+
+        window.onload = initApp;
+    </script>
 </body>
 </html>
