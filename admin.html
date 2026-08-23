@@ -3,109 +3,543 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة التحكم - أمازون هايبر ماركت</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <title>لوحة تحكم أمازون هايبر ماركت</title>
     <style>
-        body { font-family: Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
-        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        input, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
-        button { background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
-        button:hover { background: #218838; }
-        .del-btn { background: #dc3545; width: auto; padding: 5px 10px; font-size: 13px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 14px; }
-        th { background: #007bff; color: white; }
+        :root {
+            --primary-color: #232f3e;
+            --secondary-color: #ff9900;
+            --bg-color: #f3f3f3;
+            --card-bg: #ffffff;
+            --text-color: #333333;
+            --border-color: #dddddd;
+            --danger-color: #d9534f;
+            --success-color: #2e7d32;
+        }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            padding: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: var(--card-bg);
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1, h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+        .section-box {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input, select {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            font-size: 1rem;
+            outline: none;
+        }
+        button {
+            background-color: var(--secondary-color);
+            color: var(--primary-color);
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background-color: #e88b00;
+        }
+        .btn-danger {
+            background-color: var(--danger-color);
+            color: white;
+        }
+        .btn-danger:hover {
+            background-color: #c9302c;
+        }
+        .product-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fafafa;
+            padding: 10px 15px;
+            border: 1px solid var(--border-color);
+            border-radius: 4px;
+            margin-bottom: 10px;
+        }
+        .product-info {
+            flex: 1;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        .product-info input {
+            max-width: 250px;
+        }
+        .product-info input.price-input {
+            max-width: 120px;
+        }
+        .actions {
+            display: flex;
+            gap: 8px;
+        }
+        .search-box {
+            margin-bottom: 20px;
+        }
     </style>
 </head>
 <body>
 
-    <div class="container" id="loginBox">
-        <h3>🔐 تسجيل دخول المدير</h3>
-        <input type="password" id="adminPass" placeholder="أدخل كلمة المرور">
-        <button onclick="checkLogin()">دخول</button>
+    <div class="container">
+        <h1>🔧 لوحة تحكم أمازون هايبر ماركت</h1>
+
+        <!-- Add New Product Section -->
+        <div class="section-box">
+            <h2>إضافة مادة جديدة</h2>
+            <form id="addProductForm" onsubmit="addNewProduct(event)">
+                <div class="form-group">
+                    <label>اختر القسم:</label>
+                    <select id="newCatSelect" required>
+                        <!-- Filled via JS -->
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>اسم المادة الجديدة:</label>
+                    <input type="text" id="newName" placeholder="مثال: تفاح فاخر" required>
+                </div>
+                <div class="form-group">
+                    <label>السعر (د.ع):</label>
+                    <input type="number" id="newPrice" placeholder="مثال: 3000" required>
+                </div>
+                <div class="form-group">
+                    <label>
+                        <input type="checkbox" id="newIsBox" style="width: auto;"> هل هي علبة / تباع بالقطعة ضمن قسم وزني؟ (مثل الرفيل ونيوزيلندا)
+                    </label>
+                </div>
+                <button type="submit">إضافة المادة</button>
+            </form>
+        </div>
+
+        <!-- Manage / Edit Products Section -->
+        <div class="section-box">
+            <h2>بحث وتعديل المواد والأسعار</h2>
+            <div class="search-box">
+                <input type="text" id="adminSearch" placeholder="ابحث عن مادة لتعديل اسمها أو سعرها..." oninput="renderAdminList()">
+            </div>
+            <div id="adminProductsList">
+                <!-- Filled via JS -->
+            </div>
+        </div>
+
+        <div>
+            <button onclick="resetToDefault()" class="btn-danger">إعادة تعيين البيانات الافتراضية</button>
+        </div>
     </div>
 
-    <div class="container" id="adminPanel" style="display:none;">
-        <h3>🛠️ إدارة منتجات أمازون هايبر ماركت</h3>
-        
-        <input type="text" id="pName" placeholder="اسم المنتج (مثلاً: زيت نباتي 1 لتر)">
-        <input type="text" id="pCategory" placeholder="اسم القسم (مثلاً: المواد الغذائية)">
-        <input type="number" id="pPrice" placeholder="السعر بالدينار (مثلاً: 3500)">
-        <button onclick="addProduct()">إضافة المنتج الجديد</button>
+    <script>
+        // Default data embedded same as index.html
+        const defaultStoreData = [
+            {
+                category: "قسم اللحوم الطازجة",
+                isWeight: true,
+                products: [
+                    { name: "لحم عجل هندي طازج (كيلو)", price: 14000 },
+                    { name: "لحم غنم عراقي طازج (كيلو)", price: 18000 },
+                    { name: "لحم مثروم عجل طازج (كيلو)", price: 15000 },
+                    { name: "شص / كص لحم (كيلو)", price: 16000 }
+                ]
+            },
+            {
+                category: "قسم الدجاج الفريش",
+                isWeight: true,
+                products: [
+                    { name: "دجاج ذبح عراقي", price: 5750 },
+                    { name: "صدر دجاج عراقي", price: 8000 },
+                    { name: "أجنحة", price: 5500 },
+                    { name: "أفخاذ", price: 6000 },
+                    { name: "كبدة", price: 6000 },
+                    { name: "مثروم", price: 9000 }
+                ]
+            },
+            {
+                category: "قسم البيض الطازج",
+                isWeight: false,
+                products: [
+                    { name: "بيض احمر طبقة", price: 6000 },
+                    { name: "بيض احمر نصف طبقة", price: 3100 },
+                    { name: "بيض ابيض طبقة", price: 5800 },
+                    { name: "بيض ابيض نصف طبقة", price: 3000 },
+                    { name: "بيض نباتي احمر طبقة", price: 6200 },
+                    { name: "بيض نباتي احمر نصف طبقة", price: 3200 },
+                    { name: "بيض عرب نصف طبقة", price: 4500 }
+                ]
+            },
+            {
+                category: "قسم المواد الغذائية",
+                isWeight: false,
+                products: [
+                    { name: "رز محمود 4.5 كيلو", price: 12500 },
+                    { name: "رز محمود 9 كيلو", price: 24000 },
+                    { name: "رز جوكر 4.5 كيلو", price: 11000 },
+                    { name: "رز جوكر 9 كيلو", price: 21500 },
+                    { name: "رز 272 4.5 كيلو", price: 10500 },
+                    { name: "رز ريزي 5 كيلو", price: 9500 },
+                    { name: "رز كرجية 4.5 كيلو", price: 11500 },
+                    { name: "رز سفرة 4.5 كيلو", price: 9000 },
+                    { name: "رز ذهب الذهب 4 كيلو", price: 8500 },
+                    { name: "رز كلبهار 4.5 كيلو", price: 11000 },
+                    { name: "رز ابو كاس 4.5 كيلو", price: 13000 },
+                    { name: "تمن عنبر 1 كيلو", price: 3500 },
+                    { name: "تمن عنبر 5 كيلو", price: 16500 },
+                    { name: "دهن جنة 700 غم معدني", price: 4500 },
+                    { name: "زيت عافية 1.5 لتر", price: 5000 },
+                    { name: "طحين بشلر", price: 2500 },
+                    { name: "طحين الفاخر", price: 2700 },
+                    { name: "ملح كيس", price: 500 },
+                    { name: "ملح علبة", price: 1000 },
+                    { name: "سكر 1 كيلو", price: 1750 },
+                    { name: "زيت زير 1 لتر", price: 2750 },
+                    { name: "زيت الدار 1 لتر", price: 2750 },
+                    { name: "زيت التونسا 1 لتر", price: 3000 },
+                    { name: "معجون زير كبير", price: 2500 },
+                    { name: "معجون زير صغير", price: 1250 },
+                    { name: "معجون التونسا كبير", price: 2750 },
+                    { name: "معجون التونسا صغير", price: 1500 }
+                ]
+            },
+            {
+                category: "قسم مواد الوزن",
+                isWeight: true,
+                products: [
+                    { name: "حمص (كيلو)", price: 3000 },
+                    { name: "عدس (كيلو)", price: 2800 },
+                    { name: "عدس اخضر (كيلو)", price: 3000 },
+                    { name: "فريكا (كيلو)", price: 4500 },
+                    { name: "سكر (كيلو)", price: 1750 },
+                    { name: "رز (كيلو)", price: 2500 },
+                    { name: "حليب (كيلو)", price: 6000 },
+                    { name: "جريش (كيلو)", price: 2200 },
+                    { name: "برغل (كيلو)", price: 2000 },
+                    { name: "برغل ناعم (كيلو)", price: 2100 },
+                    { name: "برغل خشن (كيلو)", price: 2100 },
+                    { name: "شوفان (كيلو)", price: 4000 },
+                    { name: "فاصوليا يابسة (كيلو)", price: 4000 },
+                    { name: "طرشانه (كيلو)", price: 5000 },
+                    { name: "علوجة (كيلو)", price: 3500 },
+                    { name: "نشاء (كيلو)", price: 3000 },
+                    { name: "سميد (كيلو)", price: 2500 },
+                    { name: "نومي بصرة اسود (كيلو)", price: 4000 },
+                    { name: "نومي بصرة اشگر (كيلو)", price: 4000 },
+                    { name: "نومي بصره عصير (كيلو)", price: 4500 },
+                    { name: "لوبيا حمراء (كيلو)", price: 3800 },
+                    { name: "ماش (كيلو)", price: 3500 },
+                    { name: "حبية (كيلو)", price: 3000 },
+                    { name: "سمسم محمص (كيلو)", price: 7000 },
+                    { name: "سمسم خام (كيلو)", price: 6500 },
+                    { name: "طحين حمص (كيلو)", price: 4500 },
+                    { name: "طحين تمن (كيلو)", price: 3500 },
+                    { name: "فول (كيلو)", price: 3500 },
+                    { name: "شاي خلطة خاصة (كيلو)", price: 12000 },
+                    { name: "هيل (يبدأ من 50 غم)", price: 25000 },
+                    { name: "هيل مطحون (يبدأ من 50 غم)", price: 26000 }
+                ]
+            },
+            {
+                category: "قسم الخضراوات والفواكه",
+                isWeight: true,
+                products: [
+                    { name: "طماطم (كيلو)", price: 1500 },
+                    { name: "بطاطا (كيلو)", price: 1500 },
+                    { name: "خيار (كيلو)", price: 1750 },
+                    { name: "باذنجان (كيلو)", price: 1250 },
+                    { name: "بروكلي (كيلو)", price: 3500 },
+                    { name: "بصل احمر (كيلو)", price: 1500 },
+                    { name: "بصل كرستال (كيلو)", price: 2000 },
+                    { name: "بصل اصفر (كيلو)", price: 1500 },
+                    { name: "بصل اخضر (كيلو)", price: 2000 },
+                    { name: "شجر (كيلو)", price: 1500 },
+                    { name: "خس (كيلو)", price: 2000 },
+                    { name: "لهانه حمراء (كيلو)", price: 2000 },
+                    { name: "لهانه خضراء (كيلو)", price: 1750 },
+                    { name: "قرنابيط (كيلو)", price: 2500 },
+                    { name: "زنجبيل طازج (كيلو)", price: 6000 },
+                    { name: "طماطة كرزية (علبة)", price: 2000, isBox: true },
+                    { name: "رقي (كيلو)", price: 1000 },
+                    { name: "فلفل بارد (كيلو)", price: 2500 },
+                    { name: "فلفل حار (كيلو)", price: 3000 },
+                    { name: "فلفل الوان (علبة)", price: 2500, isBox: true },
+                    { name: "فلفل مزحلط الوان (كيلو)", price: 3000 },
+                    { name: "تمر عراقي وزن (كيلو)", price: 4000 },
+                    { name: "تفاح احمر (كيلو)", price: 2500 },
+                    { name: "تفاح اصفر (كيلو)", price: 2500 },
+                    { name: "تفاح اخضر (كيلو)", price: 2750 },
+                    { name: "تفاح عراقي (كيلو)", price: 2000 },
+                    { name: "موز (كيلو)", price: 2500 },
+                    { name: "كيوي (كيلو)", price: 3500 },
+                    { name: "كرز (كيلو)", price: 8000 },
+                    { name: "برتقال (كيلو)", price: 2000 },
+                    { name: "لالنكي (كيلو)", price: 2000 },
+                    { name: "الو احمر (كيلو)", price: 4000 },
+                    { name: "الو اصفر (كيلو)", price: 4000 },
+                    { name: "بطيخ (كيلو)", price: 1500 },
+                    { name: "رمان (كيلو)", price: 3000 },
+                    { name: "خوخ مسكي (كيلو)", price: 4500 },
+                    { name: "خوخ صوفي (كيلو)", price: 4000 },
+                    { name: "خوخ كعكي (كيلو)", price: 5000 },
+                    { name: "مشمش (كيلو)", price: 5000 },
+                    { name: "منكة (كيلو)", price: 4500 },
+                    { name: "افكادو (كيلو)", price: 7000 },
+                    { name: "عنب اسود (كيلو)", price: 4500 },
+                    { name: "عنب ابيض (كيلو)", price: 4000 },
+                    { name: "الرفيل علبة باقلاء", price: 1500, isBox: true },
+                    { name: "الرفيل باميا", price: 2000, isBox: true },
+                    { name: "الرفيل علبة محاشي", price: 2500, isBox: true },
+                    { name: "الرفيل خس صيني", price: 1750, isBox: true },
+                    { name: "الرفيل اسبيناغ", price: 1500, isBox: true },
+                    { name: "الرفيل رشاد", price: 1000, isBox: true },
+                    { name: "الرفيل كرفس", price: 1000, isBox: true },
+                    { name: "الرفيل معدنوس", price: 1000, isBox: true },
+                    { name: "الرفيل فجل", price: 1000, isBox: true },
+                    { name: "الرفيل لهانه", price: 1500, isBox: true },
+                    { name: "نيوزلندة حفريات", price: 2000, isBox: true },
+                    { name: "نيوز لندة خس صيني", price: 2000, isBox: true },
+                    { name: "نيوزلندة باقلاء وشبنت", price: 1750, isBox: true },
+                    { name: "نيوزلندا باميا", price: 2250, isBox: true },
+                    { name: "نيوز لندة جرجير", price: 1250, isBox: true },
+                    { name: "نيوزلندا معدنوس", price: 1250, isBox: true },
+                    { name: "نيوزلندا كرفس", price: 1250, isBox: true },
+                    { name: "نيوزلندة رشاد", price: 1250, isBox: true },
+                    { name: "نيوزلندة نعناع", price: 1250, isBox: true },
+                    { name: "نيوزلندة ريحان", price: 1250, isBox: true },
+                    { name: "نيوزلندة جزر", price: 1500, isBox: true },
+                    { name: "نيوز لندة كراث", price: 1250, isBox: true }
+                ]
+            },
+            {
+                category: "قسم المشروبات والعصائر",
+                isWeight: false,
+                products: [
+                    { name: "عصير برتقال طبيعي 1 لتر", price: 3000 },
+                    { name: "مشروب غازي كوكاكولا 2.25 لتر", price: 2250 },
+                    { name: "مياه معدنية كرتون 12 قنينة", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم المنظفات العامة",
+                isWeight: false,
+                products: [
+                    { name: "مسحوق غسيل تايد 2.5 كيلو", price: 6500 },
+                    { name: "سائل غسيل الصحون فيري 1.5 لتر", price: 4000 },
+                    { name: "مطهر ديتول 1 لتر", price: 5500 }
+                ]
+            },
+            {
+                category: "قسم الورقيات والكليسنس",
+                isWeight: false,
+                products: [
+                    { name: "مناديل وجه فاين (شدة 10 باكيت)", price: 6000 },
+                    { name: "رولات توالت فاميليا (شدة 12)", price: 5500 },
+                    { name: "مفارش سفره بلاستيك رول", price: 2000 }
+                ]
+            },
+            {
+                category: "قسم العناية بالشعر",
+                isWeight: false,
+                products: [
+                    { name: "شامبو بانتين 400 مل", price: 5000 },
+                    { name: "بلسم هيدز آند شولدرز", price: 5500 },
+                    { name: "سيروم للشعر زيت الأرغان", price: 7500 }
+                ]
+            },
+            {
+                category: "قسم المخللات",
+                isWeight: false,
+                products: [
+                    { name: "مخلل طرشي مشكل علبة كبيرة", price: 4000 },
+                    { name: "خيار مخلل برطمان", price: 2500 },
+                    { name: "زيتون اسشوان مخلل", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم المصنعات المجمدة",
+                isWeight: false,
+                products: [
+                    { name: "برجر لحم بقري مجمد 1 كيلو", price: 7000 },
+                    { name: "ناغيت دجاج مجمد 750 غم", price: 5500 },
+                    { name: "ببازيا وبطاطا مجمدة كيس", price: 2500 }
+                ]
+            },
+            {
+                category: "قسم المعلبات",
+                isWeight: false,
+                products: [
+                    { name: "حمص الكسيح علب معدني", price: 1250 },
+                    { name: "فاصوليا زجاج", price: 1750 },
+                    { name: "حمص زجاج", price: 1750 },
+                    { name: "باقلاء علب معدني", price: 1250 },
+                    { name: "فطر مقطع علب معدني", price: 1500 },
+                    { name: "فطر كامل علب معدني", price: 1750 },
+                    { name: "بزاليا معدني", price: 1250 },
+                    { name: "بزاليا وجزر معدني", price: 1350 },
+                    { name: "خضراوات وبزاليا وجزر معدني", price: 1400 },
+                    { name: "حمص بطحينة معدني", price: 1500 },
+                    { name: "لانشون تغذية لحم كبير", price: 3000 },
+                    { name: "لانشون تغذية لحم صغير", price: 1750 },
+                    { name: "لانشون تغذية دجاج كبير", price: 2750 },
+                    { name: "لانشون تغذية دجاج صغير", price: 1500 },
+                    { name: "صوصج تغذية دجاج", price: 2500 },
+                    { name: "صوصج تغذية لحم", price: 2750 },
+                    { name: "لحم مثروم اكزيتر معدني", price: 4500 },
+                    { name: "سردين حار", price: 1500 },
+                    { name: "سردين بارد", price: 1500 }
+                ]
+            },
+            {
+                category: "قسم الأجباس",
+                isWeight: false,
+                products: [
+                    { name: "جبن قشقوان تركي (قالب)", price: 6500 },
+                    { name: "جبن حلوم طبيعي", price: 4500 },
+                    { name: "جبنة مثلثات كيري عبوة", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم الحلويات والبسكويت",
+                isWeight: false,
+                products: [
+                    { name: "بسكويت أولكر بالشوكولاتة (شدة)", price: 3000 },
+                    { name: "شوكولاتة جالاكسي سادة", price: 1250 },
+                    { name: "معمول تمر دايجستف", price: 2500 }
+                ]
+            }
+        ];
 
-        <h4 style="margin-top: 25px;">المنتجات الحالية:</h4>
-        <table>
-            <thead>
-                <tr>
-                    <th>القسم</th>
-                    <th>اسم المنتج</th>
-                    <th>السعر</th>
-                    <th>إجراء</th>
-                </tr>
-            </thead>
-            <tbody id="productsTableBody"></tbody>
-        </table>
-    </div>
-
-<script>
-  const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bBر'; 
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-    const ADMIN_PASSWORD = "123"; // يمكنك تغيير كلمة المرور هنا كما تحب
-
-    function checkLogin() {
-        if (document.getElementById('adminPass').value === ADMIN_PASSWORD) {
-            document.getElementById('loginBox').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            loadAdminProducts();
-        } else {
-            alert('كلمة المرور غير صحيحة!');
+        function getStoreData() {
+            const saved = localStorage.getItem('amazon_hyper_products');
+            if (saved) {
+                try { return JSON.parse(saved); } catch(e) { return defaultStoreData; }
+            }
+            return defaultStoreData;
         }
-    }
 
-    async function loadAdminProducts() {
-        let { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
-        if (error) return;
-        
-        const tbody = document.getElementById('productsTableBody');
-        tbody.innerHTML = data.map(p => `
-            <tr>
-                <td>${p.category}</td>
-                <td>${p.name}</td>
-                <td>${Number(p.price).toLocaleString()} د.ع</td>
-                <td><button class="del-btn" onclick="deleteProduct(${p.id})">حذف</button></td>
-            </tr>
-        `).join('');
-    }
+        let storeData = getStoreData();
 
-    async function addProduct() {
-        const name = document.getElementById('pName').value.trim();
-        const category = document.getElementById('pCategory').value.trim();
-        const price = parseFloat(document.getElementById('pPrice').value);
-
-        if (!name || !category || isNaN(price)) {
-            alert('الرجاء إكمال كافة الحقل بصورة صحيحة!');
-            return;
+        function initAdmin() {
+            const select = document.getElementById('newCatSelect');
+            select.innerHTML = '';
+            storeData.forEach((cat, idx) => {
+                select.innerHTML += `<option value="${idx}">${cat.category}</option>`;
+            });
+            renderAdminList();
         }
 
-        let { error } = await supabaseClient.from('products').insert([{ name, category, price }]);
-        if (error) {
-            alert('حدث خطأ أثناء الإضافة: ' + error.message);
-        } else {
-            document.getElementById('pName').value = '';
-            document.getElementById('pCategory').value = '';
-            document.getElementById('pPrice').value = '';
-            loadAdminProducts();
-            alert('تمت إضافة المنتج بنجاح!');
-        }
-    }
+        function renderAdminList() {
+            const query = document.getElementById('adminSearch').value.toLowerCase();
+            const container = document.getElementById('adminProductsList');
+            container.innerHTML = '';
 
-    async function deleteProduct(id) {
-        if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
-            let { error } = await supabaseClient.from('products').delete().eq('id', id);
-            if (!error) loadAdminProducts();
+            storeData.forEach((cat, catIdx) => {
+                cat.products.forEach((prod, prodIdx) => {
+                    if (prod.name.toLowerCase().includes(query)) {
+                        container.innerHTML += `
+                            <div class="product-item">
+                                <div class="product-info">
+                                    <input type="text" value="${prod.name}" id="name-${catIdx}-${prodIdx}">
+                                    <input type="number" class="price-input" value="${prod.price}" id="price-${catIdx}-${prodIdx}">
+                                    <span style="font-size:0.85rem; color:#666;">(${cat.category})</span>
+                                </div>
+                                <div class="actions">
+                                    <button onclick="updateProduct(${catIdx}, ${prodIdx})">حفظ</button>
+                                    <button class="btn-danger" onclick="deleteProduct(${catIdx}, ${prodIdx})">حذف</button>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+            });
         }
-    }
-</script>
+
+        function updateProduct(catIdx, prodIdx) {
+            const newName = document.getElementById(`name-${catIdx}-${prodIdx}`).value;
+            const newPrice = parseFloat(document.getElementById(`price-${catIdx}-${prodIdx}`).value);
+
+            if (!newName || isNaN(newPrice)) {
+                alert('الرجاء إدخال اسم و سعر صحيحين');
+                return;
+            }
+
+            storeData[catIdx].products[prodIdx].name = newName;
+            storeData[catIdx].products[prodIdx].price = newPrice;
+
+            localStorage.setItem('amazon_hyper_products', JSON.stringify(storeData));
+            alert('تم التعديل بنجاح!');
+            renderAdminList();
+        }
+
+        function deleteProduct(catIdx, prodIdx) {
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
+                storeData[catIdx].products.splice(prodIdx, 1);
+                localStorage.setItem('amazon_hyper_products', JSON.stringify(storeData));
+                renderAdminList();
+            }
+        }
+
+        function addNewProduct(e) {
+            e.preventDefault();
+            const catIdx = document.getElementById('newCatSelect').value;
+            const name = document.getElementById('newName').value;
+            const price = parseFloat(document.getElementById('newPrice').value);
+            const isBox = document.getElementById('newIsBox').checked;
+
+            if (!name || isNaN(price)) {
+                alert('الرجاء إدخال بيانات صحيحة');
+                return;
+            }
+
+            let newProd = { name, price };
+            if (isBox) newProd.isBox = true;
+
+            storeData[catIdx].products.push(newProd);
+            localStorage.setItem('amazon_hyper_products', JSON.stringify(storeData));
+
+            alert('تم إضافة المادة بنجاح!');
+            document.getElementById('addProductForm').reset();
+            renderAdminList();
+        }
+
+        function resetToDefault() {
+            if (confirm('هل تريد فعلاً استعادة القائمة الافتراضية وحذف التعديلات؟')) {
+                localStorage.removeItem('amazon_hyper_products');
+                storeData = getStoreData();
+                initAdmin();
+                alert('تمت الاستعادة بنجاح');
+            }
+        }
+
+        window.onload = initAdmin;
+    </script>
 </body>
 </html>
