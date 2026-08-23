@@ -136,7 +136,7 @@
                 </div>
                 <div class="form-group">
                     <label>
-                        <input type="checkbox" id="newIsBox" style="width: auto;"> هل هي علبة / تباع بالقطعة ضمن قسم وزني؟ (مثل الرفيل ونيوزيلندا)
+                        <input type="checkbox" id="newIsBox" style="width: auto;"> هل هي علبة / تباع بالقطعة ضمن قسم وزني؟
                     </label>
                 </div>
                 <button type="submit">إضافة المادة</button>
@@ -160,7 +160,6 @@
     </div>
 
     <script>
-        // Default data embedded same as index.html
         const defaultStoreData = [
             {
                 category: "قسم اللحوم الطازجة",
@@ -169,7 +168,7 @@
                     { name: "لحم عجل عراقي طازج (كيلو)", price: 14000 },
                     { name: "لحم غنم عراقي طازج (كيلو)", price: 18000 },
                     { name: "لحم مثروم عجل طازج (كيلو)", price: 15000 },
-                    { name: "عجل / كص لحم (كيلو)", price: 16000 }
+                    { name: "قص لحم عراقي (كيلو)", price: 16000 }
                 ]
             },
             {
@@ -188,12 +187,12 @@
                 category: "قسم البيض الطازج",
                 isWeight: false,
                 products: [
-                    { name: "بيض احمر طبقة", price: 6000 },
-                    { name: "بيض احمر نصف طبقة", price: 3100 },
-                    { name: "بيض ابيض طبقة", price: 5800 },
-                    { name: "بيض ابيض نصف طبقة", price: 3000 },
-                    { name: "بيض نباتي احمر طبقة", price: 6200 },
-                    { name: "بيض نباتي احمر نصف طبقة", price: 3200 },
+                    { name: "بيض أحمر طبقة", price: 6000 },
+                    { name: "بيض أحمر نصف طبقة", price: 3100 },
+                    { name: "بيض أبيض طبقة", price: 5800 },
+                    { name: "بيض أبيض نصف طبقة", price: 3000 },
+                    { name: "بيض نباتي أحمر طبقة", price: 6200 },
+                    { name: "بيض نباتي أحمر نصف طبقة", price: 3200 },
                     { name: "بيض عرب نصف طبقة", price: 4500 }
                 ]
             },
@@ -211,7 +210,7 @@
                     { name: "رز سفرة 4.5 كيلو", price: 9000 },
                     { name: "رز ذهب الذهب 4 كيلو", price: 8500 },
                     { name: "رز كلبهار 4.5 كيلو", price: 11000 },
-                    { name: "رز ابو كاس 4.5 كيلو", price: 13000 },
+                    { name: "رز أبو كاس 4.5 كيلو", price: 13000 },
                     { name: "تمن عنبر 1 كيلو", price: 3500 },
                     { name: "تمن عنبر 5 كيلو", price: 16500 },
                     { name: "دهن جنة 700 غم معدني", price: 4500 },
@@ -236,7 +235,7 @@
                 products: [
                     { name: "حمص (كيلو)", price: 3000 },
                     { name: "عدس (كيلو)", price: 2800 },
-                    { name: "عدس اخضر (كيلو)", price: 3000 },
+                    { name: "عدس أخضر (كيلو)", price: 3000 },
                     { name: "فريكا (كيلو)", price: 4500 },
                     { name: "سكر (كيلو)", price: 1750 },
                     { name: "رز (كيلو)", price: 2500 },
@@ -247,16 +246,16 @@
                     { name: "برغل خشن (كيلو)", price: 2100 },
                     { name: "شوفان (كيلو)", price: 4000 },
                     { name: "فاصوليا يابسة (كيلو)", price: 4000 },
-                    { name: "طرشانه (كيلو)", price: 5000 },
+                    { name: "طرشانة (كيلو)", price: 5000 },
                     { name: "علوجة (كيلو)", price: 3500 },
-                    { name: "نشاء (كيلو)", price: 3000 },
+                    { name: "نشا (كيلو)", price: 3000 },
                     { name: "سميد (كيلو)", price: 2500 },
-                    { name: "نومي بصرة اسود (كيلو)", price: 4000 },
-                    { name: "نومي بصرة اشگر (كيلو)", price: 4000 },
+                    { name: "نومي بصره أسود (كيلو)", price: 4000 },
+                    { name: "نومي بصره أشقر (كيلو)", price: 4000 },
                     { name: "نومي بصره عصير (كيلو)", price: 4500 },
                     { name: "لوبيا حمراء (كيلو)", price: 3800 },
                     { name: "ماش (كيلو)", price: 3500 },
-                    { name: "حبية (كيلو)", price: 3000 },
+                    { name: "حبيّة (كيلو)", price: 3000 },
                     { name: "سمسم محمص (كيلو)", price: 7000 },
                     { name: "سمسم خام (كيلو)", price: 6500 },
                     { name: "طحين حمص (كيلو)", price: 4500 },
@@ -276,34 +275,34 @@
                     { name: "خيار (كيلو)", price: 1750 },
                     { name: "باذنجان (كيلو)", price: 1250 },
                     { name: "بروكلي (كيلو)", price: 3500 },
-                    { name: "بصل احمر (كيلو)", price: 1500 },
-                    { name: "بصل كرستال (كيلو)", price: 2000 },
-                    { name: "بصل اصفر (كيلو)", price: 1500 },
-                    { name: "بصل اخضر (كيلو)", price: 2000 },
+                    { name: "بصل أحمر (كيلو)", price: 1500 },
+                    { name: "بصل كريستال (كيلو)", price: 2000 },
+                    { name: "بصل أصفر (كيلو)", price: 1500 },
+                    { name: "بصل أخضر (كيلو)", price: 2000 },
                     { name: "شجر (كيلو)", price: 1500 },
                     { name: "خس (كيلو)", price: 2000 },
-                    { name: "لهانه حمراء (كيلو)", price: 2000 },
-                    { name: "لهانه خضراء (كيلو)", price: 1750 },
+                    { name: "لخانة حمراء (كيلو)", price: 2000 },
+                    { name: "لخانة خضراء (كيلو)", price: 1750 },
                     { name: "قرنابيط (كيلو)", price: 2500 },
                     { name: "زنجبيل طازج (كيلو)", price: 6000 },
                     { name: "طماطة كرزية (علبة)", price: 2000, isBox: true },
                     { name: "رقي (كيلو)", price: 1000 },
                     { name: "فلفل بارد (كيلو)", price: 2500 },
                     { name: "فلفل حار (كيلو)", price: 3000 },
-                    { name: "فلفل الوان (علبة)", price: 2500, isBox: true },
-                    { name: "فلفل مزحلط الوان (كيلو)", price: 3000 },
+                    { name: "فلفل ألوان (علبة)", price: 2500, isBox: true },
+                    { name: "فلفل مزحلط ألوان (كيلو)", price: 3000 },
                     { name: "تمر عراقي وزن (كيلو)", price: 4000 },
-                    { name: "تفاح احمر (كيلو)", price: 2500 },
-                    { name: "تفاح اصفر (كيلو)", price: 2500 },
-                    { name: "تفاح اخضر (كيلو)", price: 2750 },
+                    { name: "تفاح أحمر (كيلو)", price: 2500 },
+                    { name: "تفاح أصفر (كيلو)", price: 2500 },
+                    { name: "تفاح أخضر (كيلو)", price: 2750 },
                     { name: "تفاح عراقي (كيلو)", price: 2000 },
                     { name: "موز (كيلو)", price: 2500 },
                     { name: "كيوي (كيلو)", price: 3500 },
                     { name: "كرز (كيلو)", price: 8000 },
                     { name: "برتقال (كيلو)", price: 2000 },
                     { name: "لالنكي (كيلو)", price: 2000 },
-                    { name: "الو احمر (كيلو)", price: 4000 },
-                    { name: "الو اصفر (كيلو)", price: 4000 },
+                    { name: "علوج أحمر (كيلو)", price: 4000 },
+                    { name: "علوج أصفر (كيلو)", price: 4000 },
                     { name: "بطيخ (كيلو)", price: 1500 },
                     { name: "رمان (كيلو)", price: 3000 },
                     { name: "خوخ مسكي (كيلو)", price: 4500 },
@@ -311,31 +310,31 @@
                     { name: "خوخ كعكي (كيلو)", price: 5000 },
                     { name: "مشمش (كيلو)", price: 5000 },
                     { name: "منكة (كيلو)", price: 4500 },
-                    { name: "افكادو (كيلو)", price: 7000 },
-                    { name: "عنب اسود (كيلو)", price: 4500 },
-                    { name: "عنب ابيض (كيلو)", price: 4000 },
+                    { name: "أفوكادو (كيلو)", price: 7000 },
+                    { name: "عنب أسود (كيلو)", price: 4500 },
+                    { name: "عنب أبيض (كيلو)", price: 4000 },
                     { name: "الرفيل علبة باقلاء", price: 1500, isBox: true },
-                    { name: "الرفيل باميا", price: 2000, isBox: true },
+                    { name: "الرفيل بامية", price: 2000, isBox: true },
                     { name: "الرفيل علبة محاشي", price: 2500, isBox: true },
                     { name: "الرفيل خس صيني", price: 1750, isBox: true },
-                    { name: "الرفيل اسبيناغ", price: 1500, isBox: true },
+                    { name: "الرفيل سبانخ", price: 1500, isBox: true },
                     { name: "الرفيل رشاد", price: 1000, isBox: true },
                     { name: "الرفيل كرفس", price: 1000, isBox: true },
                     { name: "الرفيل معدنوس", price: 1000, isBox: true },
                     { name: "الرفيل فجل", price: 1000, isBox: true },
-                    { name: "الرفيل لهانه", price: 1500, isBox: true },
-                    { name: "نيوزلندة حفريات", price: 2000, isBox: true },
-                    { name: "نيوز لندة خس صيني", price: 2000, isBox: true },
-                    { name: "نيوزلندة باقلاء وشبنت", price: 1750, isBox: true },
-                    { name: "نيوزلندا باميا", price: 2250, isBox: true },
-                    { name: "نيوز لندة جرجير", price: 1250, isBox: true },
-                    { name: "نيوزلندا معدنوس", price: 1250, isBox: true },
-                    { name: "نيوزلندا كرفس", price: 1250, isBox: true },
-                    { name: "نيوزلندة رشاد", price: 1250, isBox: true },
-                    { name: "نيوزلندة نعناع", price: 1250, isBox: true },
-                    { name: "نيوزلندة ريحان", price: 1250, isBox: true },
-                    { name: "نيوزلندة جزر", price: 1500, isBox: true },
-                    { name: "نيوز لندة كراث", price: 1250, isBox: true }
+                    { name: "الرفيل لخانة", price: 1500, isBox: true },
+                    { name: "نيوزيلندا حفريات", price: 2000, isBox: true },
+                    { name: "نيوزيلندا خس صيني", price: 2000, isBox: true },
+                    { name: "نيوزيلندا باقلاء وشبنت", price: 1750, isBox: true },
+                    { name: "نيوزيلندا بامية", price: 2250, isBox: true },
+                    { name: "نيوزيلندا جرجير", price: 1250, isBox: true },
+                    { name: "نيوزيلندا معدنوس", price: 1250, isBox: true },
+                    { name: "نيوزيلندا كرفس", price: 1250, isBox: true },
+                    { name: "نيوزيلندا رشاد", price: 1250, isBox: true },
+                    { name: "نيوزيلندا نعناع", price: 1250, isBox: true },
+                    { name: "نيوزيلندا ريحان", price: 1250, isBox: true },
+                    { name: "نيوزيلندا جزر", price: 1500, isBox: true },
+                    { name: "نيوزيلندا كراث", price: 1250, isBox: true }
                 ]
             },
             {
@@ -343,7 +342,7 @@
                 isWeight: false,
                 products: [
                     { name: "بيبسي 330 مل", price: 500 },
-                    { name: "سفن اب 330 مل", price: 500 },
+                    { name: "سفن أب 330 مل", price: 500 },
                     { name: "كوكا كولا 185 مل", price: 250 }
                 ]
             },
@@ -361,7 +360,7 @@
                 isWeight: false,
                 products: [
                     { name: "كلينس جبسي 140 سحبة", price: 1250 },
-                    { name: "جبسي كلينس سوفت -200 سحبة", price: 1250 },
+                    { name: "جبسي كلينس سوفت - 200 سحبة", price: 1250 },
                     { name: "كلينكس جبسي 300 سحبة / سوفت", price: 1750 }
                 ]
             },
@@ -369,8 +368,8 @@
                 category: "قسم العناية بالشعر",
                 isWeight: false,
                 products: [
-                    { name: "شامبو هيد اند شولدر 400 مل", price:4500 },
-                    { name: "هيداندشولدرز انتعاش -1 لتر", price: 10500 },
+                    { name: "شامبو هيد آند شولدرز 400 مل", price: 4500 },
+                    { name: "هيد آند شولدرز انتعاش - 1 لتر", price: 10500 },
                     { name: "بانتين بلسم 360 مل", price: 4000 }
                 ]
             },
@@ -379,7 +378,7 @@
                 isWeight: false,
                 products: [
                     { name: "طرشي موصلي", price: 5000 },
-                    { name: "يالنجي ورق عنب ", price: 10000 },
+                    { name: "يالنجي ورق عنب", price: 10000 },
                     { name: "زيتون متبل", price: 6000 }
                 ]
             },
@@ -387,52 +386,52 @@
                 category: "قسم المصنعات المجمدة",
                 isWeight: false,
                 products: [
-                    { name: "برجر لحم بقري مجمد 1 كيلو", price:  },
-                    { name: "ناغيت دجاج مجمد 750 غم", price:  },
-                    { name: "ببازيا وبطاطا مجمدة كيس", price:  }
+                    { name: "برجر لحم بقري مجمد 1 كيلو", price: 0 },
+                    { name: "ناجتس دجاج مجمد 750 غم", price: 0 },
+                    { name: "ببازيا وبطاطا مجمدة كيس", price: 0 }
                 ]
             },
             {
                 category: "قسم المعلبات",
                 isWeight: false,
                 products: [
-                    { name: "حمص الكسيح علب معدني", price:  },
-                    { name: "فاصوليا زجاج", price:  },
-                    { name: "حمص زجاج", price:  },
-                    { name: "باقلاء علب معدني", price:  },
-                    { name: "فطر مقطع علب معدني", price:  },
-                    { name: "فطر كامل علب معدني", price: },
-                    { name: "بزاليا معدني", price:  },
-                    { name: "بزاليا وجزر معدني", price:  },
-                    { name: "خضراوات وبزاليا وجزر معدني", price:  },
-                    { name: "حمص بطحينة معدني", price:  },
-                    { name: "لانشون تغذية لحم كبير", price:  },
-                    { name: "لانشون تغذية لحم صغير", price:  },
-                    { name: "لانشون تغذية دجاج كبير", price:  },
-                    { name: "لانشون تغذية دجاج صغير", price:  },
-                    { name: "صوصج تغذية دجاج", price:  },
-                    { name: "صوصج تغذية لحم", price:  },
-                    { name: "لحم مثروم اكزيتر معدني", price: },
-                    { name: "سردين حار", price:  },
-                    { name: "سردين بارد", price:  }
+                    { name: "حمص الكسيح علب معدني", price: 0 },
+                    { name: "فاصوليا زجاج", price: 0 },
+                    { name: "حمص زجاج", price: 0 },
+                    { name: "باقلاء علب معدني", price: 0 },
+                    { name: "فطر مقطع علب معدني", price: 0 },
+                    { name: "فطر كامل علب معدني", price: 0 },
+                    { name: "بزاليا معدني", price: 0 },
+                    { name: "بزاليا وجزر معدني", price: 0 },
+                    { name: "خضراوات وبزاليا وجزر معدني", price: 0 },
+                    { name: "حمص بطحينة معدني", price: 0 },
+                    { name: "لانشون تغذية لحم كبير", price: 0 },
+                    { name: "لانشون تغذية لحم صغير", price: 0 },
+                    { name: "لانشون تغذية دجاج كبير", price: 0 },
+                    { name: "لانشون تغذية دجاج صغير", price: 0 },
+                    { name: "سجق تغذية دجاج", price: 0 },
+                    { name: "سجق تغذية لحم", price: 0 },
+                    { name: "لحم مثروم اكزيتر معدني", price: 0 },
+                    { name: "سردين حار", price: 0 },
+                    { name: "سردين بارد", price: 0 }
                 ]
             },
             {
-                category: "قسم الأجباس",
+                category: "قسم الأجبان",
                 isWeight: false,
                 products: [
-                    { name: "جبن قشقوان تركي (قالب)", price: },
-                    { name: "جبن حلوم طبيعي", price:  },
-                    { name: "جبنة مثلثات كيري عبوة", price:  }
+                    { name: "جبن قشقوان تركي (قالب)", price: 0 },
+                    { name: "جبن حلوم طبيعي", price: 0 },
+                    { name: "جبنة مثلثات كيري عبوة", price: 0 }
                 ]
             },
             {
                 category: "قسم الحلويات والبسكويت",
                 isWeight: false,
                 products: [
-                    { name: "بسكويت أولكر بالشوكولاتة (شدة)", price:  },
-                    { name: "شوكولاتة جالاكسي سادة", price:  },
-                    { name: "معمول تمر دايجستف", price:  }
+                    { name: "بسكويت أولكر بالشوكولاتة (شدة)", price: 0 },
+                    { name: "شوكولاتة جالاكسي سادة", price: 0 },
+                    { name: "معمول تمر دايجستف", price: 0 }
                 ]
             }
         ];
