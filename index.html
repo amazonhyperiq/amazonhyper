@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: Tahoma, sans-serif; background: #f8f9fa; margin: 0; padding: 0; color: #333; }
         header { background: #131921; color: white; padding: 15px; text-align: center; font-size: 20px; font-weight: bold; }
@@ -32,7 +31,7 @@
 
     <div class="container" style="padding-bottom: 80px;">
         <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج..." oninput="filterProducts()">
-        <div id="productsWrapper">جاري تحميل المنتجات...</div>
+        <div id="productsWrapper"></div>
     </div>
 
     <div class="cart-bar" id="cartBar">
@@ -41,48 +40,61 @@
     </div>
 
 <script>
-    const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
-    const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPswug_XwiKt2bB';
-    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    // قائمة المنتجات مباشرة لتجنب أخطاء الاتصال
+    const products = [
+        { id: 1, name: 'لحم غنم بالعظم', category: 'اللحوم الطازجة', price: 22000 },
+        { id: 2, name: 'لحم مثروم غنم وعجل', category: 'اللحوم الطازجة', price: 19000 },
+        { id: 3, name: 'لحم مثروم عجل بدون دهن', category: 'اللحوم الطازجة', price: 19000 },
+        { id: 4, name: 'لحم عجل قطع مكعبات', category: 'اللحوم الطازجة', price: 19000 },
+        { id: 5, name: 'لحم غنم شرح', category: 'اللحوم الطازجة', price: 27000 },
+        { id: 6, name: 'معلاك غنم', category: 'اللحوم الطازجة', price: 16000 },
+        { id: 7, name: 'لية غنم', category: 'اللحوم الطازجة', price: 16000 },
+        { id: 8, name: 'جلفراي لحم', category: 'اللحوم الطازجة', price: 23000 },
+        { id: 9, name: 'ضلوع غنم', category: 'اللحوم الطازجة', price: 25000 },
+        { id: 10, name: 'باجة غنم', category: 'اللحوم الطازجة', price: 12000 },
+        { id: 11, name: 'زنود غنم', category: 'اللحوم الطازجة', price: 25000 },
+        { id: 12, name: 'ستيك لحم', category: 'اللحوم الطازجة', price: 23000 },
+        { id: 13, name: 'حبل ظهر عجل خشن', category: 'اللحوم الطازجة', price: 25000 },
+        { id: 14, name: 'كص لحم', category: 'اللحوم الطازجة', price: 23000 },
+        { id: 15, name: 'كوارع عجل', category: 'اللحوم الطازجة', price: 13000 },
+        { id: 16, name: 'بيض غنم', category: 'اللحوم الطازجة', price: 0 },
+        { id: 17, name: 'تكة غنم', category: 'اللحوم الطازجة', price: 27000 },
+        { id: 18, name: 'بركر لحم عراقي', category: 'اللحوم الطازجة', price: 18500 },
+        { id: 19, name: 'باسطرما لحم عراقي', category: 'اللحوم الطازجة', price: 18500 }
+    ];
 
-    let allProducts = [];
     let cart = {};
 
-    async function fetchProducts() {
-        let { data, error } = await supabaseClient.from('products').select('*');
-        if (error) {
-            document.getElementById('productsWrapper').innerHTML = '<p style="color:red; text-align:center;">خطأ في الاتصال بقاعدة البيانات</p>';
-            console.error(error);
-            return;
-        }
-        allProducts = data || [];
-        renderProducts(allProducts);
-    }
-
-    function renderProducts(products) {
+    function renderProducts(items) {
         const wrapper = document.getElementById('productsWrapper');
-        if (products.length === 0) {
-            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات</p>';
+        if (items.length === 0) {
+            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات مطابقة للبحث</p>';
             return;
         }
 
         let html = '<div class="category-section"><div class="category-header"><span>📁 اللحوم الطازجة</span></div><div class="category-content">';
         
-        products.forEach(p => {
-            let priceText = (p.price && p.price > 0) ? Number(p.price).toLocaleString() + ' د.ع' : '—';
+        items.forEach(p => {
+            let priceText = p.price > 0 ? p.price.toLocaleString() + ' د.ع' : '—';
             html += `
                 <div class="product-card">
                     <div>
                         <h4>${p.name}</h4>
                         <div class="price">${priceText}</div>
                     </div>
-                    <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price || 0})">إضافة للسلة</button>
+                    <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price})">إضافة للسلة</button>
                 </div>
             `;
         });
 
         html += '</div></div>';
         wrapper.innerHTML = html;
+    }
+
+    function filterProducts() {
+        const query = document.getElementById('searchBox').value.toLowerCase();
+        const filtered = products.filter(p => p.name.toLowerCase().includes(query));
+        renderProducts(filtered);
     }
 
     function addToCart(id, name, price) {
@@ -119,7 +131,7 @@
         window.open(`https://wa.me/${whatsappNumber}?text=${text}`, '_blank');
     }
 
-    fetchProducts();
+    renderProducts(products);
 </script>
 </body>
 </html>
