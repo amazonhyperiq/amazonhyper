@@ -22,8 +22,6 @@
         th { background: #eaeded; color: #111; }
         .btn-danger { background: #ff4d4d; color: #fff; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; }
         .btn-danger:hover { background: #cc0000; }
-        .nav-links { margin-bottom: 20px; }
-        .nav-links a { color: #007185; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
@@ -74,7 +72,6 @@
     </div>
 
     <script>
-        // ضع بيانات الاتصال الخاصة بـ Supabase هنا
         const SUPABASE_URL = 'YOUR_SUPABASE_URL';
         const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
         const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -96,26 +93,24 @@
                 });
             }
         }
-document.getElementById('productForm').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('pName').value;
-    const price = parseFloat(document.getElementById('pPrice').value);
-    const image = document.getElementById('pImage').value;
-    const category = document.getElementById('pCategory').value;
 
-    const { data, error } = await _supabase
-        .from('products')
-        .insert([{ name, price, image, category }]);
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const image = document.getElementById('pImage').value;
+            const category = document.getElementById('pCategory').value;
 
-    if (error) {
-        console.error('خطأ Supabase:', error);
-        alert('فشل الحفظ: ' + error.message);
-    } else {
-        alert('تمت إضافة المنتج بنجاح!');
-        document.getElementById('productForm').reset();
-        fetchProducts();
-    }
-});
+            const { error } = await _supabase.from('products').insert([{ name, price, image, category }]);
+            
+            if (error) {
+                alert('حدث خطأ أثناء الإضافة: ' + error.message);
+            } else {
+                alert('تمت إضافة المنتج بنجاح!');
+                document.getElementById('productForm').reset();
+                fetchProducts();
+            }
+        });
 
         async function deleteProduct(id) {
             if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
