@@ -11,12 +11,10 @@
         .container { max-width: 800px; margin: 0 auto; padding: 15px; }
         .search-box { width: 100%; padding: 12px; font-size: 16px; border: 1px solid #ccc; border-radius: 8px; margin-bottom: 15px; box-sizing: border-box; }
         
-        /* تصميم الأقسام القابلة للطي */
         .category-section { background: white; border: 1px solid #ddd; border-radius: 8px; margin-bottom: 12px; overflow: hidden; box-shadow: 0 2px 4px rgba(0,0,0,0.05); }
         .category-header { background: #232f3e; color: white; padding: 14px 18px; font-size: 17px; font-weight: bold; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
         .category-header:hover { background: #37474f; }
-        .category-content { padding: 12px; display: none; background: #fafafa; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
-        .category-content.active { display: grid; }
+        .category-content { padding: 12px; display: grid; background: #fafafa; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; }
 
         .product-card { background: white; border: 1px solid #ddd; border-radius: 8px; padding: 10px; text-align: center; display: flex; flex-direction: column; justify-content: space-between; }
         .product-card h4 { font-size: 14px; margin: 8px 0; }
@@ -33,11 +31,8 @@
     <header>🛒 أمازون هايبر ماركت</header>
 
     <div class="container" style="padding-bottom: 80px;">
-        <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج في كل الأقسام..." oninput="filterProducts()">
-        
-        <div id="categoriesWrapper">
-            <!-- الأقسام ومنتجاتها ستُبنى تلقائياً هنا -->
-        </div>
+        <input type="text" id="searchBox" class="search-box" placeholder="ابحث عن منتج..." oninput="filterProducts()">
+        <div id="productsWrapper">جاري تحميل المنتجات...</div>
     </div>
 
     <div class="cart-bar" id="cartBar">
@@ -56,69 +51,38 @@
     async function fetchProducts() {
         let { data, error } = await supabaseClient.from('products').select('*');
         if (error) {
-            console.error('Error fetching:', error);
+            document.getElementById('productsWrapper').innerHTML = '<p style="color:red; text-align:center;">خطأ في الاتصال بقاعدة البيانات</p>';
+            console.error(error);
             return;
         }
         allProducts = data || [];
-        renderCategories(allProducts);
+        renderProducts(allProducts);
     }
 
-    function renderCategories(products) {
-        const wrapper = document.getElementById('categoriesWrapper');
+    function renderProducts(products) {
+        const wrapper = document.getElementById('productsWrapper');
         if (products.length === 0) {
-            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات متاحة حالياً</p>';
+            wrapper.innerHTML = '<p style="text-align:center; color:#777;">لا توجد منتجات</p>';
             return;
         }
 
-        // تجميع المنتجات حسب القسم
-        const categories = {};
+        let html = '<div class="category-section"><div class="category-header"><span>📁 اللحوم الطازجة</span></div><div class="category-content">';
+        
         products.forEach(p => {
-            let cat = p.category || 'أقسام أخرى';
-            if (!categories[cat]) categories[cat] = [];
-            categories[cat].push(p);
-        });
-
-        let html = '';
-        for (let cat in categories) {
+            let priceText = (p.price && p.price > 0) ? Number(p.price).toLocaleString() + ' د.ع' : '—';
             html += `
-                <div class="category-section">
-                    <div class="category-header" onclick="toggleCategory(this)">
-                        <span>📁 ${cat}</span>
-                        <span>▼</span>
+                <div class="product-card">
+                    <div>
+                        <h4>${p.name}</h4>
+                        <div class="price">${priceText}</div>
                     </div>
-                    <div class="category-content">
-                        ${categories[cat].map(p => `
-                            <div class="product-card">
-                                <div>
-                                    <h4>${p.name}</h4>
-                                    <div class="price">${p.price ? Number(p.price).toLocaleString() + ' د.ع' : 'غير متوفر'}</div>
-                                </div>
-                                <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price || 0})">إضافة للسلة</button>
-                            </div>
-                        `).join('')}
-                    </div>
+                    <button class="add-btn" onclick="addToCart(${p.id}, '${p.name}', ${p.price || 0})">إضافة للسلة</button>
                 </div>
             `;
-        }
+        });
+
+        html += '</div></div>';
         wrapper.innerHTML = html;
-    }
-
-    function toggleCategory(header) {
-        const content = header.nextElementSibling;
-        content.classList.toggle('active');
-        header.querySelector('span:last-child').textContent = content.classList.contains('active') ? '▲' : '▼';
-    }
-
-    function filterProducts() {
-        const query = document.getElementById('searchBox').value.toLowerCase();
-        if (!query) {
-            renderCategories(allProducts);
-            return;
-        }
-        const filtered = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.category.toLowerCase().includes(query));
-        renderCategories(filtered);
-        // فتح كل الأقسام تلقائياً عند البحث لسهولة الرؤية
-        document.querySelectorAll('.category-content').forEach(c => c.classList.add('active'));
     }
 
     function addToCart(id, name, price) {
@@ -138,7 +102,7 @@
     }
 
     function sendToWhatsApp() {
-        let text = "🛒 *طلب جديد من متجر أمازون هايبر ماركت*%0A%0A";
+        let text = "🛒 *طلب جديد من أمازون هايبر ماركت*%0A%0A";
         let total = 0;
         for (let id in cart) {
             let item = cart[id];
