@@ -81,50 +81,65 @@
         <a href="index.html" target="_blank" style="color: var(--secondary-color); text-decoration: none; font-weight: bold;">عرض المتجر 🛒</a>
     </header>
 
-    <!-- إضافة منتج جديد -->
+    <!-- إضافة منتج جديد أو تحديد سعر لمادة بلا سعر -->
     <div class="card">
-        <h2>إضافة منتج جديد</h2>
+        <h2>إضافة منتج جديد أو تحديد سعر</h2>
         <div class="form-group">
             <select id="categorySelect">
-                <!-- تعبئة الأقسام تلقائياً -->
+                <!-- الأقسام -->
             </select>
-            <input type="text" id="newProductName" placeholder="اسم المنتج الجديد">
-            <input type="number" id="newProductPrice" placeholder="السعر (د.ع)">
-            <button class="btn-success" onclick="addProduct()">إضافة المنتج</button>
+            <input type="text" id="newProductName" placeholder="اسم المادة / المنتج">
+            <input type="number" id="newProductPrice" placeholder="السعر (اتركه فارغاً إذا بلا سعر)">
+            <button class="btn-success" onclick="addProduct()">حفظ وإضافة</button>
         </div>
     </div>
 
-    <!-- إدارة المنتجات الحالية -->
+    <!-- إدارة المنتجات والأسعار -->
     <div class="card">
-        <h2>قائمة المنتجات الحالية</h2>
+        <h2>قائمة المنتجات والأقسام</h2>
         <div style="overflow-x: auto;">
-            <table id="productsTable">
+            <table>
                 <thead>
                     <tr>
                         <th>القسم</th>
-                        <th>اسم المنتج</th>
+                        <th>اسم المادة</th>
                         <th>السعر (د.ع)</th>
                         <th>الإجراء</th>
                     </tr>
                 </thead>
                 <tbody id="productsTableBody">
-                    <!-- يتم جلب المنتجات هنا -->
+                    <!-- المواد -->
                 </tbody>
             </table>
         </div>
     </div>
 
     <script>
-        // جلب البيانات من التخزين المحلي أو الاعتماد على القائمة الافتراضية
+        // الهيكل الكامل للأقسام والمواد التي أرسلتها
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
             {
                 category: "قسم اللحوم الطازجة",
                 isWeight: true,
                 products: [
-                    { name: "لحم عجل عراقي طازج (كيلو)", price: 18500 },
-                    { name: "لحم غنم عراقي طازج (كيلو)", price: 22000 },
-                    { name: "لحم مثروم عجل طازج (كيلو)", price: 19000 },
-                    { name: "كص لحم عراقي (كيلو)", price: 23000 }
+                    { name: "لحم غنم بالعظم", price: 22000 },
+                    { name: "لحم مثروم غنم وعجل", price: 19000 },
+                    { name: "لحم مثروم عجل بدون دهن", price: 19000 },
+                    { name: "لحم عجل قطع مكعبات", price: 19000 },
+                    { name: "لحم غنم شرح", price: 27000 },
+                    { name: "معلاك غنم", price: 16000 },
+                    { name: "لية غنم", price: 16000 },
+                    { name: "جلفراي لحم", price: 23000 },
+                    { name: "ضلوع غنم", price: 25000 },
+                    { name: "باجة غنم", price: 12000 },
+                    { name: "زنود غنم", price: 25000 },
+                    { name: "ستيك لحم", price: 23000 },
+                    { name: "حبل ظهر عجل خشن", price: 25000 },
+                    { name: "كص لحم", price: 23000 },
+                    { name: "كوارع عجل", price: 13000 },
+                    { name: "بيض غنم", price: 5000 },
+                    { name: "تكة غنم", price: 27000 },
+                    { name: "بركر لحم عراقي", price: 18500 },
+                    { name: "باسطرما لحم عراقي", price: 18500 }
                 ]
             },
             {
@@ -133,21 +148,167 @@
                 products: [
                     { name: "دجاج ذبح عراقي", price: 5750 },
                     { name: "صدر دجاج عراقي", price: 8000 },
-                    { name: "أجنحة", price: 5500 },
-                    { name: "أفخاذ", price: 6000 },
-                    { name: "كبدة", price: 6000 },
-                    { name: "مثروم دجاج", price: 9000 }
+                    { name: "كبدة دجاج عراقي", price: 6000 },
+                    { name: "قلوب دجاج عراقي", price: 4500 },
+                    { name: "مثروم دجاج", price: 9000 },
+                    { name: "افخاذ دجاج عراقي", price: 6000 },
+                    { name: "عصا طبل دجاج عراقي", price: 8000 },
+                    { name: "ورك دجاج عراقي", price: 4500 }
+                ]
+            },
+            {
+                category: "قسم البيض الطازج",
+                isWeight: false,
+                products: [
+                    { name: "بيض احمر طبقة", price: null },
+                    { name: "بيض احمر نصف طبقة", price: null },
+                    { name: "بيض ابيض طبقة", price: null },
+                    { name: "بيض ابيض نصف طبقة", price: null },
+                    { name: "بيض نباتي احمر طبقة", price: null },
+                    { name: "بيض نباتي احمر نصف طبقة", price: null },
+                    { name: "بيض عرب نصف طبقة", price: null }
                 ]
             },
             {
                 category: "قسم المواد الغذائية",
                 isWeight: false,
                 products: [
-                    { name: "رز محمود 4.5 كيلو", price: 12500 },
-                    { name: "رز محمود 9 كيلو", price: 24000 },
-                    { name: "زيت عافية 1.5 لتر", price: 4750 },
-                    { name: "سكر 1 كيلو", price: 1500 }
+                    { name: "رز محمود 4.5 كيلو", price: null },
+                    { name: "رز محمود 9 كيلو", price: null },
+                    { name: "رز جوكر 4.5 كيلو", price: null },
+                    { name: "رز جوكر 9 كيلو", price: null },
+                    { name: "رز 272 4.5 كيلو", price: null },
+                    { name: "رز ريزي 5 كيلو", price: null },
+                    { name: "رز كرجية 4.5 كيلو", price: null },
+                    { name: "رز سفرة 4.5 كيلو", price: null },
+                    { name: "رز ذهب الذهب 4 كيلو", price: null },
+                    { name: "رز كلبهار 4.5 كيلو", price: null },
+                    { name: "رز ابو كاس 4.5 كيلو", price: null },
+                    { name: "تمن عنبر 1 كيلو", price: null },
+                    { name: "تمن عنبر 5 كيلو", price: null },
+                    { name: "دهن جنة 700 غم معدني", price: null },
+                    { name: "زيت عافية 1.5 لتر", price: null },
+                    { name: "طحين بشلر", price: null },
+                    { name: "طحين الفاخر", price: null },
+                    { name: "ملح كيس", price: null },
+                    { name: "ملح علبة", price: null },
+                    { name: "سكر 1 كيلو", price: null },
+                    { name: "زيت زير 1 لتر", price: null },
+                    { name: "زيت الدار 1 لتر", price: null },
+                    { name: "زيت التونسا 1 لتر", price: null },
+                    { name: "معجون زير كبير", price: null },
+                    { name: "معجون زير صغير", price: null },
+                    { name: "معجون التونسا كبير", price: null },
+                    { name: "معجون التونسا صغير", price: null }
                 ]
+            },
+            {
+                category: "قسم مواد الوزن",
+                isWeight: true,
+                products: [
+                    { name: "حمص", price: null }, { name: "عدس", price: null }, { name: "عدس اخضر", price: null },
+                    { name: "فريكا", price: null }, { name: "سكر", price: null }, { name: "رز", price: null },
+                    { name: "حليب", price: null }, { name: "جريش", price: null }, { name: "برغل", price: null },
+                    { name: "برغل ناعم", price: null }, { name: "برغل خشن", price: null }, { name: "شوفان", price: null },
+                    { name: "فاصوليا يابسة", price: null }, { name: "طرشانه", price: null }, { name: "علوجة", price: null },
+                    { name: "نشاء", price: null }, { name: "سميد", price: null }, { name: "نومي بصرة اسود", price: null },
+                    { name: "نومي بصرة اشگر", price: null }, { name: "نومي بصره عصير", price: null }, { name: "لوبيا حمراء", price: null },
+                    { name: "ماش", price: null }, { name: "حبية", price: null }, { name: "سمسم محمص", price: null },
+                    { name: "سمسم خام", price: null }, { name: "طحين حمص", price: null }, { name: "طحين تمن", price: null },
+                    { name: "فول", price: null }, { name: "شاي خلطة خاصة", price: null },
+                    { name: "هيل يباع يبدا من 50 غم", price: null }, { name: "هيل مطحون يبدا من 50 غم", price: null }
+                ]
+            },
+            {
+                category: "قسم الخضراوات والفواكه",
+                isWeight: true,
+                products: [
+                    { name: "طماطم", price: null }, { name: "بطاطا", price: null }, { name: "خيار", price: null },
+                    { name: "باذنجان", price: null }, { name: "بروكلي", price: null }, { name: "بصل احمر", price: null },
+                    { name: "بصل كرستال", price: null }, { name: "بصل اصفر", price: null }, { name: "بصل اخضر", price: null },
+                    { name: "شجر", price: null }, { name: "خس", price: null }, { name: "لهانه حمراء", price: null },
+                    { name: "لهانه خضراء", price: null }, { name: "قرنابيط", price: null }, { name: "زنجبيل طازج", price: null },
+                    { name: "طماطة كرزية تباع بالعلب", price: null }, { name: "رقي", price: null }, { name: "فلفل بارد", price: null },
+                    { name: "فلفل حار", price: null }, { name: "فلفل الوان علب", price: null }, { name: "فلفل مزحلط الوان", price: null },
+                    { name: "تمر عراقي وزن", price: null }, { name: "تفاح احمر", price: null }, { name: "تفاح اصفر", price: null },
+                    { name: "تفاح اخضر", price: null }, { name: "تفاح عراقي", price: null }, { name: "موز", price: null },
+                    { name: "كيوي", price: null }, { name: "كرز", price: null }, { name: "برتقال", price: null },
+                    { name: "لالنكي", price: null }, { name: "الو احمر", price: null }, { name: "الو اصفر", price: null },
+                    { name: "بطيخ", price: null }, { name: "رمان", price: null }, { name: "خوخ مسكي", price: null },
+                    { name: "خوخ صوفي", price: null }, { name: "خوخ كعكي", price: null }, { name: "مشمش", price: null },
+                    { name: "منكة", price: null }, { name: "افكادو", price: null }, { name: "عنب اسود", price: null },
+                    { name: "عنب ابيض", price: null },
+                    // الرفيل
+                    { name: "الرفيل علبة باقلاء", price: null }, { name: "الرفيل باميا", price: null },
+                    { name: "الرفيل علبة محاشي", price: null }, { name: "الرفيل خس صيني", price: null },
+                    { name: "الرفيل اسبيناغ", price: null }, { name: "الرفيل رشاد", price: null },
+                    { name: "الرفيل كرفس", price: null }, { name: "الرفيل معدنوس", price: null },
+                    { name: "الرفيل فجل", price: null }, { name: "الرفيل لهانه", price: null },
+                    // نيوزلندا
+                    { name: "نيوزلندة حفريات", price: null }, { name: "نيوز لندة خس صيني", price: null },
+                    { name: "نيوزلندة باقلاء وشبنت", price: null }, { name: "نيوزلندا باميا", price: null },
+                    { name: "نيوز لندة جرجير", price: null }, { name: "نيوزلندا معدنوس", price: null },
+                    { name: "نيوزلندا كرفس", price: null }, { name: "نيوزلندة رشاد", price: null },
+                    { name: "نيوزلندة نعناع", price: null }, { name: "نيوزلندة ريحان", price: null },
+                    { name: "نيوزلندة جزر", price: null }, { name: "نيوز لندة كراث", price: null }
+                ]
+            },
+            {
+                category: "قسم المشروبات والعصائر",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم المنظفات العامة",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم الورقيات والكليسنس",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم العناية بالشعر",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم المخللات",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم المصنعات المجمدة",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم المعلبات",
+                isWeight: false,
+                products: [
+                    { name: "حمص الكسيح علب معدني", price: null }, { name: "فاصوليا زجاج", price: null },
+                    { name: "حمص زجاج", price: null }, { name: "باقلاء علب معدني", price: null },
+                    { name: "فطر مقطع علب معدني", price: null }, { name: "فطر كامل علب معدني", price: null },
+                    { name: "بزاليا معدني", price: null }, { name: "بزاليا وجزر معدني", price: null },
+                    { name: "خضراوات وبزاليا وجزر معدني", price: null }, { name: "حمص بطحينة معدني", price: null },
+                    { name: "لانشون تغذية لحم كبير", price: null }, { name: "لانشون تغذية لحم صغير", price: null },
+                    { name: "لانشون تغذية دجاج كبير", price: null }, { name: "لانشون تغذية دجاج صغير", price: null },
+                    { name: "صوصج تغذية دجاج", price: null }, { name: "صوصج تغذية لحم", price: null },
+                    { name: "لحم مثروم اكزيتر معدني", price: null }, { name: "سردين حار", price: null },
+                    { name: "سردين بازد", price: null }, { name: "معجون التونسا كبير", price: null },
+                    { name: "معجون التونسا صغير", price: null }
+                ]
+            },
+            {
+                category: "قسم الأجبان",
+                isWeight: false,
+                products: []
+            },
+            {
+                category: "قسم الحلويات والبسكويت",
+                isWeight: false,
+                products: []
             }
         ];
 
@@ -166,13 +327,14 @@
 
             storeData.forEach((cat, catIndex) => {
                 cat.products.forEach((prod, prodIndex) => {
+                    let priceVal = prod.price !== null ? prod.price : '';
                     tbody.innerHTML += `
                         <tr>
                             <td>${cat.category}</td>
                             <td><input type="text" value="${prod.name}" id="name-${catIndex}-${prodIndex}" style="width:100%; border:none; background:transparent;"></td>
-                            <td><input type="number" value="${prod.price}" id="price-${catIndex}-${prodIndex}" style="width:100px;"></td>
+                            <td><input type="number" value="${priceVal}" id="price-${catIndex}-${prodIndex}" placeholder="بلا سعر" style="width:120px;"></td>
                             <td>
-                                <button class="btn-primary" onclick="updateProduct(${catIndex}, ${prodIndex})">تعديل</button>
+                                <button class="btn-primary" onclick="updateProduct(${catIndex}, ${prodIndex})">تحديث</button>
                                 <button class="btn-danger" onclick="deleteProduct(${catIndex}, ${prodIndex})">حذف</button>
                             </td>
                         </tr>
@@ -184,37 +346,40 @@
         function addProduct() {
             const catIndex = document.getElementById('categorySelect').value;
             const name = document.getElementById('newProductName').value.trim();
-            const price = parseFloat(document.getElementById('newProductPrice').value);
+            const priceInput = document.getElementById('newProductPrice').value.trim();
 
-            if (!name || isNaN(price)) {
-                alert('الرجاء إدخال اسم المنتج والسعر بشكل صحيح.');
+            if (!name) {
+                alert('الرجاء إدخال اسم المادة.');
                 return;
             }
+
+            const price = priceInput !== '' ? parseFloat(priceInput) : null;
 
             storeData[catIndex].products.push({ name, price });
             saveAndRefresh();
             document.getElementById('newProductName').value = '';
             document.getElementById('newProductPrice').value = '';
-            alert('تمت إضافة المنتج بنجاح!');
+            alert('تمت إضافة المنتج أو المادة بنجاح!');
         }
 
         function updateProduct(catIndex, prodIndex) {
             const newName = document.getElementById(`name-${catIndex}-${prodIndex}`).value.trim();
-            const newPrice = parseFloat(document.getElementById(`price-${catIndex}-${prodIndex}`).value);
+            const priceInput = document.getElementById(`price-${catIndex}-${prodIndex}`).value.trim();
 
-            if (!newName || isNaN(newPrice)) {
-                alert('الرجاء التأكد من صحة البيانات.');
+            if (!newName) {
+                alert('اسم المادة لا يمكن أن يكون فارغاً.');
                 return;
             }
 
             storeData[catIndex].products[prodIndex].name = newName;
-            storeData[catIndex].products[prodIndex].price = newPrice;
+            storeData[catIndex].products[prodIndex].price = priceInput !== '' ? parseFloat(priceInput) : null;
+            
             saveAndRefresh();
-            alert('تم التعديل بنجاح!');
+            alert('تم التحديث بنجاح!');
         }
 
         function deleteProduct(catIndex, prodIndex) {
-            if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+            if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
                 storeData[catIndex].products.splice(prodIndex, 1);
                 saveAndRefresh();
             }
