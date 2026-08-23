@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - أمازون هايبر ماركت</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: Tahoma, sans-serif; background: #f4f7f6; margin: 0; padding: 20px; color: #333; }
+        .container { max-width: 600px; margin: 0 auto; background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        input, button { width: 100%; padding: 12px; margin: 8px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box; font-size: 15px; }
+        button { background: #28a745; color: white; border: none; font-weight: bold; cursor: pointer; }
+        button:hover { background: #218838; }
+        .del-btn { background: #dc3545; width: auto; padding: 5px 10px; font-size: 13px; }
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        th, td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 14px; }
+        th { background: #007bff; color: white; }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="loginBox">
+        <h3>🔐 تسجيل دخول المدير</h3>
+        <input type="password" id="adminPass" placeholder="أدخل كلمة المرور">
+        <button onclick="checkLogin()">دخول</button>
+    </div>
+
+    <div class="container" id="adminPanel" style="display:none;">
+        <h3>🛠️ إدارة منتجات أمازون هايبر ماركت</h3>
+        
+        <input type="text" id="pName" placeholder="اسم المنتج (مثلاً: زيت نباتي 1 لتر)">
+        <input type="text" id="pCategory" placeholder="اسم القسم (مثلاً: المواد الغذائية)">
+        <input type="number" id="pPrice" placeholder="السعر بالدينار (مثلاً: 3500)">
+        <button onclick="addProduct()">إضافة المنتج الجديد</button>
+
+        <h4 style="margin-top: 25px;">المنتجات الحالية:</h4>
+        <table>
+            <thead>
+                <tr>
+                    <th>القسم</th>
+                    <th>اسم المنتج</th>
+                    <th>السعر</th>
+                    <th>إجراء</th>
+                </tr>
+            </thead>
+            <tbody id="productsTableBody"></tbody>
+        </table>
+    </div>
+
+<script>
+    const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
+    const SUPABASE_ANON_KEY = 'ضع_مفتاح_الـ_ANON_هنا'; // ضع نفس المفتاح هنا
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    const ADMIN_PASSWORD = "123"; // يمكنك تغيير كلمة المرور هنا كما تحب
+
+    function checkLogin() {
+        if (document.getElementById('adminPass').value === ADMIN_PASSWORD) {
+            document.getElementById('loginBox').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            loadAdminProducts();
+        } else {
+            alert('كلمة المرور غير صحيحة!');
+        }
+    }
+
+    async function loadAdminProducts() {
+        let { data, error } = await supabaseClient.from('products').select('*').order('id', { ascending: false });
+        if (error) return;
+        
+        const tbody = document.getElementById('productsTableBody');
+        tbody.innerHTML = data.map(p => `
+            <tr>
+                <td>${p.category}</td>
+                <td>${p.name}</td>
+                <td>${Number(p.price).toLocaleString()} د.ع</td>
+                <td><button class="del-btn" onclick="deleteProduct(${p.id})">حذف</button></td>
+            </tr>
+        `).join('');
+    }
+
+    async function addProduct() {
+        const name = document.getElementById('pName').value.trim();
+        const category = document.getElementById('pCategory').value.trim();
+        const price = parseFloat(document.getElementById('pPrice').value);
+
+        if (!name || !category || isNaN(price)) {
+            alert('الرجاء إكمال كافة الحقل بصورة صحيحة!');
+            return;
+        }
+
+        let { error } = await supabaseClient.from('products').insert([{ name, category, price }]);
+        if (error) {
+            alert('حدث خطأ أثناء الإضافة: ' + error.message);
+        } else {
+            document.getElementById('pName').value = '';
+            document.getElementById('pCategory').value = '';
+            document.getElementById('pPrice').value = '';
+            loadAdminProducts();
+            alert('تمت إضافة المنتج بنجاح!');
+        }
+    }
+
+    async function deleteProduct(id) {
+        if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+            let { error } = await supabaseClient.from('products').delete().eq('id', id);
+            if (!error) loadAdminProducts();
+        }
+    }
+</script>
+</body>
+</html>
