@@ -3,111 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>لوحة تحكم أمازون هايبر ماركت</title>
+    <title>لوحة تحكم - أمازون هايبر ماركت</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f4f6f9;
-            margin: 0;
-            padding: 20px;
-            direction: rtl;
-            color: #333;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            background: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-        }
-        h2 {
-            text-align: center;
-            color: #ff6600;
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-        }
-        input, select {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            box-sizing: border-box;
-        }
-        button {
-            background-color: #ff6600;
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            font-size: 16px;
-            border-radius: 4px;
-            cursor: pointer;
-            width: 100%;
-        }
-        button:hover {
-            background-color: #e55b00;
-        }
-        .success-msg {
-            margin-top: 15px;
-            padding: 10px;
-            background-color: #d4edda;
-            color: #155724;
-            border-radius: 4px;
-            display: none;
-            text-align: center;
-        }
+        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
+        body { background-color: #f4f6f9; color: #333; direction: rtl; }
+        header { background: #232f3e; color: #fff; padding: 15px 20px; display: flex; justify-content: space-between; align-items: center; }
+        .container { max-width: 1100px; margin: 20px auto; padding: 20px; background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
+        h2 { margin-bottom: 20px; color: #131921; border-bottom: 2px solid #febd69; padding-bottom: 5px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: 600; }
+        input, select { width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px; font-size: 14px; }
+        button { background: #febd69; color: #111; border: none; padding: 10px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; transition: 0.2s; }
+        button:hover { background: #f3a847; }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: center; font-size: 14px; }
+        th { background: #eaeded; color: #111; }
+        .btn-danger { background: #ff4d4d; color: #fff; padding: 5px 10px; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-danger:hover { background: #cc0000; }
+        .nav-links { margin-bottom: 20px; }
+        .nav-links a { color: #007185; text-decoration: none; font-weight: bold; }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>لوحة تحكم أمازون هايبر ماركت</h2>
-    <div class="form-group">
-        <label for="productSelect">اختر المنتج لتعديل السعر:</label>
-        <select id="productSelect">
-            <option value="0">لحم عجل هندي طازج (كيلو) - 14,000 د.ع</option>
-            <option value="1">صص / كص لحم (كيلو) - 16,000 د.ع</option>
-            <option value="2">لحم غنم عراقي - 18,000 د.ع</option>
-        </select>
+    <header>
+        <h1>أمازون هايبر ماركت - لوحة الإدارة</h1>
+        <a href="index.html" style="color: #febd69; text-decoration: none;">عرض المتجر الرئيسي</a>
+    </header>
+
+    <div class="container">
+        <h2>إضافة منتج جديد</h2>
+        <form id="productForm">
+            <div class="form-group">
+                <label>اسم المنتج:</label>
+                <input type="text" id="pName" required>
+            </div>
+            <div class="form-group">
+                <label>السعر (د.ع):</label>
+                <input type="number" id="pPrice" required>
+            </div>
+            <div class="form-group">
+                <label>رابط الصورة:</label>
+                <input type="text" id="pImage" placeholder="https://example.com/image.jpg">
+            </div>
+            <div class="form-group">
+                <label>القسم:</label>
+                <input type="text" id="pCategory" placeholder="خضار، مواد غذائية، ألبان...">
+            </div>
+            <button type="submit">حفظ وإضافة المنتج</button>
+        </form>
     </div>
 
-    <div class="form-group">
-        <label for="newPrice">السعر الجديد (د.ع):</label>
-        <input type="number" id="newPrice" placeholder="أدخل السعر الجديد هنا">
+    <div class="container">
+        <h2>قائمة المنتجات الحالية</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>اسم المنتج</th>
+                    <th>السعر</th>
+                    <th>القسم</th>
+                    <th>الإجراءات</th>
+                </tr>
+            </thead>
+            <tbody id="productsTableBody">
+                <!-- يتم تعبئتها برمجياً -->
+            </tbody>
+        </table>
     </div>
 
-    <button onclick="updatePrice()">حفظ وتحديث السعر</button>
-    <div id="successMsg" class="success-msg">تم تحديث السعر وحفظه بنجاح!</div>
-</div>
+    <script>
+        // ضع بيانات الاتصال الخاصة بـ Supabase هنا
+        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
+        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
+        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-<script>
-    function updatePrice() {
-        const select = document.getElementById('productSelect');
-        const price = document.getElementById('newPrice').value;
-        const msg = document.getElementById('successMsg');
-
-        if(!price) {
-            alert('الرجاء إدخال السعر بشكل صحيح');
-            return;
+        async function fetchProducts() {
+            const { data, error } = await _supabase.from('products').select('*');
+            const tbody = document.getElementById('productsTableBody');
+            tbody.innerHTML = '';
+            if (data) {
+                data.forEach(p => {
+                    tbody.innerHTML += `
+                        <tr>
+                            <td>${p.name}</td>
+                            <td>${p.price} د.ع</td>
+                            <td>${p.category || 'عام'}</td>
+                            <td><button class="btn-danger" onclick="deleteProduct(${p.id})">حذف</button></td>
+                        </tr>
+                    `;
+                });
+            }
         }
 
-        // حفظ التحديث في الذاكرة المحلية للمتصفح ليظهر في المتجر فوراً
-        let pricesData = JSON.parse(localStorage.getItem('storePrices')) || {};
-        pricesData[select.value] = price;
-        localStorage.setItem('storePrices', JSON.stringify(pricesData));
+        document.getElementById('productForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const name = document.getElementById('pName').value;
+            const price = parseFloat(document.getElementById('pPrice').value);
+            const image = document.getElementById('pImage').value;
+            const category = document.getElementById('pCategory').value;
 
-        msg.style.display = 'block';
-        setTimeout(() => {
-            msg.style.display = 'none';
-        }, 3000);
-    }
-</script>
+            const { error } = await _supabase.from('products').insert([{ name, price, image, category }]);
+            if (!error) {
+                alert('تمت إضافة المنتج بنجاح');
+                document.getElementById('productForm').reset();
+                fetchProducts();
+            } else {
+                alert('حدث خطأ أثناء الإضافة: ' + error.message);
+            }
+        });
 
+        async function deleteProduct(id) {
+            if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
+                const { error } = await _supabase.from('products').delete().eq('id', id);
+                if (!error) fetchProducts();
+                else alert('خطأ في الحذف');
+            }
+        }
+
+        fetchProducts();
+    </script>
 </body>
 </html>
