@@ -1,132 +1,277 @@
-<!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمازون هايبر ماركت</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700&display=swap" rel="stylesheet">
-    <style>
-        * { box-sizing: border-box; font-family: 'Cairo', sans-serif; margin: 0; padding: 0; }
-        body { background-color: #eaeded; color: #111; direction: rtl; }
-        header { background: #131921; color: #fff; padding: 15px 30px; display: flex; justify-content: space-between; align-items: center; }
-        .logo { font-size: 22px; font-weight: bold; color: #febd69; }
-        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
-        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
-        .card { background: #fff; border-radius: 8px; padding: 15px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); display: flex; flex-direction: column; justify-content: space-between; }
-        .card img { width: 100%; height: 150px; object-fit: cover; border-radius: 5px; margin-bottom: 10px; }
-        .card h3 { font-size: 16px; margin-bottom: 5px; }
-        .price { color: #B12704; font-weight: bold; font-size: 16px; margin-bottom: 10px; }
-        button { background: #ffd814; border: 1px solid #fcd200; padding: 8px; border-radius: 20px; cursor: pointer; font-weight: bold; width: 100%; }
-        button:hover { background: #f7ca00; }
-        .cart-section { background: #fff; padding: 20px; margin-top: 30px; border-radius: 8px; }
-        .cart-item { display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px; }
-        .whatsapp-btn { background: #25d366; color: white; border: none; margin-top: 15px; }
-        .whatsapp-btn:hover { background: #1ebe5d; }
-    </style>
-</head>
-<body>
-
-    <header>
-        <div class="logo">أمازون هايبر ماركت</div>
-        <a href="admin.html" style="color: #febd69; text-decoration: none; font-size: 14px;">لوحة التحكم</a>
-    </header>
-
-    <div class="container">
-        <h2 style="margin-bottom: 15px;">المنتجات المتوفرة</h2>
-        <div class="grid" id="productsGrid">
-            <!-- يتم تعبئتها برمجياً -->
-        </div>
-
-        <div class="cart-section">
-            <h2>سلة التسوق</h2>
-            <div id="cartItems" style="margin-top: 15px;">
-                <p>السلة فارغة</p>
-            </div>
-            <h3 id="cartTotal" style="margin-top: 15px;">المجموع: 0 د.ع</h3>
-            <button class="whatsapp-btn" onclick="sendToWhatsApp()">إرسال الطلب عبر واتساب</button>
-        </div>
-    </div>
-
-    <script>
-        // ضع بيانات الاتصال الخاصة بـ Supabase هنا (نفس المفاتيح)
-        const SUPABASE_URL = 'YOUR_SUPABASE_URL';
-        const SUPABASE_KEY = 'YOUR_SUPABASE_ANON_KEY';
-        const _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-        let cart = [];
-
-        async function loadStoreProducts() {
-            const { data, error } = await _supabase.from('products').select('*');
-            const grid = document.getElementById('productsGrid');
-            grid.innerHTML = '';
-            if (data && data.length > 0) {
-                data.forEach(p => {
-                    grid.innerHTML += `
-                        <div class="card">
-                            <img src="${p.image || 'https://via.placeholder.com/150'}" alt="${p.name}">
-                            <h3>${p.name}</h3>
-                            <div class="price">${p.price} د.ع</div>
-                            <button onclick="addToCart('${p.name}', ${p.price})">إضافة إلى السلة</button>
-                        </div>
-                    `;
-                });
-            } else {
-                grid.innerHTML = '<p>لا توجد منتجات معروضة حالياً.</p>';
+<script>
+        const defaultStoreData = [
+            {
+                category: "قسم اللحوم الطازجة",
+                isWeight: true,
+                products: [
+                    { name: "لحم عجل عراقي طازج (كيلو)", price: 18500 },
+                    { name: "لحم غنم عراقي طازج (كيلو)", price: 22000 },
+                    { name: "لحم مثروم عجل طازج (كيلو)", price: 19000 },
+                    { name: "كص لحم عراقي (كيلو)", price: 23000 }
+                ]
+            },
+            {
+                category: "قسم الدجاج الفريش",
+                isWeight: true,
+                products: [
+                    { name: "دجاج ذبح عراقي", price: 5750 },
+                    { name: "صدر دجاج عراقي", price: 8000 },
+                    { name: "أجنحة", price: 5500 },
+                    { name: "أفخاذ", price: 6000 },
+                    { name: "كبدة", price: 6000 },
+                    { name: "مثروم دجاج", price: 9000 }
+                ]
+            },
+            {
+                category: "قسم البيض الطازج",
+                isWeight: false,
+                products: [
+                    { name: "بيض أحمر طبقة", price: 7750 },
+                    { name: "بيض أحمر نصف طبقة", price: 4000 },
+                    { name: "بيض أبيض طبقة", price: 5750 },
+                    { name: "بيض أبيض نصف طبقة", price: 3000 },
+                    { name: "بيض نباتي أحمر طبقة", price: 8750 },
+                    { name: "بيض نباتي أحمر نصف طبقة", price: 4500 },
+                    { name: "بيض عرب نصف طبقة", price: 4500 }
+                ]
+            },
+            {
+                category: "قسم المواد الغذائية",
+                isWeight: false,
+                products: [
+                    { name: "رز محمود 4.5 كيلو", price: 12500 },
+                    { name: "رز محمود 9 كيلو", price: 24000 },
+                    { name: "رز جوكر 4.5 كيلو", price: 11000 },
+                    { name: "رز جوكر 9 كيلو", price: 21500 },
+                    { name: "رز 272 4.5 كيلو", price: 10500 },
+                    { name: "رز ريزي 5 كيلو", price: 10000 },
+                    { name: "رز كرجية 4.5 كيلو", price: 9500 },
+                    { name: "رز سفرة 4.5 كيلو", price: 9000 },
+                    { name: "رز ذهب الذهب 4 كيلو", price: 8500 },
+                    { name: "رز كلبهار 4.5 كيلو", price: 11500 },
+                    { name: "رز أبو كاس 4.5 كيلو", price: 13000 },
+                    { name: "تمن عنبر 1 كيلو", price: 3500 },
+                    { name: "تمن عنبر 5 كيلو", price: 16500 },
+                    { name: "دهن جنة 700 غم معدني", price: 3750 },
+                    { name: "زيت عافية 1.5 لتر", price: 4750 },
+                    { name: "طحين بشلر", price: 2000 },
+                    { name: "طحين الفاخر", price: 2250 },
+                    { name: "ملح كيس", price: 500 },
+                    { name: "ملح علبة", price: 750 },
+                    { name: "سكر 1 كيلو", price: 1500 },
+                    { name: "زيت زير 1 لتر", price: 2500 },
+                    { name: "زيت الدار 1 لتر", price: 2500 },
+                    { name: "زيت التونسا 1 لتر", price: 2500 },
+                    { name: "معجون زير كبير", price: 1750 },
+                    { name: "معجون زير صغير", price: 1000 },
+                    { name: "معجون التونسا كبير", price: 1750 },
+                    { name: "معجون التونسا صغير", price: 1000 }
+                ]
+            },
+            {
+                category: "قسم مواد الوزن",
+                isWeight: true,
+                products: [
+                    { name: "حمص (كيلو)", price: 3000 },
+                    { name: "عدس (كيلو)", price: 1500 },
+                    { name: "عدس أخضر (كيلو)", price: 3000 },
+                    { name: "فريكا (كيلو)", price: 4250 },
+                    { name: "سكر (كيلو)", price: 1000 },
+                    { name: "رز (كيلو)", price: 2500 },
+                    { name: "حليب (كيلو)", price: 7500 },
+                    { name: "جريش (كيلو)", price: 1500 },
+                    { name: "برغل (كيلو)", price: 1500 },
+                    { name: "برغل ناعم (كيلو)", price: 1500 },
+                    { name: "برغل خشن (كيلو)", price: 1500 },
+                    { name: "شوفان (كيلو)", price: 2500 },
+                    { name: "فاصوليا يابسة (كيلو)", price: 3000 },
+                    { name: "طرشانة (كيلو)", price: 3500 },
+                    { name: "علوجة (كيلو)", price: 2500 },
+                    { name: "نشا (كيلو)", price: 1500 },
+                    { name: "سميد (كيلو)", price: 2000 },
+                    { name: "نومي بصره أسود (كيلو)", price: 6500 },
+                    { name: "نومي بصره أشقر (كيلو)", price: 6500 },
+                    { name: "نومي بصره عصير (كيلو)", price: 7000 },
+                    { name: "لوبيا حمراء (كيلو)", price: 2500 },
+                    { name: "ماش (كيلو)", price: 2500 },
+                    { name: "حبيّة (كيلو)", price: 2000 },
+                    { name: "سمسم محمص (كيلو)", price: 4500 },
+                    { name: "سمسم خام (كيلو)", price: 4500 },
+                    { name: "طحين حمص (كيلو)", price: 2000 },
+                    { name: "طحين تمن (كيلو)", price: 1500 },
+                    { name: "فول (كيلو)", price: 3750 },
+                    { name: "شاي خلطة خاصة (كيلو)", price: 7500 },
+                    { name: "هيل (يبدأ من 50 غم)", price: 75000 },
+                    { name: "هيل مطحون (يبدأ من 50 غم)", price: 50000 }
+                ]
+            },
+            {
+                category: "قسم الخضراوات والفواكه",
+                isWeight: true,
+                products: [
+                    { name: "طماطم (كيلو)", price: 1000 },
+                    { name: "بطاطا (كيلو)", price: 1000 },
+                    { name: "خيار (كيلو)", price: 1000 },
+                    { name: "باذنجان (كيلو)", price: 1000 },
+                    { name: "بروكلي (كيلو)", price: 6250 },
+                    { name: "بصل أحمر (كيلو)", price: 1000 },
+                    { name: "بصل كريستال (كيلو)", price: 800 },
+                    { name: "بصل أصفر (كيلو)", price: 800 },
+                    { name: "بصل أخضر (كيلو)", price: 1000 },
+                    { name: "شجر (كيلو)", price: 800 },
+                    { name: "خس (كيلو)", price: 750 },
+                    { name: "لخانة حمراء (كيلو)", price: 900 },
+                    { name: "لخانة خضراء (كيلو)", price: 900 },
+                    { name: "قرنابيط (كيلو)", price: 1750 },
+                    { name: "زنجبيل طازج (كيلو)", price: 5000 },
+                    { name: "طماطة كرزية (علبة)", price: 3500, isBox: true },
+                    { name: "رقي (كيلو)", price: 650 },
+                    { name: "فلفل بارد (كيلو)", price: 750 },
+                    { name: "فلفل حار (كيلو)", price: 2000 },
+                    { name: "فلفل ألوان (علبة)", price: 1250, isBox: true },
+                    { name: "فلفل مزحلط ألوان (كيلو)", price: 3000 },
+                    { name: "تمر عراقي وزن (كيلو)", price: 2500 },
+                    { name: "تفاح أحمر (كيلو)", price: 2500 },
+                    { name: "تفاح أصفر (كيلو)", price: 3250 },
+                    { name: "تفاح أخضر (كيلو)", price: 3500 },
+                    { name: "تفاح عراقي (كيلو)", price: 2000 },
+                    { name: "موز (كيلو)", price: 2500 },
+                    { name: "كيوي (كيلو)", price: 3000 },
+                    { name: "كرز (كيلو)", price: 4250 },
+                    { name: "برتقال (كيلو)", price: 1750 },
+                    { name: "لالنكي (كيلو)", price: 2500 },
+                    { name: "الو أحمر (كيلو)", price: 2000 },
+                    { name: "الو أصفر (كيلو)", price: 2250 },
+                    { name: "بطيخ (كيلو)", price: 650 },
+                    { name: "رمان (كيلو)", price: 3000 },
+                    { name: "خوخ مسكي (كيلو)", price: 2250 },
+                    { name: "خوخ صوفي (كيلو)", price: 2500 },
+                    { name: "خوخ كعكي (كيلو)", price: 2500 },
+                    { name: "مشمش (كيلو)", price: 4000 },
+                    { name: "منكة (كيلو)", price: 3000 },
+                    { name: "أفوكادو (كيلو)", price: 6500 },
+                    { name: "عنب أسود (كيلو)", price: 2500 },
+                    { name: "عنب أبيض (كيلو)", price: 2500 },
+                    { name: "الرفيل علبة باقلاء", price: 1500, isBox: true },
+                    { name: "الرفيل بامية", price: 2000, isBox: true },
+                    { name: "الرفيل علبة محاشي", price: 2500, isBox: true },
+                    { name: "الرفيل خس صيني", price: 1750, isBox: true },
+                    { name: "الرفيل سبانخ", price: 1500, isBox: true },
+                    { name: "الرفيل رشاد", price: 1000, isBox: true },
+                    { name: "الرفيل كرفس", price: 1000, isBox: true },
+                    { name: "الرفيل معدنوس", price: 1000, isBox: true },
+                    { name: "الرفيل فجل", price: 1000, isBox: true },
+                    { name: "الرفيل لخانة", price: 1500, isBox: true },
+                    { name: "نيوزيلندا حفريات", price: 2000, isBox: true },
+                    { name: "نيوزيلندا خس صيني", price: 2000, isBox: true },
+                    { name: "نيوزيلندا باقلاء وشبنت", price: 1750, isBox: true },
+                    { name: "نيوزيلندا بامية", price: 2250, isBox: true },
+                    { name: "نيوزيلندا جرجير", price: 1250, isBox: true },
+                    { name: "نيوزيلندا معدنوس", price: 1250, isBox: true },
+                    { name: "نيوزيلندا كرفس", price: 1250, isBox: true },
+                    { name: "نيوزيلندا رشاد", price: 1250, isBox: true },
+                    { name: "نيوزيلندا نعناع", price: 1250, isBox: true },
+                    { name: "نيوزيلندا ريحان", price: 1250, isBox: true },
+                    { name: "نيوزيلندا جزر", price: 1500, isBox: true },
+                    { name: "نيوزيلندا كراث", price: 1250, isBox: true }
+                ]
+            },
+            {
+                category: "قسم المشروبات والعصائر",
+                isWeight: false,
+                products: [
+                    { name: "بيبسي 330 مل", price: 500 },
+                    { name: "سفن أب 330 مل", price: 500 },
+                    { name: "كوكا كولا 185 مل", price: 250 }
+                ]
+            },
+            {
+                category: "قسم المنظفات العامة",
+                isWeight: false,
+                products: [
+                    { name: "TOURI سائل غسيل الصحون 600 مل", price: 1250 },
+                    { name: "زاهي طوري مضخة - 1.5 لتر", price: 3500 },
+                    { name: "طوري صابون فريش علبة", price: 2250 }
+                ]
+            },
+            {
+                category: "قسم الورقيات والكليسنس",
+                isWeight: false,
+                products: [
+                    { name: "كلينس جبسي 140 سحبة", price: 1250 },
+                    { name: "جبسي كلينس سوفت - 200 سحبة", price: 1250 },
+                    { name: "كلينكس جبسي 300 سحبة / سوفت", price: 1750 }
+                ]
+            },
+            {
+                category: "قسم العناية بالشعر",
+                isWeight: false,
+                products: [
+                    { name: "شامبو هيد آند شولدرز 400 مل", price: 4500 },
+                    { name: "هيد آند شولدرز انتعاش - 1 لتر", price: 10500 },
+                    { name: "بانتين بلسم 360 مل", price: 4000 }
+                ]
+            },
+            {
+                category: "قسم المخللات",
+                isWeight: false,
+                products: [
+                    { name: "طرشي موصلي", price: 5000 },
+                    { name: "يالنجي ورق عنب", price: 10000 },
+                    { name: "زيتون متبل", price: 6000 }
+                ]
+            },
+            {
+                category: "قسم المصنعات المجمدة",
+                isWeight: false,
+                products: [
+                    { name: "برجر لحم بقري مجمد 1 كيلو", price: 6500 },
+                    { name: "ناجتس دجاج مجمد 750 غم", price: 5500 },
+                    { name: "ببازيا وبطاطا مجمدة كيس", price: 2500 }
+                ]
+            },
+            {
+                category: "قسم المعلبات",
+                isWeight: false,
+                products: [
+                    { name: "حمص الكسيح علب معدني", price: 1250 },
+                    { name: "فاصوليا زجاج", price: 1750 },
+                    { name: "حمص زجاج", price: 1750 },
+                    { name: "باقلاء علب معدني", price: 1250 },
+                    { name: "فطر مقطع علب معدني", price: 1500 },
+                    { name: "فطر كامل علب معدني", price: 1750 },
+                    { name: "بزاليا معدني", price: 1000 },
+                    { name: "بزاليا وجزر معدني", price: 1000 },
+                    { name: "خضراوات وبزاليا وجزر معدني", price: 1250 },
+                    { name: "حمص بطحينة معدني", price: 1500 },
+                    { name: "لانشون تغذية لحم كبير", price: 3000 },
+                    { name: "لانشون تغذية لحم صغير", price: 1750 },
+                    { name: "لانشون تغذية دجاج كبير", price: 3000 },
+                    { name: "لانشون تغذية دجاج صغير", price: 1750 },
+                    { name: "سجق تغذية دجاج", price: 2500 },
+                    { name: "سجق تغذية لحم", price: 2750 },
+                    { name: "لحم مثروم اكزيتر معدني", price: 3500 },
+                    { name: "سردين حار", price: 1500 },
+                    { name: "سردين بارد", price: 1500 }
+                ]
+            },
+            {
+                category: "قسم الأجبان",
+                isWeight: false,
+                products: [
+                    { name: "جبن قشقوان تركي (قالب)", price: 8500 },
+                    { name: "جبن حلوم طبيعي", price: 4500 },
+                    { name: "جبنة مثلثات كيري عبوة", price: 3500 }
+                ]
+            },
+            {
+                category: "قسم الحلويات والبسكويت",
+                isWeight: false,
+                products: [
+                    { name: "بسكويت أولكر بالشوكولاتة (شدة)", price: 3000 },
+                    { name: "شوكولاتة جالاكسي سادة", price: 1250 },
+                    { name: "معمول تمر دايجستف", price: 2500 }
+                ]
             }
-        }
-
-        function addToCart(name, price) {
-            const existing = cart.find(item => item.name === name);
-            if (existing) {
-                existing.qty++;
-            } else {
-                cart.push({ name, price, qty: 1 });
-            }
-            updateCartUI();
-        }
-
-        function updateCartUI() {
-            const container = document.getElementById('cartItems');
-            const totalEl = document.getElementById('cartTotal');
-            if (cart.length === 0) {
-                container.innerHTML = '<p>السلة فارغة</p>';
-                totalEl.innerText = 'المجموع: 0 د.ع';
-                return;
-            }
-            container.innerHTML = '';
-            let total = 0;
-            cart.forEach((item, index) => {
-                total += item.price * item.qty;
-                container.innerHTML += `
-                    <div class="cart-item">
-                        <span>${item.name} (×${item.qty})</span>
-                        <span>${item.price * item.qty} د.ع</span>
-                    </div>
-                `;
-            });
-            totalEl.innerText = `المجموع: ${total} د.ع`;
-        }
-
-        function sendToWhatsApp() {
-            if (cart.length === 0) {
-                alert('السلة فارغة، يرجى اختيار منتجات أولاً.');
-                return;
-            }
-            let message = 'مرحباً، أود طلب المنتجات التالية من أمازون هايبر ماركت:%0A';
-            let total = 0;
-            cart.forEach(item => {
-                message += `- ${item.name} (الكمية: ${item.qty}) - السعر: ${item.price * item.qty} د.ع%0A`;
-                total += item.price * item.qty;
-            });
-            message += `%0A*المجموع الكلي: ${total} د.ع*`;
-            
-            // استبدل الرقم أدناه برقم الواتساب الخاص بك (مثلاً: 9647700000000+)
-            const phone = '964XXXXXXXXXXXXXXXXX'; 
-            window.open(`https://wa.me/${phone}?text=${message}`, '_blank');
-        }
-
-        loadStoreProducts();
+        ];
     </script>
-</body>
-</html>
