@@ -96,23 +96,26 @@
                 });
             }
         }
+document.getElementById('productForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('pName').value;
+    const price = parseFloat(document.getElementById('pPrice').value);
+    const image = document.getElementById('pImage').value;
+    const category = document.getElementById('pCategory').value;
 
-        document.getElementById('productForm').addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const name = document.getElementById('pName').value;
-            const price = parseFloat(document.getElementById('pPrice').value);
-            const image = document.getElementById('pImage').value;
-            const category = document.getElementById('pCategory').value;
+    const { data, error } = await _supabase
+        .from('products')
+        .insert([{ name, price, image, category }]);
 
-            const { error } = await _supabase.from('products').insert([{ name, price, image, category }]);
-            if (!error) {
-                alert('تمت إضافة المنتج بنجاح');
-                document.getElementById('productForm').reset();
-                fetchProducts();
-            } else {
-                alert('حدث خطأ أثناء الإضافة: ' + error.message);
-            }
-        });
+    if (error) {
+        console.error('خطأ Supabase:', error);
+        alert('فشل الحفظ: ' + error.message);
+    } else {
+        alert('تمت إضافة المنتج بنجاح!');
+        document.getElementById('productForm').reset();
+        fetchProducts();
+    }
+});
 
         async function deleteProduct(id) {
             if (confirm('هل أنت متأكد من حذف هذا المنتج؟')) {
