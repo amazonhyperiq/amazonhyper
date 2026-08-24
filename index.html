@@ -143,7 +143,7 @@
             font-size: 1.1rem;
         }
         .qty-btn:active { background-color: #e3e6e6; }
-        .qty-val { font-weight: bold; min-width: 25px; text-align: center; }
+        .qty-val { font-weight: bold; min-width: 45px; text-align: center; font-size: 0.9rem; }
 
         /* صندوق إضافة مواد غير موجودة */
         .custom-item-box {
@@ -358,7 +358,6 @@
     </div>
 
     <script>
-        // العروض تبدأ فارغة تماماً
         let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [];
 
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
@@ -418,7 +417,7 @@
                 ]
             },
             {
-                category: "قسم الخضراوات والفواكه",
+                category: "قسم الفواكه والخضار",
                 products: [
                     { name: "طماطم", price: null, showPrice: false },
                     { name: "بطاطا", price: null, showPrice: false },
@@ -429,10 +428,16 @@
             { category: "قسم المنظفات العامة", products: [] },
             { category: "قسم الورقيات والكليسنس", products: [] },
             { category: "قسم الأجبان", products: [] },
+            { category: "قسم المخللات", products: [] },
             { category: "قسم الحلويات والبسكويت", products: [] }
         ];
 
         let cart = {}; 
+
+        // تحديد الأقسام التي تبيع بالوزن (بالكيلو)
+        function isWeightCategory(categoryName) {
+            return categoryName === "قسم المخللات" || categoryName === "قسم الأجبان" || categoryName === "قسم الفواكه والخضار";
+        }
 
         function renderStore() {
             renderOffers();
@@ -441,13 +446,23 @@
 
             storeData.forEach((cat) => {
                 let productsHtml = '';
+                let isWeight = isWeightCategory(cat.category);
+
                 if (cat.products.length === 0) {
                     productsHtml = `<div style="color:var(--gray); font-size:0.9rem; padding: 5px 0;">القسم فارغ حالياً</div>`;
                 } else {
                     cat.products.forEach((prod) => {
-                        let priceText = (prod.showPrice && prod.price !== null) ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب / الوزن';
+                        let priceText;
+                        if (isWeight) {
+                            let basePriceStr = (prod.showPrice && prod.price !== null) ? `${prod.price.toLocaleString()} د.ع / كغ` : 'السعر حسب الطلب / للكيلو';
+                            priceText = `${basePriceStr} (يباع بالكيلو)`;
+                        } else {
+                            priceText = (prod.showPrice && prod.price !== null) ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب / الوزن';
+                        }
+
                         let key = `${cat.category}___${prod.name}`;
                         let qty = cart[key] ? cart[key].qty : 0;
+                        let displayQtyText = isWeight ? `${qty.toFixed(3)} كغ` : qty;
 
                         productsHtml += `
                             <div class="product-row">
@@ -457,7 +472,7 @@
                                 </div>
                                 <div class="qty-box">
                                     <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price !== null ? prod.price : 'null'}, ${prod.showPrice}, -1)">-</button>
-                                    <span class="qty-val" id="qty-${key}">${qty}</span>
+                                    <span class="qty-val" id="qty-${key}">${displayQtyText}</span>
                                     <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price !== null ? prod.price : 'null'}, ${prod.showPrice}, 1)">+</button>
                                 </div>
                             </div>
@@ -481,7 +496,7 @@
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
             if (offersData.length === 0) {
-                offersSec.innerHTML = ''; // إذا كانت فارغة، تختفي تماماً
+                offersSec.innerHTML = ''; 
                 return;
             }
 
@@ -523,17 +538,29 @@
             headerEl.querySelector('span:last-child').innerText = content.classList.contains('active') ? '▲' : '▼';
         }
 
-        function changeQty(category, name, price, showPrice, delta) {
+        function changeQty(category, name, price, showPrice, deltaDir) {
             let key = `${category}___${name}`;
+            let isWeight = isWeightCategory(category);
+            let step = isWeight ? 0.500 : 1;
+
             if (!cart[key]) {
                 cart[key] = { name, price: (showPrice ? price : null), qty: 0, category, showPrice };
             }
-            cart[key].qty += delta;
+
+            cart[key].qty += (deltaDir * step);
             if (cart[key].qty < 0) cart[key].qty = 0;
+            
+            // تصحيح الأخطاء العشرية البسيطة في الجافاسكريبت للوزن
+            if (isWeight) {
+                cart[key].qty = Math.round(cart[key].qty * 1000) / 1000;
+            }
+
             if (cart[key].qty === 0) delete cart[key];
 
             let el = document.getElementById(`qty-${key}`);
-            if (el) el.innerText = cart[key] ? cart[key].qty : 0;
+            if (el) {
+                el.innerText = isWeight ? `${cart[key] ? cart[key].qty.toFixed(3) : '0.000'} كغ` : (cart[key] ? cart[key].qty : 0);
+            }
             updateCartSummary();
         }
 
@@ -565,7 +592,7 @@
                     total += cart[k].price * cart[k].qty;
                 }
             }
-            document.getElementById('cartTotal').innerText = `${total.toLocaleString()} د.ع`;
+            document.getElementById('cartTotal').innerText = `${Math.round(total).toLocaleString()} د.ع`;
         }
 
         function sendWhatsApp() {
@@ -593,13 +620,16 @@
 
             let calcTotal = 0;
             for (let [k, item] of Object.entries(cart)) {
-                let pText = (item.showPrice && item.price !== null) ? `${(item.price * item.qty).toLocaleString()} د.ع` : 'سعر تقديري / حسب الطلب';
-                msg += `▪️ [${item.category}] ${item.name} (الكمية: ${item.qty}) - ${pText}\n`;
+                let isWeight = isWeightCategory(item.category);
+                let qtyFormatted = isWeight ? `${item.qty.toFixed(3)} كغ` : `الكمية: ${item.qty}`;
+                let pText = (item.showPrice && item.price !== null) ? `${Math.round(item.price * item.qty).toLocaleString()} د.ع` : 'سعر تقديري / حسب الطلب';
+                
+                msg += `▪️ [${item.category}] ${item.name} (${qtyFormatted}) - ${pText}\n`;
                 if (item.showPrice && item.price !== null) calcTotal += item.price * item.qty;
             }
 
             msg += `-------------------\n`;
-            msg += `💰 *المجموع الكلي المبدئي:* ${calcTotal.toLocaleString()} د.ع\n`;
+            msg += `💰 *المجموع الكلي المبدئي:* ${Math.round(calcTotal).toLocaleString()} د.ع\n`;
 
             let storePhone = "9647842000516";
             window.open(`https://wa.me/${storePhone}?text=${encodeURIComponent(msg)}`, '_blank');
@@ -612,7 +642,7 @@
         function checkLogin() {
             let u = document.getElementById('adminUser').value;
             let p = document.getElementById('adminPass').value;
-            if (u === 'amazon' && p === '9988') {
+            if (u === 'admin' && p === '1234') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
                 initAdminDashboard();
@@ -631,7 +661,6 @@
         }
 
         function renderAdminTables() {
-            // جدول العروض
             const offersTbody = document.getElementById('admOffersTableBody');
             offersTbody.innerHTML = '';
             if (offersData.length === 0) {
@@ -651,7 +680,6 @@
                 });
             }
 
-            // جدول المنتجات
             const tbody = document.getElementById('admTableBody');
             tbody.innerHTML = '';
             storeData.forEach((cat, cIdx) => {
