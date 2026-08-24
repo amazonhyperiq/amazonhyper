@@ -18,7 +18,7 @@
             --success: #007600;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 120px; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 130px; }
         
         /* الهيدر */
         header {
@@ -48,37 +48,45 @@
 
         .container { max-width: 800px; margin: 15px auto; padding: 0 10px; }
 
-        /* قسم العروض المميزة */
-        .offers-container {
-            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
-            border: 2px dashed var(--accent);
-            border-radius: 8px;
+        /* قسم العروض الجذاب في الواجهة */
+        .offers-banner {
+            background: linear-gradient(135deg, #ff416c, #ff4b2b);
+            color: white;
+            border-radius: 10px;
             padding: 15px;
             margin-bottom: 15px;
+            box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
+            animation: pulseBanner 3s infinite alternate;
         }
-        .offers-title {
-            font-size: 1.1rem;
-            color: #d35400;
-            font-weight: bold;
-            margin-bottom: 10px;
+        @keyframes pulseBanner {
+            0% { box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2); }
+            100% { box-shadow: 0 6px 20px rgba(255, 75, 43, 0.5); }
+        }
+        .offers-title-box {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
+            font-size: 1.15rem;
+            font-weight: bold;
+            margin-bottom: 12px;
+            border-bottom: 1px solid rgba(255,255,255,0.3);
+            padding-bottom: 8px;
         }
-        .offer-card-grid {
+        .offer-cards-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
             gap: 10px;
         }
-        .offer-item {
+        .offer-card-item {
             background: var(--white);
-            border: 1px solid #f39c12;
-            border-radius: 6px;
-            padding: 10px;
+            color: var(--text);
+            border-radius: 8px;
+            padding: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            border-right: 4px solid #ff4b2b;
         }
 
         /* الأقسام (Accordion) */
@@ -157,19 +165,19 @@
             width: 100%;
             background-color: var(--primary);
             color: white;
-            padding: 15px 20px;
+            padding: 12px 20px;
             box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
             max-height: 45vh;
             overflow-y: auto;
         }
         .checkout-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-            gap: 10px;
-            margin-bottom: 10px;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 8px;
+            margin-bottom: 8px;
         }
         .checkout-grid input, .checkout-grid textarea {
-            padding: 8px;
+            padding: 7px;
             border-radius: 4px;
             border: 1px solid var(--border);
             background: #fff;
@@ -182,7 +190,7 @@
             justify-content: space-between;
             align-items: center;
             border-top: 1px solid rgba(255,255,255,0.1);
-            padding-top: 10px;
+            padding-top: 8px;
             flex-wrap: wrap;
             gap: 10px;
         }
@@ -191,7 +199,7 @@
             background-color: #25d366;
             color: white;
             border: none;
-            padding: 10px 20px;
+            padding: 9px 18px;
             border-radius: 4px;
             font-weight: bold;
             cursor: pointer;
@@ -252,7 +260,7 @@
     </header>
 
     <div class="container">
-        <!-- قسم العروض المميزة يظهر هنا فقط عند إضافة عروض -->
+        <!-- قسم العروض الجذاب في الواجهة (يختفي تماماً إذا لم تضف عروض) -->
         <div id="offersSection"></div>
     </div>
 
@@ -306,7 +314,7 @@
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
                 <!-- إدارة العروض الخاصة -->
-                <h3>إدارة العروض المميزة (اكتب ما تشاء)</h3>
+                <h3>إدارة عروض الواجهة البارزة</h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                     <input type="text" id="admOfferText" class="form-control" placeholder="اكتب وصف العرض هنا..." style="flex: 2;">
                     <input type="number" id="admOfferPrice" class="form-control" placeholder="السعر (اختياري)" style="flex: 1;">
@@ -350,7 +358,7 @@
     </div>
 
     <script>
-        // العروض تبدأ فارغة تماماً بناءً على طلبك
+        // العروض تبدأ فارغة تماماً
         let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [];
 
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
@@ -473,35 +481,38 @@
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
             if (offersData.length === 0) {
-                offersSec.innerHTML = ''; // إذا كانت فارغة، لا تظهر القسم نهائياً ليبقى مرتباً
+                offersSec.innerHTML = ''; // إذا كانت فارغة، تختفي تماماً
                 return;
             }
 
             let itemsHtml = '';
-            offersData.forEach((offer) => {
-                let pText = (offer.showPrice && offer.price) ? `${offer.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
-                let key = `العروض الخاصة___${offer.name}`;
+            offersData.forEach((offer, idx) => {
+                let pText = (offer.showPrice && offer.price !== null) ? `${offer.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
+                let key = `عروض الواجهة___${offer.name}`;
                 let qty = cart[key] ? cart[key].qty : 0;
 
                 itemsHtml += `
-                    <div class="offer-item">
+                    <div class="offer-card-item">
                         <div class="p-info">
-                            <div class="p-name" style="color:#c0392b;">🔥 ${offer.name}</div>
+                            <div class="p-name" style="color:#d9534f;">🔥 ${offer.name}</div>
                             <div class="p-price">${pText}</div>
                         </div>
                         <div class="qty-box">
-                            <button class="qty-btn" onclick="changeQty('العروض الخاصة', '${offer.name}', ${offer.price || 'null'}, ${offer.showPrice}, -1)">-</button>
+                            <button class="qty-btn" onclick="changeQty('عروض الواجهة', '${offer.name}', ${offer.price !== null ? offer.price : 'null'}, ${offer.showPrice}, -1)">-</button>
                             <span class="qty-val" id="qty-${key}">${qty}</span>
-                            <button class="qty-btn" onclick="changeQty('العروض الخاصة', '${offer.name}', ${offer.price || 'null'}, ${offer.showPrice}, 1)">+</button>
+                            <button class="qty-btn" onclick="changeQty('عروض الواجهة', '${offer.name}', ${offer.price !== null ? offer.price : 'null'}, ${offer.showPrice}, 1)">+</button>
                         </div>
                     </div>
                 `;
             });
 
             offersSec.innerHTML = `
-                <div class="offers-container">
-                    <div class="offers-title">⚡ عروض وتخفيضات أمازون الخاصة</div>
-                    <div class="offer-card-grid">${itemsHtml}</div>
+                <div class="offers-banner">
+                    <div class="offers-title-box">
+                        <span>⚡</span>
+                        <span>عروض وتخفيضات أمازون الحصرية</span>
+                    </div>
+                    <div class="offer-cards-grid">${itemsHtml}</div>
                 </div>
             `;
         }
@@ -531,7 +542,7 @@
             let qty = parseInt(document.getElementById('customQty').value) || 1;
 
             if (!name) {
-                alert('الرجاء إدخال اسم المادة غير الموجودة.');
+                alert('الرجاء إدخال اسم المادة المطلوبة.');
                 return;
             }
 
@@ -630,7 +641,7 @@
                     offersTbody.innerHTML += `
                         <tr>
                             <td><input type="text" id="adm-offer-name-${idx}" value="${offer.name}" class="form-control" style="border:none; background:transparent;"></td>
-                            <td><input type="number" id="adm-offer-price-${idx}" value="${offer.price || ''}" class="form-control" placeholder="بلا سعر" style="width:90px;"></td>
+                            <td><input type="number" id="adm-offer-price-${idx}" value="${offer.price !== null ? offer.price : ''}" class="form-control" placeholder="بلا سعر" style="width:90px;"></td>
                             <td>
                                 <button class="btn-action btn-edit" onclick="updateOffer(${idx})">حفظ</button>
                                 <button class="btn-action btn-del" onclick="deleteOffer(${idx})">حذف</button>
@@ -672,7 +683,7 @@
             saveAndRefreshAll();
             document.getElementById('admOfferText').value = '';
             document.getElementById('admOfferPrice').value = '';
-            alert('تمت إضافة العرض بنجاح!');
+            alert('تمت إضافة العرض للواجهة بنجاح!');
         }
 
         function updateOffer(idx) {
