@@ -252,7 +252,7 @@
     </header>
 
     <div class="container">
-        <!-- قسم العروض المميزة يظهر هنا تلقائياً -->
+        <!-- قسم العروض المميزة يظهر هنا فقط عند إضافة عروض -->
         <div id="offersSection"></div>
     </div>
 
@@ -306,9 +306,9 @@
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
                 <!-- إدارة العروض الخاصة -->
-                <h3>إدارة العروض المميزة</h3>
+                <h3>إدارة العروض المميزة (اكتب ما تشاء)</h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
-                    <input type="text" id="admOfferText" class="form-control" placeholder="وصف العرض (مثال: عرض عكازة لحم غنم كيلو + لية مجاناً)" style="flex: 2;">
+                    <input type="text" id="admOfferText" class="form-control" placeholder="اكتب وصف العرض هنا..." style="flex: 2;">
                     <input type="number" id="admOfferPrice" class="form-control" placeholder="السعر (اختياري)" style="flex: 1;">
                     <button class="btn-add" onclick="addOfferItem()">إضافة عرض</button>
                 </div>
@@ -350,10 +350,8 @@
     </div>
 
     <script>
-        // تخزين العروض الخاصة
-        let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [
-            { name: "عرض ترحيبي: دجاج ذبح عراقي + كبدة هدية", price: 6000, showPrice: true }
-        ];
+        // العروض تبدأ فارغة تماماً بناءً على طلبك
+        let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [];
 
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
             {
@@ -426,7 +424,7 @@
             { category: "قسم الحلويات والبسكويت", products: [] }
         ];
 
-        let cart = {}; // مفتاح: { name, price, qty, category, showPrice }
+        let cart = {}; 
 
         function renderStore() {
             renderOffers();
@@ -475,12 +473,12 @@
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
             if (offersData.length === 0) {
-                offersSec.innerHTML = '';
+                offersSec.innerHTML = ''; // إذا كانت فارغة، لا تظهر القسم نهائياً ليبقى مرتباً
                 return;
             }
 
             let itemsHtml = '';
-            offersData.forEach((offer, idx) => {
+            offersData.forEach((offer) => {
                 let pText = (offer.showPrice && offer.price) ? `${offer.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
                 let key = `العروض الخاصة___${offer.name}`;
                 let qty = cart[key] ? cart[key].qty : 0;
@@ -625,18 +623,22 @@
             // جدول العروض
             const offersTbody = document.getElementById('admOffersTableBody');
             offersTbody.innerHTML = '';
-            offersData.forEach((offer, idx) => {
-                offersTbody.innerHTML += `
-                    <tr>
-                        <td><input type="text" id="adm-offer-name-${idx}" value="${offer.name}" class="form-control" style="border:none; background:transparent;"></td>
-                        <td><input type="number" id="adm-offer-price-${idx}" value="${offer.price || ''}" class="form-control" placeholder="بلا سعر" style="width:90px;"></td>
-                        <td>
-                            <button class="btn-action btn-edit" onclick="updateOffer(${idx})">حفظ</button>
-                            <button class="btn-action btn-del" onclick="deleteOffer(${idx})">حذف</button>
-                        </td>
-                    </tr>
-                `;
-            });
+            if (offersData.length === 0) {
+                offersTbody.innerHTML = `<tr><td colspan="3" style="text-align:center; color:var(--gray);">لا توجد عروض مضافة حالياً</td></tr>`;
+            } else {
+                offersData.forEach((offer, idx) => {
+                    offersTbody.innerHTML += `
+                        <tr>
+                            <td><input type="text" id="adm-offer-name-${idx}" value="${offer.name}" class="form-control" style="border:none; background:transparent;"></td>
+                            <td><input type="number" id="adm-offer-price-${idx}" value="${offer.price || ''}" class="form-control" placeholder="بلا سعر" style="width:90px;"></td>
+                            <td>
+                                <button class="btn-action btn-edit" onclick="updateOffer(${idx})">حفظ</button>
+                                <button class="btn-action btn-del" onclick="deleteOffer(${idx})">حذف</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+            }
 
             // جدول المنتجات
             const tbody = document.getElementById('admTableBody');
