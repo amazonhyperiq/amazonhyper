@@ -56,11 +56,6 @@
             padding: 15px;
             margin-bottom: 15px;
             box-shadow: 0 4px 15px rgba(255, 75, 43, 0.3);
-            animation: pulseBanner 3s infinite alternate;
-        }
-        @keyframes pulseBanner {
-            0% { box-shadow: 0 4px 10px rgba(255, 75, 43, 0.2); }
-            100% { box-shadow: 0 6px 20px rgba(255, 75, 43, 0.5); }
         }
         .offers-title-box {
             display: flex;
@@ -143,7 +138,7 @@
             font-size: 1.1rem;
         }
         .qty-btn:active { background-color: #e3e6e6; }
-        .qty-val { font-weight: bold; min-width: 45px; text-align: center; font-size: 0.9rem; }
+        .qty-val { font-weight: bold; min-width: 55px; text-align: center; font-size: 0.9rem; }
 
         /* صندوق إضافة مواد غير موجودة */
         .custom-item-box {
@@ -260,13 +255,11 @@
     </header>
 
     <div class="container">
-        <!-- قسم العروض الجذاب في الواجهة (يختفي تماماً إذا لم تضف عروض) -->
         <div id="offersSection"></div>
     </div>
 
     <div class="container" id="storeContainer"></div>
 
-    <!-- قسم إضافة مواد غير موجودة بالموقع -->
     <div class="container">
         <div class="custom-item-box">
             <h3>طلب مادة غير موجودة في القائمة</h3>
@@ -278,7 +271,6 @@
         </div>
     </div>
 
-    <!-- شريط الطلب السفلي -->
     <div class="checkout-section">
         <div class="checkout-grid">
             <input type="text" id="custName" placeholder="اسم الزبون الكريم *">
@@ -292,7 +284,6 @@
         </div>
     </div>
 
-    <!-- نافذة لوحة التحكم -->
     <div class="modal" id="adminModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeAdminModal()">إغلاق</button>
@@ -313,7 +304,6 @@
                 <h2>لوحة التحكم والإدارة</h2>
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
-                <!-- إدارة العروض الخاصة -->
                 <h3>إدارة عروض الواجهة البارزة</h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                     <input type="text" id="admOfferText" class="form-control" placeholder="اكتب وصف العرض هنا..." style="flex: 2;">
@@ -358,6 +348,13 @@
     </div>
 
     <script>
+        // رقم الإصدار لتحديث وتفريغ الذاكرة المؤقتة تلقائياً على الهواتف عند أي تحديث
+        const currentVersion = "v2.5";
+        if (localStorage.getItem('amazonVersion') !== currentVersion) {
+            localStorage.removeItem('amazonStoreData');
+            localStorage.setItem('amazonVersion', currentVersion);
+        }
+
         let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [];
 
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
@@ -434,7 +431,6 @@
 
         let cart = {}; 
 
-        // تحديد الأقسام التي تبيع بالوزن (بالكيلو)
         function isWeightCategory(categoryName) {
             return categoryName === "قسم المخللات" || categoryName === "قسم الأجبان" || categoryName === "قسم الفواكه والخضار";
         }
@@ -550,7 +546,6 @@
             cart[key].qty += (deltaDir * step);
             if (cart[key].qty < 0) cart[key].qty = 0;
             
-            // تصحيح الأخطاء العشرية البسيطة في الجافاسكريبت للوزن
             if (isWeight) {
                 cart[key].qty = Math.round(cart[key].qty * 1000) / 1000;
             }
@@ -635,7 +630,6 @@
             window.open(`https://wa.me/${storePhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // لوحة التحكم
         function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
         function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
 
