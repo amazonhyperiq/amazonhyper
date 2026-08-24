@@ -20,7 +20,6 @@
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; }
         body { background-color: var(--bg); color: var(--text); padding-bottom: 130px; }
         
-        /* الهيدر */
         header {
             background-color: var(--primary);
             color: var(--white);
@@ -48,7 +47,6 @@
 
         .container { max-width: 800px; margin: 15px auto; padding: 0 10px; }
 
-        /* قسم العروض الجذاب في الواجهة */
         .offers-banner {
             background: linear-gradient(135deg, #ff416c, #ff4b2b);
             color: white;
@@ -84,7 +82,6 @@
             border-right: 4px solid #ff4b2b;
         }
 
-        /* الأقسام (Accordion) */
         .category-box {
             background: var(--white);
             margin-bottom: 10px;
@@ -112,7 +109,6 @@
         }
         .category-content.active { display: block; }
 
-        /* المنتجات */
         .product-row {
             display: flex;
             justify-content: space-between;
@@ -125,7 +121,6 @@
         .p-name { font-size: 0.95rem; font-weight: bold; }
         .p-price { font-size: 0.85rem; color: var(--gray); margin-top: 3px; }
         
-        /* عداد الكميات */
         .qty-box { display: flex; align-items: center; gap: 8px; }
         .qty-btn {
             background-color: #f0f2f2;
@@ -140,7 +135,6 @@
         .qty-btn:active { background-color: #e3e6e6; }
         .qty-val { font-weight: bold; min-width: 55px; text-align: center; font-size: 0.9rem; }
 
-        /* صندوق إضافة مواد غير موجودة */
         .custom-item-box {
             background: var(--white);
             border: 1px solid var(--border);
@@ -152,7 +146,6 @@
         .custom-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
         .custom-inputs input { flex: 1; min-width: 120px; padding: 8px; border: 1px solid var(--border); border-radius: 4px; }
 
-        /* شريط الطلب السفلي */
         .checkout-section {
             position: fixed;
             bottom: 0;
@@ -202,7 +195,6 @@
         }
         .btn-whatsapp:hover { background-color: #1ebe5d; }
 
-        /* لوحة التحكم (Modal) */
         .modal {
             display: none;
             position: fixed;
@@ -348,16 +340,8 @@
     </div>
 
     <script>
-        // رقم الإصدار لتحديث وتفريغ الذاكرة المؤقتة تلقائياً على الهواتف عند أي تحديث
-        const currentVersion = "v2.5";
-        if (localStorage.getItem('amazonVersion') !== currentVersion) {
-            localStorage.removeItem('amazonStoreData');
-            localStorage.setItem('amazonVersion', currentVersion);
-        }
-
-        let offersData = JSON.parse(localStorage.getItem('amazonOffersData')) || [];
-
-        let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
+        // الأقسام والمنتجات الأساسية الافتراضية
+        const defaultStoreData = [
             {
                 category: "قسم اللحوم الطازجة",
                 products: [
@@ -428,6 +412,10 @@
             { category: "قسم المخللات", products: [] },
             { category: "قسم الحلويات والبسكويت", products: [] }
         ];
+
+        // نظام الحفظ الآمن والمستقل (لا يتم مسحه أبداً عند تحديث الإصدارات)
+        let storeData = JSON.parse(localStorage.getItem('amazonStoreData_v2')) || defaultStoreData;
+        let offersData = JSON.parse(localStorage.getItem('amazonOffersData_v2')) || [];
 
         let cart = {}; 
 
@@ -636,7 +624,7 @@
         function checkLogin() {
             let u = document.getElementById('adminUser').value;
             let p = document.getElementById('adminPass').value;
-            if (u === 'omar' && p === '8181') {
+            if (u === 'admin' && p === '1234') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
                 initAdminDashboard();
@@ -765,8 +753,8 @@
         }
 
         function saveAndRefreshAll() {
-            localStorage.setItem('amazonStoreData', JSON.stringify(storeData));
-            localStorage.setItem('amazonOffersData', JSON.stringify(offersData));
+            localStorage.setItem('amazonStoreData_v2', JSON.stringify(storeData));
+            localStorage.setItem('amazonOffersData_v2', JSON.stringify(offersData));
             renderStore();
             renderAdminTables();
         }
