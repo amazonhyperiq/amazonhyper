@@ -18,7 +18,7 @@
             --success: #007600;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: Tahoma, Arial, sans-serif; }
-        body { background-color: var(--bg); color: var(--text); padding-bottom: 90px; }
+        body { background-color: var(--bg); color: var(--text); padding-bottom: 120px; }
         
         /* الهيدر */
         header {
@@ -104,20 +104,56 @@
         .qty-btn:active { background-color: #e3e6e6; }
         .qty-val { font-weight: bold; min-width: 25px; text-align: center; }
 
-        /* شريط الطلب العائم */
-        .cart-bar {
+        /* صندوق إضافة مواد غير موجودة */
+        .custom-item-box {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        .custom-item-box h3 { font-size: 0.95rem; margin-bottom: 10px; color: var(--primary); }
+        .custom-inputs { display: flex; gap: 8px; flex-wrap: wrap; }
+        .custom-inputs input { flex: 1; min-width: 120px; padding: 8px; border: 1px solid var(--border); border-radius: 4px; }
+
+        /* شريط الطلب السفلي وع معلومات الزبون */
+        .checkout-section {
             position: fixed;
             bottom: 0;
             left: 0;
             width: 100%;
             background-color: var(--primary);
             color: white;
-            padding: 12px 20px;
+            padding: 15px 20px;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            max-height: 45vh;
+            overflow-y: auto;
+        }
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        .checkout-grid input, .checkout-grid textarea {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid var(--border);
+            background: #fff;
+            color: #111;
+            font-size: 0.85rem;
+            width: 100%;
+        }
+        .checkout-footer {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 10px;
+            flex-wrap: wrap;
+            gap: 10px;
         }
+        .total-price { font-size: 1.1rem; color: var(--secondary); font-weight: bold; }
         .btn-whatsapp {
             background-color: #25d366;
             color: white;
@@ -130,7 +166,7 @@
         }
         .btn-whatsapp:hover { background-color: #1ebe5d; }
 
-        /* نافذة لوحة التحكم (Modal) */
+        /* لوحة التحكم (Modal) */
         .modal {
             display: none;
             position: fixed;
@@ -149,6 +185,7 @@
             padding: 20px;
             overflow-y: auto;
             position: relative;
+            color: #111;
         }
         .close-modal {
             position: absolute;
@@ -181,13 +218,32 @@
         </div>
     </header>
 
-    <div class="container" id="storeContainer">
-        <!-- الأقسام والمنتجات تعرض هنا ديناميكياً -->
+    <div class="container" id="storeContainer"></div>
+
+    <!-- قسم إضافة مواد غير موجودة بالموقع -->
+    <div class="container">
+        <div class="custom-item-box">
+            <h3>طلب مادة غير موجودة في القائمة</h3>
+            <div class="custom-inputs">
+                <input type="text" id="customName" placeholder="اسم المادة المطلوبة">
+                <input type="number" id="customQty" placeholder="الكمية" value="1" style="max-width: 80px;">
+                <button class="btn-add" onclick="addCustomItem()">إضافة للسلة</button>
+            </div>
+        </div>
     </div>
 
-    <div class="cart-bar">
-        <div>المنتجات المختارة: <strong id="cartCount">0</strong></div>
-        <button class="btn-whatsapp" onclick="sendWhatsApp()">إرسال الطلب عبر واتساب 📱</button>
+    <!-- شريط الطلب السفلي (معلومات الزبون + المجموع + إرسال) -->
+    <div class="checkout-section">
+        <div class="checkout-grid">
+            <input type="text" id="custName" placeholder="اسم الزبون الكريم *">
+            <input type="text" id="custPhone" placeholder="رقم الهاتف *">
+            <input type="text" id="custRegion" placeholder="المنطقة / العنوان *">
+            <textarea id="custNotes" placeholder="ملاحظات إضافية (اختياري)" rows="1" style="resize:none;"></textarea>
+        </div>
+        <div class="checkout-footer">
+            <div>المجموع الكلي: <span class="total-price" id="cartTotal">0 د.ع</span></div>
+            <button class="btn-whatsapp" onclick="sendWhatsApp()">إرسال الطلب عبر واتساب 📱</button>
+        </div>
     </div>
 
     <!-- نافذة تسجيل الدخول / لوحة التحكم -->
@@ -220,7 +276,7 @@
                 </div>
 
                 <h3 style="margin-top: 20px;">قائمة المواد الحالية</h3>
-                <div style="max-height: 300px; overflow-y: auto;">
+                <div style="max-height: 250px; overflow-y: auto;">
                     <table class="admin-table">
                         <thead>
                             <tr>
@@ -238,7 +294,6 @@
     </div>
 
     <script>
-        // الهيكل الأساسي للأقسام بدقة كاملة ومطابقة لكل طلباتك
         let storeData = JSON.parse(localStorage.getItem('amazonStoreData')) || [
             {
                 category: "قسم اللحوم الطازجة",
@@ -392,9 +447,8 @@
             { category: "قسم الحلويات والبسكويت", products: [] }
         ];
 
-        let cart = {};
+        let cart = {}; // مفتاح: { name, price, qty, category }
 
-        // عرض المتجر مع أقسام قابلة للطي (Accordion)
         function renderStore() {
             const container = document.getElementById('storeContainer');
             container.innerHTML = '';
@@ -407,7 +461,7 @@
                     cat.products.forEach((prod, prodIdx) => {
                         let priceText = prod.price !== null ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب / الوزن';
                         let key = `${cat.category}___${prod.name}`;
-                        let qty = cart[key] || 0;
+                        let qty = cart[key] ? cart[key].qty : 0;
 
                         productsHtml += `
                             <div class="product-row">
@@ -416,9 +470,9 @@
                                     <div class="p-price">${priceText}</div>
                                 </div>
                                 <div class="qty-box">
-                                    <button class="qty-btn" onclick="changeQty('${key}', -1)">-</button>
+                                    <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price !== null ? prod.price : 'null'}, -1)">-</button>
                                     <span class="qty-val" id="qty-${key}">${qty}</span>
-                                    <button class="qty-btn" onclick="changeQty('${key}', 1)">+</button>
+                                    <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price !== null ? prod.price : 'null'}, 1)">+</button>
                                 </div>
                             </div>
                         `;
@@ -435,7 +489,7 @@
                     </div>
                 `;
             });
-            updateCartCount();
+            updateCartSummary();
         }
 
         function toggleCategory(headerEl) {
@@ -444,49 +498,93 @@
             headerEl.querySelector('span:last-child').innerText = content.classList.contains('active') ? '▲' : '▼';
         }
 
-        function changeQty(key, delta) {
-            if (!cart[key]) cart[key] = 0;
-            cart[key] += delta;
-            if (cart[key] < 0) cart[key] = 0;
-            if (cart[key] === 0) delete cart[key];
+        function changeQty(category, name, price, delta) {
+            let key = `${category}___${name}`;
+            if (!cart[key]) {
+                cart[key] = { name, price, qty: 0, category };
+            }
+            cart[key].qty += delta;
+            if (cart[key].qty < 0) cart[key].qty = 0;
+            if (cart[key].qty === 0) delete cart[key];
 
-            const el = document.getElementById(`qty-${key}`);
-            if (el) el.innerText = cart[key] || 0;
-            updateCartCount();
+            let el = document.getElementById(`qty-${key}`);
+            if (el) el.innerText = cart[key] ? cart[key].qty : 0;
+            updateCartSummary();
         }
 
-        function updateCartCount() {
-            let total = Object.values(cart).reduce((a, b) => a + b, 0);
-            document.getElementById('cartCount').innerText = total;
+        function addCustomItem() {
+            let name = document.getElementById('customName').value.trim();
+            let qty = parseInt(document.getElementById('customQty').value) || 1;
+
+            if (!name) {
+                alert('الرجاء إدخال اسم المادة غير الموجودة.');
+                return;
+            }
+
+            let key = `طلبات خارجية___${name}`;
+            if (!cart[key]) {
+                cart[key] = { name, price: null, qty: 0, category: 'طلبات خارجية' };
+            }
+            cart[key].qty += qty;
+
+            document.getElementById('customName').value = '';
+            document.getElementById('customQty').value = '1';
+            updateCartSummary();
+            alert('تمت إضافة المادة إلى سلة الطلبات بنجاح!');
         }
 
-        // إرسال الطلب عبر الواتساب مع رسالة التنبيه الخاصة بالوزن
+        function updateCartSummary() {
+            let total = 0;
+            for (let k in cart) {
+                if (cart[k].price !== null) {
+                    total += cart[k].price * cart[k].qty;
+                }
+            }
+            document.getElementById('cartTotal').innerText = `${total.toLocaleString()} د.ع`;
+        }
+
         function sendWhatsApp() {
+            let name = document.getElementById('custName').value.trim();
+            let phone = document.getElementById('custPhone').value.trim();
+            let region = document.getElementById('custRegion').value.trim();
+            let notes = document.getElementById('custNotes').value.trim();
+
+            if (!name || !phone || !region) {
+                alert('⚠️ عذراً، يجب إدخال (اسم الزبون، رقم الهاتف، والمنطقة) لكي يتم إرسال الطلب.');
+                return;
+            }
+
             if (Object.keys(cart).length === 0) {
                 alert('الرجاء اختيار بعض المنتجات أولاً قبل الإرسال.');
                 return;
             }
 
-            alert('⚠️ تنبيه بخصوص مواد الوزن والأسعار غير المحددة:\nالأسعار الخاصة بالمخزون الذي يُباع بالوزن أو المواد التي بدون سعر هي أسعار تقديرية، وسيتم احتساب الحساب النهائي بدقة بناءً على الوزن الفعلي والسعر الرسمي عند التجهيز في المحل.');
+            alert('⚠️ تنبيه: المواد التي بدون سعر أو مواد الوزن سيتم احتساب حسابها بدقة عند التجهيز.');
 
-            let msg = "مرحباً، أود طلب المواد التالية من أمازون هايبر ماركت:\n\n";
-            for (let [k, q] of Object.entries(cart)) {
-                let parts = k.split('___');
-                msg += `▪️ [${parts[0]}] ${parts[1]} (الكمية: ${q})\n`;
+            let msg = `🛒 *طلب جديد من أمازون هايبر ماركت*\n\n`;
+            msg += `👤 *اسم الزبون:* ${name}\n`;
+            msg += `📞 *رقم الهاتف:* ${phone}\n`;
+            msg += `📍 *المنطقة:* ${region}\n`;
+            if (notes) msg += `📝 *ملاحظات:* ${notes}\n`;
+            msg += `\n-------------------\n*تفاصيل المنتجات المختارة:*\n`;
+
+            let calcTotal = 0;
+            for (let [k, item] of Object.entries(cart)) {
+                let pText = item.price !== null ? `${(item.price * item.qty).toLocaleString()} د.ع` : 'سعر تقديري / حسب الوزن';
+                msg += `▪️ [${item.category}] ${item.name} (الكمية: ${item.qty}) - ${pText}\n`;
+                if (item.price !== null) calcTotal += item.price * item.qty;
             }
-            msg += "\nيرجى تأكيد الطلب. شكراً لكم.";
 
-            let phone = "9647842000516"; // استبدله برقم الواتساب الخاص بك
-            window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`, '_blank');
+            msg += `-------------------\n`;
+            msg += `💰 *المجموع الكلي المبدئي:* ${calcTotal.toLocaleString()} د.ع\n`;
+
+            let storePhone = "9647842000516";
+            window.open(`https://wa.me/${storePhone}?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        // --- لوحة التحكم والحماية ---
-        function openAdminModal() {
-            document.getElementById('adminModal').style.display = 'flex';
-        }
-        function closeAdminModal() {
-            document.getElementById('adminModal').style.display = 'none';
-        }
+        // لوحة التحكم
+        function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
+        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
 
         function checkLogin() {
             let u = document.getElementById('adminUser').value;
@@ -536,10 +634,7 @@
             let name = document.getElementById('admNewName').value.trim();
             let priceVal = document.getElementById('admNewPrice').value.trim();
 
-            if (!name) {
-                alert('الرجاء إدخال اسم المادة.');
-                return;
-            }
+            if (!name) { alert('الرجاء إدخال اسم المادة.'); return; }
 
             let price = priceVal !== '' ? parseFloat(priceVal) : null;
             storeData[cIdx].products.push({ name, price });
@@ -554,10 +649,7 @@
             let newName = document.getElementById(`adm-name-${cIdx}-${pIdx}`).value.trim();
             let newPriceVal = document.getElementById(`adm-price-${cIdx}-${pIdx}`).value.trim();
 
-            if (!newName) {
-                alert('اسم المادة لا يمكن أن يكون فارغاً.');
-                return;
-            }
+            if (!newName) { alert('اسم المادة لا يمكن أن يكون فارغاً.'); return; }
 
             storeData[cIdx].products[pIdx].name = newName;
             storeData[cIdx].products[pIdx].price = newPriceVal !== '' ? parseFloat(newPriceVal) : null;
