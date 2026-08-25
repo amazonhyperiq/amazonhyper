@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمازون هايبر ماركت</title>
+    <title>\u0623\u0645\u0627\u0632\u0648\u0646 \u0647\u0627\u064a\u0628\u0631 \u0645\u0627\u0631\u0643\u062a</title>
     <style>
         :root {
             --primary: #1a252c;
@@ -61,6 +61,7 @@
             background: var(--white);
             font-size: 0.95rem;
             outline: none;
+            direction: rtl;
         }
         .search-box input:focus { border-color: var(--accent); box-shadow: 0 0 0 3px rgba(255,153,0,0.15); }
         .search-icon { position: absolute; left: 18px; top: 50%; transform: translateY(-50%); color: var(--gray); }
@@ -176,7 +177,7 @@
             margin-top: 25px;
         }
         .custom-inputs { display: flex; gap: 10px; flex-wrap: wrap; }
-        .custom-inputs input { flex: 1; min-width: 140px; padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .custom-inputs input { flex: 1; min-width: 140px; padding: 10px 15px; border: 1px solid var(--border); border-radius: 8px; outline: none; direction: rtl; }
 
         .checkout-section {
             position: fixed;
@@ -203,6 +204,7 @@
             font-size: 0.85rem;
             width: 100%;
             outline: none;
+            direction: rtl;
         }
         .checkout-footer {
             display: flex;
@@ -236,7 +238,7 @@
         }
         .modal-content {
             background: var(--white);
-            width: 92%; max-width: 700px; max-height: 85vh;
+            width: 95%; max-width: 800px; max-height: 85vh;
             border-radius: 16px; padding: 25px; overflow-y: auto; position: relative;
         }
         .close-modal {
@@ -245,11 +247,12 @@
         }
         .form-group { margin-bottom: 15px; }
         .form-group label { display: block; margin-bottom: 6px; font-weight: bold; font-size: 0.9rem; }
-        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; }
+        .form-control { width: 100%; padding: 10px; border: 1px solid var(--border); border-radius: 8px; outline: none; direction: rtl; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.85rem; }
         .admin-table th, .admin-table td { border: 1px solid var(--border); padding: 10px; text-align: right; }
         .admin-table th { background: #f1f5f9; }
         .btn-add { background: var(--success); color: white; padding: 10px 20px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+        .btn-del { background: var(--danger); color: white; padding: 5px 10px; border: none; border-radius: 6px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -317,19 +320,27 @@
             </div>
 
             <div id="dashboardSection" style="display: none;">
-                <h2>لوحة التحكم والإدارة</h2>
+                <h2>لوحة التحكم والإدارة المتكاملة</h2>
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
                 <h3>إدارة العروض البارزة</h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap;">
                     <input type="text" id="admOfferText" class="form-control" placeholder="وصف العرض..." style="flex: 2;">
-                    <input type="number" id="admOfferPrice" class="form-control" placeholder="السعر" style="flex: 1;">
-                    <button class="btn-add" onclick="addOfferItem()">إضافة</button>
+                    <input type="number" id="admOfferPrice" class="form-control" placeholder="السعر (د.ع)" style="flex: 1;">
+                    <button class="btn-add" onclick="addOfferItem()">إضافة عرض</button>
                 </div>
-                <div style="max-height: 150px; overflow-y: auto; margin-top: 10px;">
+                <div style="max-height: 200px; overflow-y: auto; margin-top: 10px;">
                     <table class="admin-table">
                         <thead><tr><th>العرض</th><th>السعر</th><th>إجراء</th></tr></thead>
                         <tbody id="admOffersTableBody"></tbody>
+                    </table>
+                </div>
+
+                <h3 style="margin-top: 25px;">إدارة الأقسام والمنتجات</h3>
+                <div style="max-height: 250px; overflow-y: auto; margin-top: 10px;">
+                    <table class="admin-table">
+                        <thead><tr><th>القسم</th><th>المادة</th><th>السعر</th><th>إجراء</th></tr></thead>
+                        <tbody id="admProductsTableBody"></tbody>
                     </table>
                 </div>
             </div>
@@ -337,34 +348,54 @@
     </div>
 
     <script>
-        // بيانات المتجر الأساسية المستقرة
         let storeData = [
             {
                 category: "قسم الأجبان والألبان",
                 products: [
                     { name: "جبن وخ أصلي قالب", price: 7500, showPrice: true },
                     { name: "قشطة عربية فريش", price: 4000, showPrice: true },
-                    { name: "لبنة قايم ممتازة", price: 3500, showPrice: true }
+                    { name: "لبنة قايم ممتازة", price: 3500, showPrice: true },
+                    { name: "جبن شلل تركي", price: 6000, showPrice: true },
+                    { name: "جبن حلوم فريش", price: 6500, showPrice: true }
                 ]
             },
             {
                 category: "قسم المخللات والزيتون",
                 products: [
                     { name: "زيتون أخضر محشي جزر", price: 5000, showPrice: true },
-                    { name: "مخلل خيار مقرمش", price: 2500, showPrice: true }
+                    { name: "مخلل خيار مقرمش", price: 2500, showPrice: true },
+                    { name: "زيتون اسمر كالاماتا", price: 6000, showPrice: true },
+                    { name: "مخلل لفت ورقي", price: 2000, showPrice: true }
                 ]
             },
             {
                 category: "قسم المواد الغذائية",
                 products: [
                     { name: "رز بسمتي درجة أولى 1 كغ", price: 3000, showPrice: true },
-                    { name: "زيت نباتي حر 1 لتر", price: 2750, showPrice: true }
+                    { name: "زيت نباتي حر 1 لتر", price: 2750, showPrice: true },
+                    { name: "معجون طماطم 800 غرام", price: 2250, showPrice: true },
+                    { name: "سكر فاميلي 1 كغ", price: 1750, showPrice: true }
+                ]
+            },
+            {
+                category: "قسم اللحوم والدواجن",
+                products: [
+                    { name: "دجاج مبرد كامل فريش (1 كغ)", price: 4250, showPrice: true },
+                    { name: "لحم عجل مفروم صافي (1 كغ)", price: 14000, showPrice: true }
+                ]
+            },
+            {
+                category: "قسم المنظفات والعناية",
+                products: [
+                    { name: "سائل غسل الصحون فريش 2 لتر", price: 3500, showPrice: true },
+                    { name: "مسحوق غسيل اتوماتيك 2.5 كغ", price: 6500, showPrice: true }
                 ]
             }
         ];
 
         let offersData = [
-            { name: "عرض السلة الرمضانية المتكاملة", price: 25000, showPrice: true }
+            { name: "عرض السلة الرمضانية المتكاملة", price: 25000, showPrice: true },
+            { name: "عرض أجبان وألبان الصباح", price: 12000, showPrice: true }
         ];
         
         let cart = {};
@@ -435,7 +466,7 @@
             if (offersData.length === 0) { offersSec.innerHTML = ''; return; }
 
             let itemsHtml = '';
-            offersData.forEach((offer) => {
+            offersData.forEach((offer, index) => {
                 let pText = (offer.showPrice && offer.price !== null) ? `${offer.price.toLocaleString()} د.ع` : '';
                 let key = `عروض الواجهة___${offer.name}`;
                 let qty = cart[key] ? cart[key].qty : 0;
@@ -519,14 +550,53 @@
             window.open(`https://wa.me/9647842000516?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
-        function openAdminModal() { document.getElementById('adminModal').style.display = 'flex'; }
-        function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
+        function openAdminModal() { 
+            document.getElementById('adminModal').style.display = 'flex'; 
+        }
+        
+        function closeAdminModal() { 
+            document.getElementById('adminModal').style.display = 'none'; 
+        }
+
         function checkLogin() {
             if(document.getElementById('adminUser').value === 'amazon' && document.getElementById('adminPass').value === '9988') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
-            } else { alert('خطأ في البيانات'); }
+                renderAdminTables();
+            } else { 
+                alert('خطأ في اسم المستخدم أو كلمة المرور'); 
+            }
         }
+
+        function renderAdminTables() {
+            let offersBody = document.getElementById('admOffersTableBody');
+            offersBody.innerHTML = '';
+            offersData.forEach((off, idx) => {
+                offersBody.innerHTML += `
+                    <tr>
+                        <td>${off.name}</td>
+                        <td>${off.price ? off.price.toLocaleString() + ' د.ع' : '-'}</td>
+                        <td><button class="btn-del" onclick="deleteOffer(${idx})">حذف</button></td>
+                    </tr>
+                `;
+            });
+
+            let prodBody = document.getElementById('admProductsTableBody');
+            prodBody.innerHTML = '';
+            storeData.forEach((cat, cIdx) => {
+                cat.products.forEach((prod, pIdx) => {
+                    prodBody.innerHTML += `
+                        <tr>
+                            <td>${cat.category}</td>
+                            <td>${prod.name}</td>
+                            <td>${prod.price ? prod.price.toLocaleString() + ' د.ع' : '-'}</td>
+                            <td><button class="btn-del" onclick="deleteProduct(${cIdx}, ${pIdx})">حذف</button></td>
+                        </tr>
+                    `;
+                });
+            });
+        }
+
         function addOfferItem() {
             let text = document.getElementById('admOfferText').value.trim();
             let price = document.getElementById('admOfferPrice').value.trim();
@@ -534,9 +604,24 @@
                 offersData.push({ name: text, price: price ? Number(price) : null, showPrice: !!price });
                 document.getElementById('admOfferText').value = '';
                 document.getElementById('admOfferPrice').value = '';
+                renderAdminTables();
                 renderOffers();
-                alert('تم إضافة العرض');
+                alert('تم إضافة العرض بنجاح');
+            } else {
+                alert('يرجى كتابة وصف العرض');
             }
+        }
+
+        function deleteOffer(index) {
+            offersData.splice(index, 1);
+            renderAdminTables();
+            renderOffers();
+        }
+
+        function deleteProduct(cIdx, pIdx) {
+            storeData[cIdx].products.splice(pIdx, 1);
+            renderAdminTables();
+            renderStore();
         }
     </script>
 </body>
