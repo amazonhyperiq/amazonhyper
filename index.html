@@ -438,6 +438,7 @@
 
     <script>
       // إعداد الاتصال بقاعدة البيانات السحابية Supabase
+// إعداد الاتصال بقاعدة البيانات السحابية Supabase
 const SUPABASE_URL = 'https://wvexorzjkpwduykinwsw.supabase.co';
 const SUPABASE_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB';
 const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
@@ -445,6 +446,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 // مصفوفة المتجر العامة التي ستستقبل البيانات من السحاب
 let storeData = [];
 let offersData = [];
+
 // دالة جلب المنتجات من جدول Supabase وتحديث العرض فوراً
 async function loadProductsFromSupabase() {
     try {
@@ -473,18 +475,19 @@ async function loadProductsFromSupabase() {
         storeData = Object.values(categoriesMap);
         
         // استدعاء دالة عرض المتجر لتظهر المواد فوراً
-        renderStore();
+        if (typeof renderStore === 'function') {
+            renderStore();
+        }
         
     } catch (err) {
         console.error('حدث خطأ غير متوقع:', err);
     }
 }
+
 // تشغيل دالة الجلب فور تحميل الصفحة
 window.addEventListener('DOMContentLoaded', () => {
     loadProductsFromSupabase();
 });
-
-        let cart = {}; 
 
         function isWeightCategory(categoryName) {
             return categoryName === "قسم المخللات" || categoryName === "قسم الأجبان" || categoryName === "قسم الفواكه والخضار";
