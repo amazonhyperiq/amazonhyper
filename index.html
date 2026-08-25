@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #1a252c;
@@ -436,80 +437,56 @@
     </div>
 
     <script>
-        const defaultStoreData = [
-            {
-                category: "قسم اللحوم الطازجة",
-                products: [
-                    { name: "لحم غنم بالعظم", price: 22000, showPrice: true },
-                    { name: "لحم مثروم غنم وعجل", price: 19000, showPrice: true },
-                    { name: "لحم مثروم عجل بدون دهن", price: 19000, showPrice: true },
-                    { name: "لحم عجل قطع مكعبات", price: 19000, showPrice: true },
-                    { name: "لحم غنم شرح", price: 27000, showPrice: true },
-                    { name: "معلاك غنم", price: 16000, showPrice: true },
-                    { name: "لية غنم", price: 16000, showPrice: true },
-                    { name: "جلفراي لحم", price: 23000, showPrice: true },
-                    { name: "ضلوع غنم", price: 25000, showPrice: true },
-                    { name: "باجة غنم", price: 12000, showPrice: true },
-                    { name: "زنود غنم", price: 25000, showPrice: true },
-                    { name: "ستيك لحم", price: 23000, showPrice: true },
-                    { name: "حبل ظهر عجل خشن", price: 25000, showPrice: true },
-                    { name: "كص لحم", price: 23000, showPrice: true },
-                    { name: "كوارع عجل", price: 13000, showPrice: true },
-                    { name: "بيض غنم", price: 5000, showPrice: true },
-                    { name: "تكة غنم", price: 27000, showPrice: true },
-                    { name: "بركر لحم عراقي", price: 18500, showPrice: true },
-                    { name: "باسطرما لحم عراقي", price: 18500, showPrice: true }
-                ]
-            },
-            {
-                category: "قسم الدجاج الفريش",
-                products: [
-                    { name: "دجاج ذبح عراقي", price: 5750, showPrice: true },
-                    { name: "صدر دجاج عراقي", price: 8000, showPrice: true },
-                    { name: "كبدة دجاج عراقي", price: 6000, showPrice: true },
-                    { name: "قلوب دجاج عراقي", price: 4500, showPrice: true },
-                    { name: "مثروم دجاج", price: 9000, showPrice: true },
-                    { name: "افخاذ دجاج عراقي", price: 6000, showPrice: true },
-                    { name: "عصا طبل دجاج عراقي", price: 8000, showPrice: true },
-                    { name: "ورك دجاج عراقي", price: 4500, showPrice: true }
-                ]
-            },
-            {
-                category: "قسم البيض الطازج",
-                products: [
-                    { name: "بيض احمر طبقة", price: null, showPrice: false },
-                    { name: "بيض احمر نصف طبقة", price: null, showPrice: false },
-                    { name: "بيض ابيض طبقة", price: null, showPrice: false },
-                    { name: "بيض ابيض نصف طبقة", price: null, showPrice: false }
-                ]
-            },
-            {
-                category: "قسم المواد الغذائية",
-                products: [
-                    { name: "رز محمود 4.5 كيلو", price: null, showPrice: false },
-                    { name: "رز محمود 9 كيلو", price: null, showPrice: false },
-                    { name: "زيت عافية 1.5 لتر", price: null, showPrice: false },
-                    { name: "سكر 1 كيلو", price: null, showPrice: false }
-                ]
-            },
-            {
-                category: "قسم الفواكه والخضار",
-                products: [
-                    { name: "طماطم", price: null, showPrice: false },
-                    { name: "بطاطا", price: null, showPrice: false },
-                    { name: "خيار", price: null, showPrice: false }
-                ]
-            },
-            { category: "قسم المشروبات والعصائر", products: [] },
-            { category: "قسم المنظفات العامة", products: [] },
-            { category: "قسم الورقيات والكليسنس", products: [] },
-            { category: "قسم الأجبان", products: [] },
-            { category: "قسم المخللات", products: [] },
-            { category: "قسم الحلويات والبسكويت", products: [] }
-        ];
+      // إعداد الاتصال بقاعدة البيانات السحابية Supabase
+const SUPABASE_URL = 'https://wvexorzjkpwduykinwsw.supabase.co';
+const SUPABASE_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB';
+const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-        let storeData = JSON.parse(localStorage.getItem('amazonStoreData_v2')) || defaultStoreData;
-        let offersData = JSON.parse(localStorage.getItem('amazonOffersData_v2')) || [];
+// مصفوفة المتجر العامة التي ستستقبل البيانات من السحاب
+let storeData = [];
+
+// دالة جلب المنتجات من جدول Supabase وتحديث العرض فوراً
+async function loadProductsFromSupabase() {
+    try {
+        const { data, error } = await supabaseClient
+            .from('products')
+            .select('*');
+
+        if (error) {
+            console.error('خطأ في جلب البيانات من Supabase:', error);
+            return;
+        }
+
+        // تحويل البيانات القادمة من قاعدة البيانات لتتطابق مع هيكلة الأقسام في متجرك
+        const categoriesMap = {};
+        data.forEach(item => {
+            const catName = item.category || "أقسام أخرى";
+            if (!categoriesMap[catName]) {
+                categoriesMap[catName] = { category: catName, products: [] };
+            }
+            categoriesMap[catName].products.push({
+                name: item.name,
+                price: Number(item.price),
+                showPrice: item.show_price ?? true
+            });
+        });
+
+        storeData = Object.values(categoriesMap);
+        
+        // إعادة رسم وعرض الأقسام والمنتجات بالمتجر
+        if (typeof renderStore === 'function') {
+            renderStore();
+        }
+    } catch (err) {
+        console.error('حدث خطأ غير متوقع:', err);
+    }
+}
+
+// تشغيل دالة الجلب فور تحميل الصفحة
+window.addEventListener('DOMContentLoaded', () => {
+    loadProductsFromSupabase();
+});
+
         let cart = {}; 
 
         function isWeightCategory(categoryName) {
