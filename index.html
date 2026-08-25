@@ -390,7 +390,6 @@
     </div>
 
     <script>
-        // إعدادات اتصال Supabase بالمفتاح الصحيح
         const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
         const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB'; 
         const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
@@ -458,7 +457,6 @@
             setupRealtimeSync();
         });
 
-        // سحب البيانات من Supabase
         async function loadDataFromSupabase() {
             try {
                 let { data, error } = await supabaseClient
@@ -479,19 +477,17 @@
             }
             checkMaintenanceView();
             renderStore();
+            renderOffers();
         }
 
-        // حفظ وتحديث البيانات في Supabase
         async function saveDataToSupabase() {
             try {
-                let payload = {
-                    store: storeData,
-                    offers: offersData,
-                    maintenance: isMaintenance
-                };
+                let payload = { store: storeData, offers: offersData, maintenance: isMaintenance };
+                let { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .limit(1);
 
-                let { data } = await supabaseClient.from('products').select('id').limit(1);
-                
                 if (data && data.length > 0) {
                     await supabaseClient
                         .from('products')
@@ -503,11 +499,10 @@
                         .insert([{ data: payload }]);
                 }
             } catch (err) {
-                console.log("خطأ في حفظ البيانات:", err);
+                console.log("خطأ في الحفظ:", err);
             }
         }
 
-        // الاستماع الفعلي للتحديثات من أي جهاز آخر (Realtime)
         function setupRealtimeSync() {
             supabaseClient
                 .channel('public:products')
@@ -520,6 +515,7 @@
                         
                         checkMaintenanceView();
                         renderStore();
+                        renderOffers();
                         if(document.getElementById('adminModal').style.display === 'flex' && document.getElementById('dashboardSection').style.display === 'block') {
                             updateMaintenanceUI();
                             renderAdminTables();
@@ -560,24 +556,38 @@
         }
 
         function getStepAndUnit(category) {
-            if (category === "قسم الفواكة والخضار") {
+            if (
+                category.includes("فواكة") || 
+                category.includes("خضار") || 
+                category.includes("المخللات") || 
+                category.includes("أجبان") ||
+                category.includes("اللحوم") ||
+                category.includes("الدجاج")
+            ) {
                 return { step: 0.5, unit: "كغم", isWeight: true };
-            } else if (category === "قسم البقوليات" || category === "قسم اللحوم" || category === "قسم الدجاج الفريش") {
+            } else if (category.includes("البقوليات")) {
                 return { step: 1.0, unit: "كغم", isWeight: true };
             } else {
                 return { step: 1, unit: "قطعة", isWeight: false };
             }
         }
 
-        function formatQtyDisplay(val, isWeight, unit) {
-            if (val === 0) return "0";
-            return `${val} ${unit}`;
+        function formatQtyDisplay(qty, isWeight, unit) {
+            if (isWeight) {
+                return `${qty} ${unit}`;
+            } else {
+                return `${qty} قطعة`;
+            }
         }
 
-        function renderStore(filterText = "") {
-            renderOffers();
+        function filterProducts() {
+            renderStore();
+        }
+
+        function renderStore() {
             const container = document.getElementById('storeContainer');
             container.innerHTML = '';
+            let filterText = document.getElementById('searchInput') ? document.getElementById('searchInput').value : '';
             let query = filterText.trim().toLowerCase();
 
             storeData.forEach((cat) => {
@@ -631,10 +641,6 @@
                 `;
             });
             updateCartSummary();
-        }
-
-        function filterProducts() {
-            renderStore(document.getElementById('searchInput').value);
         }
 
         function renderOffers() {
