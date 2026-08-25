@@ -888,14 +888,13 @@
             renderStore();
         }
 
-        async type="text"
         async function addOfferItem() {
             let text = document.getElementById('admOfferText').value.trim();
             let price = document.getElementById('admOfferPrice').value.trim();
             if(text) {
                 offersData.push({ name: text, price: price ? Number(price) : null, active: true });
                 await saveDataToSupabase();
-                document.getElementById('admOfferText'].value = '';
+                document.getElementById('admOfferText').value = '';
                 document.getElementById('admOfferPrice').value = '';
                 renderAdminTables();
                 renderOffers();
