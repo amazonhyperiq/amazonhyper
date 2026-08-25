@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>أمازون هايبر ماركت</title>
+    <title>Amazon Hyper Market</title>
     <style>
         :root {
             --primary: #1a252c;
@@ -32,7 +32,6 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
         .logo-area { display: flex; align-items: center; gap: 10px; }
-        .logo-icon { font-size: 1.5rem; }
         header h1 { font-size: 1.25rem; color: var(--accent); font-weight: bold; }
         
         .btn-nav {
@@ -43,7 +42,6 @@
             border-radius: 20px;
             cursor: pointer;
             font-size: 0.85rem;
-            transition: 0.2s;
         }
         .btn-nav:hover { background: var(--accent); color: var(--primary); font-weight: bold; }
 
@@ -222,6 +220,7 @@
             font-size: 0.95rem;
         }
 
+        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -235,6 +234,8 @@
             background: var(--white);
             width: 95%; max-width: 850px; max-height: 85vh;
             border-radius: 16px; padding: 25px; overflow-y: auto; position: relative;
+            direction: rtl;
+            text-align: right;
         }
         .close-modal {
             position: absolute; top: 18px; left: 18px;
@@ -242,7 +243,7 @@
         }
         .form-group { margin-bottom: 12px; }
         .form-group label { display: block; margin-bottom: 5px; font-weight: bold; font-size: 0.85rem; }
-        .form-control { width: 100%; padding: 9px; border: 1px solid var(--border); border-radius: 8px; outline: none; direction: rtl; }
+        .form-control { width: 100%; padding: 9px; border: 1px solid var(--border); border-radius: 8px; outline: none; direction: rtl; background: #fff; }
         .admin-table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 0.85rem; }
         .admin-table th, .admin-table td { border: 1px solid var(--border); padding: 8px; text-align: right; }
         .admin-table th { background: #f1f5f9; }
@@ -255,7 +256,7 @@
 
     <header>
         <div class="logo-area">
-            <span class="logo-icon">🛒</span>
+            <span style="font-size: 1.5rem;">🛒</span>
             <h1>أمازون هايبر ماركت</h1>
         </div>
         <button class="btn-nav" onclick="openAdminModal()">لوحة التحكم ⚙️</button>
@@ -295,6 +296,7 @@
         </div>
     </div>
 
+    <!-- Modal لوحة التحكم -->
     <div class="modal" id="adminModal">
         <div class="modal-content">
             <button class="close-modal" onclick="closeAdminModal()">إغلاق</button>
@@ -319,7 +321,7 @@
                 <div class="admin-section-box">
                     <h3 style="margin-bottom: 10px;">➕ إضافة قسم جديد</h3>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="newCatName" class="form-control" placeholder="اسم القسم الجديد (مثال: قسم العصيرات)">
+                        <input type="text" id="newCatName" class="form-control" placeholder="اسم القسم الجديد (مثال: قسم اللحوم)">
                         <button class="btn-add" onclick="addNewCategory()">إضافة قسم</button>
                     </div>
                 </div>
@@ -337,7 +339,7 @@
 
                 <!-- جدول إدارة الأقسام والمنتجات -->
                 <h3 style="margin-top: 20px;">📦 إدارة المواد والأقسام الحالية</h3>
-                <div style="max-height: 250px; overflow-y: auto;">
+                <div style="max-height: 220px; overflow-y: auto;">
                     <table class="admin-table">
                         <thead><tr><th>القسم</th><th>المادة</th><th>السعر</th><th>إجراء</th></tr></thead>
                         <tbody id="admProductsTableBody"></tbody>
@@ -426,9 +428,9 @@
                             <div class="product-footer-row">
                                 <div style="font-size:0.75rem; color:var(--gray);">الكمية</div>
                                 <div class="qty-box">
-                                    <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price}, ${prod.showPrice}, -1)">-</button>
-                                    <span class="qty-val" id="qty-${key}">${qty}</span>
-                                    <button class="qty-btn" onclick="changeQty('${cat.category}', '${prod.name}', ${prod.price}, ${prod.showPrice}, 1)">+</button>
+                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', -1)">-</button>
+                                    <span class="qty-val" id="qty-${btoa(encodeURIComponent(key))}">${qty}</span>
+                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', 1)">+</button>
                                 </div>
                             </div>
                         </div>
@@ -463,6 +465,7 @@
                 let pText = (offer.showPrice && offer.price !== null) ? `${offer.price.toLocaleString()} د.ع` : '';
                 let key = `عروض الواجهة___${offer.name}`;
                 let qty = cart[key] ? cart[key].qty : 0;
+                let safeId = btoa(encodeURIComponent(key));
 
                 itemsHtml += `
                     <div class="offer-card-item">
@@ -471,9 +474,9 @@
                             <div class="p-price">${pText}</div>
                         </div>
                         <div class="qty-box">
-                            <button class="qty-btn" onclick="changeQty('عروض الواجهة', '${offer.name}', ${offer.price}, ${offer.showPrice}, -1)">-</button>
-                            <span class="qty-val" id="qty-${key}">${qty}</span>
-                            <button class="qty-btn" onclick="changeQty('عروض الواجهة', '${offer.name}', ${offer.price}, ${offer.showPrice}, 1)">+</button>
+                            <button class="qty-btn" onclick="changeQtyByName('عروض الواجهة', '${offer.name}', -1)">-</button>
+                            <span class="qty-val" id="qty-${safeId}">${qty}</span>
+                            <button class="qty-btn" onclick="changeQtyByName('عروض الواجهة', '${offer.name}', 1)">+</button>
                         </div>
                     </div>
                 `;
@@ -491,14 +494,37 @@
             headerEl.nextElementSibling.classList.toggle('active');
         }
 
-        function changeQty(category, name, price, showPrice, deltaDir) {
+        function changeQtyByName(category, name, deltaDir) {
             let key = `${category}___${name}`;
-            if (!cart[key]) cart[key] = { name, price, qty: 0, category, showPrice };
+            let targetObj = null;
+
+            if (category === 'عروض الواجهة') {
+                targetObj = offersData.find(o => o.name === name);
+            } else if (category === 'طلبات خارجية') {
+                targetObj = { name, price: null, showPrice: false };
+            } else {
+                let cat = storeData.find(c => c.category === category);
+                if (cat) targetObj = cat.products.find(p => p.name === name);
+            }
+
+            if (!targetObj && category !== 'طلبات خارجية') return;
+
+            if (!cart[key]) {
+                cart[key] = { 
+                    name: name, 
+                    price: targetObj ? targetObj.price : null, 
+                    qty: 0, 
+                    category: category, 
+                    showPrice: targetObj ? targetObj.showPrice : false 
+                };
+            }
+
             cart[key].qty += deltaDir;
             if (cart[key].qty < 0) cart[key].qty = 0;
             if (cart[key].qty === 0) delete cart[key];
 
-            let el = document.getElementById(`qty-${key}`);
+            let safeId = btoa(encodeURIComponent(key));
+            let el = document.getElementById(`qty-${safeId}`);
             if (el) el.innerText = cart[key] ? cart[key].qty : 0;
             updateCartSummary();
         }
@@ -544,7 +570,9 @@
         function closeAdminModal() { document.getElementById('adminModal').style.display = 'none'; }
 
         function checkLogin() {
-            if(document.getElementById('adminUser').value === 'amazon' && document.getElementById('adminPass').value === '9988') {
+            let u = document.getElementById('adminUser').value.trim();
+            let p = document.getElementById('adminPass').value.trim();
+            if(u === 'amazon' && p === '9988') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
                 renderAdminTables();
@@ -554,14 +582,12 @@
         }
 
         function renderAdminTables() {
-            // تحديث قائمة الأقسام في نموذج إضافة منتج
             let catSelect = document.getElementById('prodCatSelect');
             catSelect.innerHTML = '';
             storeData.forEach(cat => {
                 catSelect.innerHTML += `<option value="${cat.category}">${cat.category}</option>`;
             });
 
-            // جدول المنتجات والأقسام
             let prodBody = document.getElementById('admProductsTableBody');
             prodBody.innerHTML = '';
             storeData.forEach((cat, cIdx) => {
@@ -577,7 +603,6 @@
                 });
             });
 
-            // جدول العروض
             let offersBody = document.getElementById('admOffersTableBody');
             offersBody.innerHTML = '';
             offersData.forEach((off, idx) => {
