@@ -478,11 +478,37 @@
                 console.log("خطأ في جلب البيانات:", err);
             }
             checkMaintenanceView();
+            renderStore();
+        }
 
+        // حفظ وتحديث البيانات في Supabase
+        async function saveDataToSupabase() {
+            try {
+                let payload = {
+                    store: storeData,
+                    offers: offersData,
+                    maintenance: isMaintenance
+                };
+
+                let { data } = await supabaseClient.from('products').select('id').limit(1);
+                
+                if (data && data.length > 0) {
+                    await supabaseClient
+                        .from('products')
+                        .update({ data: payload })
+                        .eq('id', data[0].id);
+                } else {
+                    await supabaseClient
+                        .from('products')
+                        .insert([{ data: payload }]);
+                }
+            } catch (err) {
+                console.log("خطأ في حفظ البيانات:", err);
+            }
+        }
 
         // الاستماع الفعلي للتحديثات من أي جهاز آخر (Realtime)
         function setupRealtimeSync() {
-           
             supabaseClient
                 .channel('public:products')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
@@ -531,20 +557,25 @@
                 btn.innerText = "إيقاف الموقع مؤقتاً للتعديل";
                 btn.style.background = "#e67e22";
             }
-function getStepAndUnit(category) {
-    if (
-        category === "قسم الفواكة والخضراوات" || 
-        category === "قسم الفواكة والخضار" || 
-        category === "المخللات" || 
-        category === "أجبان والألبان"
-    ) {
-        return { step: 0.5, unit: "كغم", isWeight: true };
-    } else if (category === "قسم البقوليات") {
-        return { step: 1.0, unit: "كغم", isWeight: true };
-    } else {
-        return { step: 1, unit: "قطعة", isWeight: false };
-    }
-}
+        }
+
+        function getStepAndUnit(category) {
+            if (category === "قسم الفواكة والخضار") {
+                return { step: 0.5, unit: "كغم", isWeight: true };
+            } else if (category === "قسم البقوليات" || category === "قسم اللحوم" || category === "قسم الدجاج الفريش") {
+                return { step: 1.0, unit: "كغم", isWeight: true };
+            } else {
+                return { step: 1, unit: "قطعة", isWeight: false };
+            }
+        }
+
+        function formatQtyDisplay(val, isWeight, unit) {
+            if (val === 0) return "0";
+            return `${val} ${unit}`;
+        }
+
+        function renderStore(filterText = "") {
+            renderOffers();
             const container = document.getElementById('storeContainer');
             container.innerHTML = '';
             let query = filterText.trim().toLowerCase();
@@ -600,7 +631,11 @@ function getStepAndUnit(category) {
                 `;
             });
             updateCartSummary();
-      
+        }
+
+        function filterProducts() {
+            renderStore(document.getElementById('searchInput').value);
+        }
 
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
@@ -854,17 +889,17 @@ function getStepAndUnit(category) {
                 renderAdminTables();
                 renderOffers();
                 alert('تم إضافة العرض بنجاح');
-} else {
-        alert('يرجى كتابة وصف العرض');
-    }
-}
+            } else {
+                alert('يرجى كتابة وصف العرض');
+            }
+        }
+
         async function deleteOffer(index) {
             offersData.splice(index, 1);
             await saveDataToSupabase();
             renderAdminTables();
             renderOffers();
-     }
-}
-</script>
+        }
+    </script>
 </body>
 </html>
