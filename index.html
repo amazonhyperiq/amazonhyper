@@ -478,38 +478,11 @@
                 console.log("خطأ في جلب البيانات:", err);
             }
             checkMaintenanceView();
-checkMaintenanceView();
-}
 
-renderStore();
-
-if (data && data.length > 0) {
-    await supabaseClient
-        .from('products')
-        .update({ data: payload })
-        .eq('id', data[0].id);
-} else {
-    await supabaseClient
-        .from('products')
-        .insert([{ data: payload }]);
-}
-                if (data && data.length > 0) {
-                    await supabaseClient
-                        .from('products')
-                        .update({ data: payload })
-                        .eq('id', data[0].id);
-                } else {
-                    await supabaseClient
-                        .from('products')
-                        .insert([{ data: payload }]);
-                }
-            } catch (err) {
-                console.log("خطأ في حفظ البيانات:", err);
-            }
-        }
 
         // الاستماع الفعلي للتحديثات من أي جهاز آخر (Realtime)
         function setupRealtimeSync() {
+           
             supabaseClient
                 .channel('public:products')
                 .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
