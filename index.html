@@ -478,22 +478,21 @@
                 console.log("خطأ في جلب البيانات:", err);
             }
             checkMaintenanceView();
-            renderStore();
-        }
+checkMaintenanceView();
+}
 
-        // حفظ وتحديث البيانات في Supabase
-           
-        function filterProducts() {
-            renderStore(document.getElementById('searchInput').value);
-        }
-                let payload = {
-                    store: storeData,
-                    offers: offersData,
-                    maintenance: isMaintenance
-                };
+renderStore();
 
-                let { data } = await supabaseClient.from('products').select('id').limit(1);
-                
+if (data && data.length > 0) {
+    await supabaseClient
+        .from('products')
+        .update({ data: payload })
+        .eq('id', data[0].id);
+} else {
+    await supabaseClient
+        .from('products')
+        .insert([{ data: payload }]);
+}
                 if (data && data.length > 0) {
                     await supabaseClient
                         .from('products')
