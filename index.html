@@ -250,9 +250,29 @@
         .btn-add { background: var(--success); color: white; padding: 8px 16px; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
         .btn-del { background: var(--danger); color: white; padding: 4px 10px; border: none; border-radius: 6px; cursor: pointer; }
         .admin-section-box { background: #fdfdfd; border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
+        
+        /* شاشة الصيانة */
+        #maintenanceScreen {
+            display: none;
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--primary);
+            color: white;
+            z-index: 3000;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+        }
     </style>
 </head>
 <body>
+
+    <div id="maintenanceScreen">
+        <h1 style="color: var(--accent); font-size: 2rem; margin-bottom: 15px;">🚧 الموقع تحت الصيانة حالياً</h1>
+        <p style="font-size: 1.1rem; color: #dfe6e9;">نعمل على تحديث الأسعار والمواد، وسنعود للعمل خلال قليل...</p>
+    </div>
 
     <header>
         <div class="logo-area">
@@ -317,11 +337,20 @@
                 <h2>لوحة التحكم والإدارة</h2>
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
+                <!-- زر إيقاف / تشغيل الموقع -->
+                <div class="admin-section-box" style="background: #fff3cd; border-color: #ffeeba;">
+                    <h3 style="margin-bottom: 8px; color: #856404;">🛠️ حالة الموقع (وضع الصيانة)</h3>
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <span id="maintenanceStatusText" style="font-weight: bold;">الموقع يعمل حالياً بشكل طبيعي</span>
+                        <button id="maintenanceBtn" class="btn-del" style="background: #e67e22;" onclick="toggleMaintenance()">إيقاف الموقع مؤقتاً للتعديل</button>
+                    </div>
+                </div>
+
                 <!-- إضافة قسم جديد -->
                 <div class="admin-section-box">
                     <h3 style="margin-bottom: 10px;">➕ إضافة قسم جديد</h3>
                     <div style="display: flex; gap: 10px;">
-                        <input type="text" id="newCatName" class="form-control" placeholder="اسم القسم الجديد (مثال: قسم اللحوم)">
+                        <input type="text" id="newCatName" class="form-control" placeholder="اسم القسم الجديد">
                         <button class="btn-add" onclick="addNewCategory()">إضافة قسم</button>
                     </div>
                 </div>
@@ -338,10 +367,10 @@
                 </div>
 
                 <!-- جدول إدارة الأقسام والمنتجات -->
-                <h3 style="margin-top: 20px;">📦 إدارة المواد والأقسام الحالية</h3>
+                <h3 style="margin-top: 20px;">📦 إدارة المواد والأقسام (تفعيل/إلغاء الظهور)</h3>
                 <div style="max-height: 220px; overflow-y: auto;">
                     <table class="admin-table">
-                        <thead><tr><th>القسم</th><th>المادة</th><th>السعر</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>القسم</th><th>المادة</th><th>السعر</th><th>عرض بالصفحة؟</th><th>إجراء</th></tr></thead>
                         <tbody id="admProductsTableBody"></tbody>
                     </table>
                 </div>
@@ -355,7 +384,7 @@
                 </div>
                 <div style="max-height: 150px; overflow-y: auto; margin-top: 10px;">
                     <table class="admin-table">
-                        <thead><tr><th>العرض</th><th>السعر</th><th>إجراء</th></tr></thead>
+                        <thead><tr><th>العرض</th><th>السعر</th><th>عرض؟</th><th>إجراء</th></tr></thead>
                         <tbody id="admOffersTableBody"></tbody>
                     </table>
                 </div>
@@ -364,41 +393,76 @@
     </div>
 
     <script>
-        let storeData = [
+        let defaultStore = [
             {
                 category: "قسم الأجبان والألبان",
                 products: [
-                    { name: "جبن وخ أصلي قالب", price: 7500, showPrice: true },
-                    { name: "قشطة عربية فريش", price: 4000, showPrice: true },
-                    { name: "لبنة قايم ممتازة", price: 3500, showPrice: true },
-                    { name: "جبن شلل تركي", price: 6000, showPrice: true }
+                    { name: "جبن وخ أصلي قالب", price: 7500, active: true },
+                    { name: "قشطة عربية فريش", price: 4000, active: true },
+                    { name: "لبنة قايم ممتازة", price: 3500, active: true },
+                    { name: "جبن شلل تركي", price: 6000, active: true }
                 ]
             },
             {
                 category: "قسم المخللات والزيتون",
                 products: [
-                    { name: "زيتون أخضر محشي جزر", price: 5000, showPrice: true },
-                    { name: "مخلل خيار مقرمش", price: 2500, showPrice: true }
-                ]
-            },
-            {
-                category: "قسم المواد الغذائية",
-                products: [
-                    { name: "رز بسمتي درجة أولى 1 كغ", price: 3000, showPrice: true },
-                    { name: "زيت نباتي حر 1 لتر", price: 2750, showPrice: true }
+                    { name: "زيتون أخضر محشي جزر", price: 5000, active: true },
+                    { name: "مخلل خيار مقرمش", price: 2500, active: true }
                 ]
             }
         ];
 
-        let offersData = [
-            { name: "عرض السلة الرمضانية المتكاملة", price: 25000, showPrice: true }
+        let defaultOffers = [
+            { name: "عرض السلة الرمضانية المتكاملة", price: 25000, active: true }
         ];
+
+        // استرجاع البيانات من الذاكرة الدائمة (LocalStorage) أو استخدام الافتراضية
+        let storeData = JSON.parse(localStorage.getItem('amazon_store')) || defaultStore;
+        let offersData = JSON.parse(localStorage.getItem('amazon_offers')) || defaultOffers;
+        let isMaintenance = JSON.parse(localStorage.getItem('amazon_maintenance')) || false;
         
         let cart = {};
 
         window.addEventListener('DOMContentLoaded', () => {
+            checkMaintenanceView();
             renderStore();
         });
+
+        function saveData() {
+            localStorage.setItem('amazon_store', JSON.stringify(storeData));
+            localStorage.setItem('amazon_offers', JSON.stringify(offersData));
+            localStorage.setItem('amazon_maintenance', JSON.stringify(isMaintenance));
+        }
+
+        function checkMaintenanceView() {
+            let screen = document.getElementById('maintenanceScreen');
+            if (isMaintenance) {
+                screen.style.display = 'flex';
+            } else {
+                screen.style.display = 'none';
+            }
+        }
+
+        function toggleMaintenance() {
+            isMaintenance = !isMaintenance;
+            saveData();
+            checkMaintenanceView();
+            updateMaintenanceUI();
+        }
+
+        function updateMaintenanceUI() {
+            let statusText = document.getElementById('maintenanceStatusText');
+            let btn = document.getElementById('maintenanceBtn');
+            if (isMaintenance) {
+                statusText.innerText = "الموقع متوقف حالياً (تحت الصيانة)";
+                btn.innerText = "إعادة تشغيل الموقع للزبائن";
+                btn.style.background = "#27ae60";
+            } else {
+                statusText.innerText = "الموقع يعمل حالياً بشكل طبيعي";
+                btn.innerText = "إيقاف الموقع مؤقتاً للتعديل";
+                btn.style.background = "#e67e22";
+            }
+        }
 
         function renderStore(filterText = "") {
             renderOffers();
@@ -407,17 +471,20 @@
             let query = filterText.trim().toLowerCase();
 
             storeData.forEach((cat) => {
-                let filteredProducts = cat.products.filter(prod => 
+                let activeProducts = cat.products.filter(prod => prod.active);
+                let filteredProducts = activeProducts.filter(prod => 
                     query === "" || prod.name.toLowerCase().includes(query) || cat.category.toLowerCase().includes(query)
                 );
 
                 if (query !== "" && filteredProducts.length === 0) return;
+                if (filteredProducts.length === 0 && query === "") return;
 
                 let productsHtml = `<div class="products-grid">`;
                 filteredProducts.forEach((prod) => {
-                    let priceText = (prod.showPrice && prod.price !== null) ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
+                    let priceText = prod.price !== null ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
                     let key = `${cat.category}___${prod.name}`;
                     let qty = cart[key] ? cart[key].qty : 0;
+                    let safeId = btoa(encodeURIComponent(key));
 
                     productsHtml += `
                         <div class="product-card">
@@ -429,7 +496,7 @@
                                 <div style="font-size:0.75rem; color:var(--gray);">الكمية</div>
                                 <div class="qty-box">
                                     <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', -1)">-</button>
-                                    <span class="qty-val" id="qty-${btoa(encodeURIComponent(key))}">${qty}</span>
+                                    <span class="qty-val" id="qty-${safeId}">${qty}</span>
                                     <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', 1)">+</button>
                                 </div>
                             </div>
@@ -458,11 +525,12 @@
 
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
-            if (offersData.length === 0) { offersSec.innerHTML = ''; return; }
+            let activeOffers = offersData.filter(o => o.active);
+            if (activeOffers.length === 0) { offersSec.innerHTML = ''; return; }
 
             let itemsHtml = '';
-            offersData.forEach((offer) => {
-                let pText = (offer.showPrice && offer.price !== null) ? `${offer.price.toLocaleString()} د.ع` : '';
+            activeOffers.forEach((offer) => {
+                let pText = offer.price !== null ? `${offer.price.toLocaleString()} د.ع` : '';
                 let key = `عروض الواجهة___${offer.name}`;
                 let qty = cart[key] ? cart[key].qty : 0;
                 let safeId = btoa(encodeURIComponent(key));
@@ -501,7 +569,7 @@
             if (category === 'عروض الواجهة') {
                 targetObj = offersData.find(o => o.name === name);
             } else if (category === 'طلبات خارجية') {
-                targetObj = { name, price: null, showPrice: false };
+                targetObj = { name, price: null, active: true };
             } else {
                 let cat = storeData.find(c => c.category === category);
                 if (cat) targetObj = cat.products.find(p => p.name === name);
@@ -515,7 +583,7 @@
                     price: targetObj ? targetObj.price : null, 
                     qty: 0, 
                     category: category, 
-                    showPrice: targetObj ? targetObj.showPrice : false 
+                    showPrice: true 
                 };
             }
 
@@ -545,7 +613,7 @@
         function updateCartSummary() {
             let total = 0;
             for (let k in cart) {
-                if (cart[k].showPrice && cart[k].price !== null) total += cart[k].price * cart[k].qty;
+                if (cart[k].price !== null) total += cart[k].price * cart[k].qty;
             }
             document.getElementById('cartTotal').innerText = `${total.toLocaleString()} د.ع`;
         }
@@ -560,7 +628,7 @@
             let total = 0;
             for (let [k, item] of Object.entries(cart)) {
                 msg += `▪️ ${item.name} (الكمية: ${item.qty})\n`;
-                if (item.showPrice && item.price) total += item.price * item.qty;
+                if (item.price) total += item.price * item.qty;
             }
             msg += `\n💰 المجموع: ${total.toLocaleString()} د.ع`;
             window.open(`https://wa.me/9647842000516?text=${encodeURIComponent(msg)}`, '_blank');
@@ -575,6 +643,7 @@
             if(u === 'amazon' && p === '9988') {
                 document.getElementById('loginSection').style.display = 'none';
                 document.getElementById('dashboardSection').style.display = 'block';
+                updateMaintenanceUI();
                 renderAdminTables();
             } else { 
                 alert('خطأ في اسم المستخدم أو كلمة المرور'); 
@@ -592,11 +661,13 @@
             prodBody.innerHTML = '';
             storeData.forEach((cat, cIdx) => {
                 cat.products.forEach((prod, pIdx) => {
+                    let checked = prod.active ? 'checked' : '';
                     prodBody.innerHTML += `
                         <tr>
                             <td>${cat.category}</td>
                             <td>${prod.name}</td>
                             <td>${prod.price ? prod.price.toLocaleString() + ' د.ع' : '-'}</td>
+                            <td style="text-align:center;"><input type="checkbox" ${checked} onchange="toggleProductStatus(${cIdx}, ${pIdx}, this.checked)" style="transform: scale(1.3); cursor:pointer;"></td>
                             <td><button class="btn-del" onclick="deleteProduct(${cIdx}, ${pIdx})">حذف</button></td>
                         </tr>
                     `;
@@ -606,14 +677,28 @@
             let offersBody = document.getElementById('admOffersTableBody');
             offersBody.innerHTML = '';
             offersData.forEach((off, idx) => {
+                let checked = off.active ? 'checked' : '';
                 offersBody.innerHTML += `
                     <tr>
                         <td>${off.name}</td>
                         <td>${off.price ? off.price.toLocaleString() + ' د.ع' : '-'}</td>
+                        <td style="text-align:center;"><input type="checkbox" ${checked} onchange="toggleOfferStatus(${idx}, this.checked)" style="transform: scale(1.3); cursor:pointer;"></td>
                         <td><button class="btn-del" onclick="deleteOffer(${idx})">حذف</button></td>
                     </tr>
                 `;
             });
+        }
+
+        function toggleProductStatus(cIdx, pIdx, status) {
+            storeData[cIdx].products[pIdx].active = status;
+            saveData();
+            renderStore();
+        }
+
+        function toggleOfferStatus(idx, status) {
+            offersData[idx].active = status;
+            saveData();
+            renderStore();
         }
 
         function addNewCategory() {
@@ -622,6 +707,7 @@
             if (storeData.some(c => c.category === catName)) { alert('القسم موجود مسبقاً'); return; }
             
             storeData.push({ category: catName, products: [] });
+            saveData();
             document.getElementById('newCatName').value = '';
             renderAdminTables();
             renderStore();
@@ -637,7 +723,8 @@
             
             let cat = storeData.find(c => c.category === catName);
             if (cat) {
-                cat.products.push({ name: prodName, price: price ? Number(price) : null, showPrice: !!price });
+                cat.products.push({ name: prodName, price: price ? Number(price) : null, active: true });
+                saveData();
                 document.getElementById('newProdName').value = '';
                 document.getElementById('newProdPrice').value = '';
                 renderAdminTables();
@@ -648,6 +735,7 @@
 
         function deleteProduct(cIdx, pIdx) {
             storeData[cIdx].products.splice(pIdx, 1);
+            saveData();
             renderAdminTables();
             renderStore();
         }
@@ -656,7 +744,8 @@
             let text = document.getElementById('admOfferText').value.trim();
             let price = document.getElementById('admOfferPrice').value.trim();
             if(text) {
-                offersData.push({ name: text, price: price ? Number(price) : null, showPrice: !!price });
+                offersData.push({ name: text, price: price ? Number(price) : null, active: true });
+                saveData();
                 document.getElementById('admOfferText').value = '';
                 document.getElementById('admOfferPrice').value = '';
                 renderAdminTables();
@@ -669,6 +758,7 @@
 
         function deleteOffer(index) {
             offersData.splice(index, 1);
+            saveData();
             renderAdminTables();
             renderOffers();
         }
