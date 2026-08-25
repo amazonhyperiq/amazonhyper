@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
- <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #1a252c;
@@ -437,58 +437,57 @@
     </div>
 
     <script>
-      // إعداد الاتصال بقاعدة البيانات السحابية Supabase
-// إعداد الاتصال بقاعدة البيانات السحابية Supabase
-const SUPABASE_URL = 'https://wvexorzjkpwduykinwsw.supabase.co';
-const SUPABASE_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB';
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+        // إعداد الاتصال بقاعدة البيانات السحابية Supabase
+        const SUPABASE_URL = 'https://wvexorzjkpwduykinwsw.supabase.co';
+        const SUPABASE_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB';
+        const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// مصفوفة المتجر العامة التي ستستقبل البيانات من السحاب
-let storeData = [];
-let offersData = [];
+        // مصفوفة المتجر العامة التي ستستقبل البيانات من السحاب
+        let storeData = [];
+        let offersData = [];
+        let cart = {};
 
-// دالة جلب المنتجات من جدول Supabase وتحديث العرض فوراً
-async function loadProductsFromSupabase() {
-    try {
-        const { data, error } = await supabaseClient
-            .from('products')
-            .select('*');
+        // دالة جلب المنتجات من جدول Supabase وتحديث العرض فوراً
+        async function loadProductsFromSupabase() {
+            try {
+                const { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*');
 
-        if (error) {
-            console.error('خطأ في جلب البيانات من Supabase:', error);
-            return;
-        }
+                if (error) {
+                    console.error('خطأ في جلب البيانات من Supabase:', error);
+                    return;
+                }
 
-        const categoriesMap = {};
-        data.forEach(item => {
-            const catName = item.category || "أقسام أخرى";
-            if (!categoriesMap[catName]) {
-                categoriesMap[catName] = { category: catName, products: [] };
+                const categoriesMap = {};
+                data.forEach(item => {
+                    const catName = item.category || "أقسام أخرى";
+                    if (!categoriesMap[catName]) {
+                        categoriesMap[catName] = { category: catName, products: [] };
+                    }
+                    categoriesMap[catName].products.push({
+                        name: item.name,
+                        price: Number(item.price),
+                        showPrice: item.show_price ?? true
+                    });
+                });
+
+                storeData = Object.values(categoriesMap);
+                
+                // استدعاء دالة عرض المتجر لتظهر المواد فوراً
+                if (typeof renderStore === 'function') {
+                    renderStore();
+                }
+                
+            } catch (err) {
+                console.error('حدث خطأ غير متوقع:', err);
             }
-            categoriesMap[catName].products.push({
-                name: item.name,
-                price: Number(item.price),
-                showPrice: item.show_price ?? true
-            });
-        });
-
-        storeData = Object.values(categoriesMap);
-        
-        // استدعاء دالة عرض المتجر لتظهر المواد فوراً
-        if (typeof renderStore === 'function') {
-            renderStore();
         }
-        
-    } catch (err) {
-        console.error('حدث خطأ غير متوقع:', err);
-    }
-}
 
-// تشغيل دالة الجلب فور تحميل الصفحة
-window.addEventListener('DOMContentLoaded', () => {
-    loadProductsFromSupabase();
-});
+        // تشغيل دالة الجلب فور تحميل الصفحة
+        window.addEventListener('DOMContentLoaded', () => {
+            loadProductsFromSupabase();
+        });
 
         function isWeightCategory(categoryName) {
             return categoryName === "قسم المخللات" || categoryName === "قسم الأجبان" || categoryName === "قسم الفواكه والخضار";
@@ -759,18 +758,13 @@ window.addEventListener('DOMContentLoaded', () => {
             tbody.innerHTML = '';
             storeData.forEach((cat, cIdx) => {
                 cat.products.forEach((prod, pIdx) => {
-                    let pVal = prod.price !== null ? prod.price : '';
-                    let checkedStr = prod.showPrice ? 'checked' : '';
                     tbody.innerHTML += `
                         <tr>
                             <td>${cat.category}</td>
-                            <td><input type="text" id="adm-name-${cIdx}-${pIdx}" value="${prod.name}" class="form-control" style="border:none; background:transparent;"></td>
-                            <td><input type="number" id="adm-price-${cIdx}-${pIdx}" value="${pVal}" class="form-control" placeholder="بلا سعر" style="width:90px;"></td>
-                            <td style="text-align:center;"><input type="checkbox" id="adm-show-${cIdx}-${pIdx}" ${checkedStr}></td>
-                            <td>
-                                <button class="btn-action btn-edit" onclick="updateProd(${cIdx}, ${pIdx})">حفظ</button>
-                                <button class="btn-action btn-del" onclick="deleteProd(${cIdx}, ${pIdx})">حذف</button>
-                            </td>
+                            <td>${prod.name}</td>
+                            <td>${prod.price !== null ? prod.price : 'بلا سعر'}</td>
+                            <td>${prod.showPrice ? 'نعم' : 'لا'}</td>
+                            <td>-</td>
                         </tr>
                     `;
                 });
@@ -778,85 +772,54 @@ window.addEventListener('DOMContentLoaded', () => {
         }
 
         function addOfferItem() {
-            let name = document.getElementById('admOfferText').value.trim();
-            let priceVal = document.getElementById('admOfferPrice').value.trim();
-            if (!name) { alert('الرجاء إدخال وصف العرض.'); return; }
-            let price = priceVal !== '' ? parseFloat(priceVal) : null;
-            offersData.push({ name, price, showPrice: price !== null });
-            saveAndRefreshAll();
+            let text = document.getElementById('admOfferText').value.trim();
+            let price = document.getElementById('admOfferPrice').value.trim();
+            if(!text) { alert('أدخل نص العرض'); return; }
+            offersData.push({ name: text, price: price ? Number(price) : null, showPrice: !!price });
             document.getElementById('admOfferText').value = '';
             document.getElementById('admOfferPrice').value = '';
-            alert('تمت إضافة العرض للواجهة بنجاح!');
+            renderAdminTables();
+            renderOffers();
+        }
+
+        function deleteOffer(idx) {
+            offersData.splice(idx, 1);
+            renderAdminTables();
+            renderOffers();
         }
 
         function updateOffer(idx) {
             let name = document.getElementById(`adm-offer-name-${idx}`).value.trim();
-            let priceVal = document.getElementById(`adm-offer-price-${idx}`).value.trim();
-            if (!name) { alert('العرض لا يمكن أن يكون فارغاً.'); return; }
-            offersData[idx].name = name;
-            offersData[idx].price = priceVal !== '' ? parseFloat(priceVal) : null;
-            offersData[idx].showPrice = offersData[idx].price !== null;
-            saveAndRefreshAll();
-            alert('تم تحديث العرض بنجاح!');
-        }
-
-        function deleteOffer(idx) {
-            if (confirm('هل أنت متأكد من حذف هذا العرض؟')) {
-                offersData.splice(idx, 1);
-                saveAndRefreshAll();
+            let price = document.getElementById(`adm-offer-price-${idx}`).value.trim();
+            if(name) {
+                offersData[idx].name = name;
+                offersData[idx].price = price ? Number(price) : null;
+                offersData[idx].showPrice = !!price;
+                renderOffers();
+                alert('تم التحديث بنجاح');
             }
         }
 
         function addNewProduct() {
-            let cIdx = document.getElementById('admCategorySelect').value;
+            let catIdx = document.getElementById('admCategorySelect').value;
             let name = document.getElementById('admNewName').value.trim();
-            let priceVal = document.getElementById('admNewPrice').value.trim();
+            let price = document.getElementById('admNewPrice').value.trim();
             let showPrice = document.getElementById('admNewShowPrice').checked;
 
-            if (!name) { alert('الرجاء إدخال اسم المادة.'); return; }
-
-            let price = priceVal !== '' ? parseFloat(priceVal) : null;
-            storeData[cIdx].products.push({ name, price, showPrice });
-            saveAndRefreshAll();
-
-            document.getElementById('admNewName').value = '';
-            document.getElementById('admNewPrice').value = '';
-            alert('تمت إضافة المادة بنجاح!');
-        }
-
-        function updateProd(cIdx, pIdx) {
-            let newName = document.getElementById(`adm-name-${cIdx}-${pIdx}`).value.trim();
-            let newPriceVal = document.getElementById(`adm-price-${cIdx}-${pIdx}`).value.trim();
-            let showPrice = document.getElementById(`adm-show-${cIdx}-${pIdx}`).checked;
-
-            if (!newName) { alert('اسم المادة لا يمكن أن يكون فارغاً.'); return; }
-
-            storeData[cIdx].products[pIdx].name = newName;
-            storeData[cIdx].products[pIdx].price = newPriceVal !== '' ? parseFloat(newPriceVal) : null;
-            storeData[cIdx].products[pIdx].showPrice = showPrice;
-            saveAndRefreshAll();
-            alert('تم التحديث بنجاح!');
-        }
-
-        function deleteProd(cIdx, pIdx) {
-            if (confirm('هل أنت متأكد من حذف هذه المادة؟')) {
-                storeData[cIdx].products.splice(pIdx, 1);
-                saveAndRefreshAll();
+            if(!name) { alert('أدخل اسم المادة'); return; }
+            if(storeData[catIdx]) {
+                storeData[catIdx].products.push({
+                    name: name,
+                    price: price ? Number(price) : null,
+                    showPrice: showPrice
+                });
+                document.getElementById('admNewName').value = '';
+                document.getElementById('admNewPrice').value = '';
+                renderStore();
+                initAdminDashboard();
+                alert('تمت إضافة المنتج بنجاح');
             }
         }
-
-        function saveAndRefreshAll() {
-            localStorage.setItem('amazonStoreData_v2', JSON.stringify(storeData));
-            localStorage.setItem('amazonOffersData_v2', JSON.stringify(offersData));
-            renderStore();
-            renderAdminTables();
-        }
-
-        window.onload = () => renderStore();
     </script>
-    // تفعيل جلب المنتجات من Supabase فور فتح الصفحة
-    window.addEventListener('DOMContentLoaded', () => {
-        loadProductsFromSupabase();
-    });
 </body>
 </html>
