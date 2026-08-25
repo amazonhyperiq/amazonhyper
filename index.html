@@ -558,24 +558,20 @@
                 btn.style.background = "#e67e22";
             }
         }
-
-        function getStepAndUnit(category) {
-            if (category === "قسم الفواكة والخضار") {
-                return { step: 0.5, unit: "كغم", isWeight: true };
-            } else if (category === "قسم البقوليات" || category === "قسم اللحوم" || category === "قسم الدجاج الفريش") {
-                return { step: 1.0, unit: "كغم", isWeight: true };
-            } else {
-                return { step: 1, unit: "قطعة", isWeight: false };
-            }
-        }
-
-        function formatQtyDisplay(val, isWeight, unit) {
-            if (val === 0) return "0";
-            return `${val} ${unit}`;
-        }
-
-        function renderStore(filterText = "") {
-            renderOffers();
+function getStepAndUnit(category) {
+    if (
+        category === "قسم الفواكة والخضراوات" || 
+        category === "قسم الفواكة والخضار" || 
+        category === "المخللات" || 
+        category === "أجبان والألبان"
+    ) {
+        return { step: 0.5, unit: "كغم", isWeight: true };
+    } else if (category === "قسم البقوليات") {
+        return { step: 1.0, unit: "كغم", isWeight: true };
+    } else {
+        return { step: 1, unit: "قطعة", isWeight: false };
+    }
+}
             const container = document.getElementById('storeContainer');
             container.innerHTML = '';
             let query = filterText.trim().toLowerCase();
