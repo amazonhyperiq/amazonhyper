@@ -457,7 +457,6 @@ async function loadProductsFromSupabase() {
             return;
         }
 
-        // تحويل البيانات القادمة من قاعدة البيانات لتتطابق مع هيكلة الأقسام في متجرك
         const categoriesMap = {};
         data.forEach(item => {
             const catName = item.category || "أقسام أخرى";
@@ -473,15 +472,13 @@ async function loadProductsFromSupabase() {
 
         storeData = Object.values(categoriesMap);
         
-        // إعادة رسم وعرض الأقسام والمنتجات بالمتجر
-        if (typeof renderStore === 'function') {
-            renderStore();
-        }
+        // استدعاء دالة عرض المتجر لتظهر المواد فوراً
+        renderStore();
+        
     } catch (err) {
         console.error('حدث خطأ غير متوقع:', err);
     }
 }
-
 // تشغيل دالة الجلب فور تحميل الصفحة
 window.addEventListener('DOMContentLoaded', () => {
     loadProductsFromSupabase();
