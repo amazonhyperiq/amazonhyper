@@ -444,7 +444,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // مصفوفة المتجر العامة التي ستستقبل البيانات من السحاب
 let storeData = [];
-
+let offersData = [];
 // دالة جلب المنتجات من جدول Supabase وتحديث العرض فوراً
 async function loadProductsFromSupabase() {
     try {
