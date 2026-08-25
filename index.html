@@ -482,8 +482,10 @@
         }
 
         // حفظ وتحديث البيانات في Supabase
-        async function saveDataToSupabase() {
-            try {
+           
+        function filterProducts() {
+            renderStore(document.getElementById('searchInput').value);
+        }
                 let payload = {
                     store: storeData,
                     offers: offersData,
@@ -626,10 +628,7 @@ function getStepAndUnit(category) {
                 `;
             });
             updateCartSummary();
-        
-        function filterProducts() {
-            renderStore(document.getElementById('searchInput').value);
-        }
+      
 
         function renderOffers() {
             const offersSec = document.getElementById('offersSection');
