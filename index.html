@@ -556,17 +556,20 @@
         }
 
         function getStepAndUnit(category) {
+            let catName = category.toLowerCase();
             if (
-                category.includes("فواكة") || 
-                category.includes("خضار") || 
-                category.includes("المخللات") || 
-                category.includes("أجبان") ||
-                category.includes("الألبان") ||
-                category.includes("اللحوم") ||
-                category.includes("الدجاج")
+                catName.includes("فواكة") || 
+                catName.includes("خضار") || 
+                catName.includes("المخللات") || 
+                catName.includes("أجبان") ||
+                catName.includes("الألبان") ||
+                catName.includes("البان") ||
+                catName.includes("جبن") ||
+                catName.includes("اللحوم") ||
+                catName.includes("الدجاج")
             ) {
                 return { step: 0.5, unit: "كغم", isWeight: true };
-            } else if (category.includes("البقوليات")) {
+            } else if (catName.includes("البقوليات")) {
                 return { step: 1.0, unit: "كغم", isWeight: true };
             } else {
                 return { step: 1, unit: "قطعة", isWeight: false };
@@ -774,7 +777,7 @@
             }
 
             msg += `\n💰 المجموع الكلي التقريبي: ${total.toLocaleString()} د.ع\n`;
-            msg += `_ملاحظة: أسعار مواد الوزن (الخضار، اللحوم، الدجاج، والأجبان) تقريبية وقد يخضع السعر النهائي لتعديل طفيف حسب الوزن الفعلي عند التجهيز._`;
+            msg += `_ملاحظة: أسعار مواد الوزن (الخضار، اللحوم، الدجاج، والأجبان والألبان) تقريبية وقد يخضع السعر النهائي لتعديل طفيف حسب الوزن الفعلي عند التجهيز._`;
 
             window.open(`https://wa.me/9647842000516?text=${encodeURIComponent(msg)}`, '_blank');
         }
@@ -885,13 +888,14 @@
             renderStore();
         }
 
+        async type="text"
         async function addOfferItem() {
             let text = document.getElementById('admOfferText').value.trim();
             let price = document.getElementById('admOfferPrice').value.trim();
             if(text) {
                 offersData.push({ name: text, price: price ? Number(price) : null, active: true });
                 await saveDataToSupabase();
-                document.getElementById('admOfferText').value = '';
+                document.getElementById('admOfferText'].value = '';
                 document.getElementById('admOfferPrice').value = '';
                 renderAdminTables();
                 renderOffers();
