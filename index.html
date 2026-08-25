@@ -858,12 +858,12 @@ function getStepAndUnit(category) {
         alert('يرجى كتابة وصف العرض');
     }
 }
-
-async function deleteOffer(index) {
-    await saveDataToSupabase();
-    renderAdminTables();
-    renderOffers();
-}
+        async function deleteOffer(index) {
+            offersData.splice(index, 1);
+            await saveDataToSupabase();
+            renderAdminTables();
+            renderOffers();
+        }
     </script>
 </body>
 </html>
