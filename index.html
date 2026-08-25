@@ -160,7 +160,7 @@
             align-items: center;
             justify-content: center;
         }
-        .qty-val { font-weight: bold; min-width: 45px; text-align: center; font-size: 0.9rem; }
+        .qty-val { font-weight: bold; min-width: 55px; text-align: center; font-size: 0.85rem; }
 
         .custom-item-box {
             background: var(--white);
@@ -251,14 +251,13 @@
         .btn-del { background: var(--danger); color: white; padding: 4px 10px; border: none; border-radius: 6px; cursor: pointer; }
         .admin-section-box { background: #fdfdfd; border: 1px solid var(--border); padding: 15px; border-radius: 10px; margin-bottom: 20px; }
         
-        /* شاشة الصيانة (تظهر للزبائن فقط) */
         #maintenanceScreen {
             display: none;
             position: fixed;
             top: 0; left: 0; width: 100%; height: 100%;
             background: var(--primary);
             color: white;
-            z-index: 1500; /* أقل من الـ Modal حتى تفتح لوحة التحكم فوقها */
+            z-index: 1500;
             flex-direction: column;
             justify-content: center;
             align-items: center;
@@ -272,7 +271,7 @@
     <div id="maintenanceScreen">
         <h1 style="color: var(--accent); font-size: 2rem; margin-bottom: 15px;">🚧 الموقع تحت الصيانة حالياً</h1>
         <p style="font-size: 1.1rem; color: #dfe6e9; margin-bottom: 25px;">نعمل على تحديث الأسعار والمواد، وسنعود للعمل خلال قليل...</p>
-        <button class="btn-nav" onclick="openAdminModal()" style="background: var(--accent); color: var(--primary); font-weight: bold; padding: 10px 20px;">الدخول للوحة التحكم ⚙️</button>
+        <button class="btn-nav" onclick="openAdminModal()" style="background: var(--accent); color: var(--primary); font-weight: bold; padding: 10px 20px;">الدخول لوحة التحكم ⚙️</button>
     </div>
 
     <header>
@@ -338,7 +337,6 @@
                 <h2>لوحة التحكم والإدارة</h2>
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
-                <!-- زر إيقاف / تشغيل الموقع -->
                 <div class="admin-section-box" style="background: #fff3cd; border-color: #ffeeba;">
                     <h3 style="margin-bottom: 8px; color: #856404;">🛠️ حالة الموقع (وضع الصيانة)</h3>
                     <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
@@ -347,7 +345,6 @@
                     </div>
                 </div>
 
-                <!-- إضافة قسم جديد -->
                 <div class="admin-section-box">
                     <h3 style="margin-bottom: 10px;">➕ إضافة قسم جديد</h3>
                     <div style="display: flex; gap: 10px;">
@@ -356,7 +353,6 @@
                     </div>
                 </div>
 
-                <!-- إضافة منتج جديد -->
                 <div class="admin-section-box">
                     <h3 style="margin-bottom: 10px;">➕ إضافة منتج جديد</h3>
                     <div style="display: grid; grid-template-columns: 2fr 2fr 1fr auto; gap: 10px; align-items: center;">
@@ -367,7 +363,6 @@
                     </div>
                 </div>
 
-                <!-- جدول إدارة الأقسام والمنتجات -->
                 <h3 style="margin-top: 20px;">📦 إدارة المواد والأقسام (تفعيل/إلغاء الظهور)</h3>
                 <div style="max-height: 220px; overflow-y: auto;">
                     <table class="admin-table">
@@ -376,7 +371,6 @@
                     </table>
                 </div>
 
-                <!-- إدارة العروض -->
                 <h3 style="margin-top: 25px;">⚡ إدارة العروض البارزة</h3>
                 <div style="display: flex; gap: 10px; margin-top: 10px;">
                     <input type="text" id="admOfferText" class="form-control" placeholder="وصف العرض..." style="flex: 2;">
@@ -394,14 +388,44 @@
     </div>
 
     <script>
-        let defaultStore = [
+        const defaultStore = [
+            {
+                category: "قسم الفواكة والخضار",
+                products: [
+                    { name: "طماطم فريش", price: 1500, active: true },
+                    { name: "خيار فريش", price: 1500, active: true },
+                    { name: "بطاطا محلية", price: 1200, active: true },
+                    { name: "بصل أصفر", price: 1000, active: true }
+                ]
+            },
+            {
+                category: "قسم البقوليات",
+                products: [
+                    { name: "عدس حب أصفر", price: 3000, active: true },
+                    { name: "فاصوليا بيضاء يابسة", price: 3500, active: true },
+                    { name: "حمص منقي فاخر", price: 4000, active: true }
+                ]
+            },
+            {
+                category: "قسم اللحوم",
+                products: [
+                    { name: "لحم عجل هاما طازج", price: 16000, active: true },
+                    { name: "لحم غنم بالعظم", price: 18000, active: true }
+                ]
+            },
+            {
+                category: "قسم الدجاج الفريش",
+                products: [
+                    { name: "دجاج كامل فريش (وزن)", price: 4500, active: true },
+                    { name: "صدور دجاج فيليه فريش", price: 7500, active: true }
+                ]
+            },
             {
                 category: "قسم الأجبان والألبان",
                 products: [
                     { name: "جبن وخ أصلي قالب", price: 7500, active: true },
                     { name: "قشطة عربية فريش", price: 4000, active: true },
-                    { name: "لبنة قايم ممتازة", price: 3500, active: true },
-                    { name: "جبن شلل تركي", price: 6000, active: true }
+                    { name: "لبنة قايم ممتازة", price: 3500, active: true }
                 ]
             },
             {
@@ -413,7 +437,7 @@
             }
         ];
 
-        let defaultOffers = [
+        const defaultOffers = [
             { name: "عرض السلة الرمضانية المتكاملة", price: 25000, active: true }
         ];
 
@@ -432,7 +456,20 @@
             localStorage.setItem('amazon_store', JSON.stringify(storeData));
             localStorage.setItem('amazon_offers', JSON.stringify(offersData));
             localStorage.setItem('amazon_maintenance', JSON.stringify(isMaintenance));
+            window.dispatchEvent(new Event('storage'));
         }
+
+        window.addEventListener('storage', () => {
+            storeData = JSON.parse(localStorage.getItem('amazon_store')) || defaultStore;
+            offersData = JSON.parse(localStorage.getItem('amazon_offers')) || defaultOffers;
+            isMaintenance = JSON.parse(localStorage.getItem('amazon_maintenance')) || false;
+            checkMaintenanceView();
+            renderStore();
+            if(document.getElementById('adminModal').style.display === 'flex' && document.getElementById('dashboardSection').style.display === 'block') {
+                updateMaintenanceUI();
+                renderAdminTables();
+            }
+        });
 
         function checkMaintenanceView() {
             let screen = document.getElementById('maintenanceScreen');
@@ -464,6 +501,26 @@
             }
         }
 
+        // تحديد نوع وحدة القياس بناءً على القسم المطلوب
+        function getStepAndUnit(category) {
+            if (category === "قسم الفواكة والخضار") {
+                return { step: 0.5, unit: "كغم", isWeight: true };
+            } else if (category === "قسم البقوليات" || category === "قسم اللحوم" || category === "قسم الدجاج الفريش") {
+                return { step: 1.0, unit: "كغم", isWeight: true };
+            } else {
+                return { step: 1, unit: "قطعة", isWeight: false };
+            }
+        }
+
+        function formatQtyDisplay(val, isWeight, unit) {
+            if (val === 0) return "0";
+            if (isWeight) {
+                return `${val} ${unit}`;
+            } else {
+                return `${val} ${unit}`;
+            }
+        }
+
         function renderStore(filterText = "") {
             renderOffers();
             const container = document.getElementById('storeContainer');
@@ -479,25 +536,29 @@
                 if (query !== "" && filteredProducts.length === 0) return;
                 if (filteredProducts.length === 0 && query === "") return;
 
+                let { step, unit, isWeight } = getStepAndUnit(cat.category);
+
                 let productsHtml = `<div class="products-grid">`;
                 filteredProducts.forEach((prod) => {
-                    let priceText = prod.price !== null ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
+                    let unitLabelSuffix = isWeight ? "كيلو" : "الكمية";
+                    let priceSubText = prod.price !== null ? `${prod.price.toLocaleString()} د.ع ${isWeight ? '/ للكيلو' : ''}` : 'السعر حسب الطلب';
                     let key = `${cat.category}___${prod.name}`;
                     let qty = cart[key] ? cart[key].qty : 0;
                     let safeId = btoa(encodeURIComponent(key));
+                    let displayValStr = formatQtyDisplay(qty, isWeight, unit);
 
                     productsHtml += `
                         <div class="product-card">
                             <div>
                                 <div class="p-name">${prod.name}</div>
-                                <div class="p-price">${priceText}</div>
+                                <div class="p-price">${priceSubText}</div>
                             </div>
                             <div class="product-footer-row">
-                                <div style="font-size:0.75rem; color:var(--gray);">الكمية</div>
+                                <div style="font-size:0.75rem; color:var(--gray);">${unitLabelSuffix}</div>
                                 <div class="qty-box">
-                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', -1)">-</button>
-                                    <span class="qty-val" id="qty-${safeId}">${qty}</span>
-                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', 1)">+</button>
+                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', -${step})">-</button>
+                                    <span class="qty-val" id="qty-${safeId}">${displayValStr}</span>
+                                    <button class="qty-btn" onclick="changeQtyByName('${cat.category}', '${prod.name}', ${step})">+</button>
                                 </div>
                             </div>
                         </div>
@@ -543,7 +604,7 @@
                         </div>
                         <div class="qty-box">
                             <button class="qty-btn" onclick="changeQtyByName('عروض الواجهة', '${offer.name}', -1)">-</button>
-                            <span class="qty-val" id="qty-${safeId}">${qty}</span>
+                            <span class="qty-val" id="qty-${safeId}">${qty} قطعة</span>
                             <button class="qty-btn" onclick="changeQtyByName('عروض الواجهة', '${offer.name}', 1)">+</button>
                         </div>
                     </div>
@@ -565,6 +626,8 @@
         function changeQtyByName(category, name, deltaDir) {
             let key = `${category}___${name}`;
             let targetObj = null;
+            let isWeight = false;
+            let unit = "قطعة";
 
             if (category === 'عروض الواجهة') {
                 targetObj = offersData.find(o => o.name === name);
@@ -572,7 +635,12 @@
                 targetObj = { name, price: null, active: true };
             } else {
                 let cat = storeData.find(c => c.category === category);
-                if (cat) targetObj = cat.products.find(p => p.name === name);
+                if (cat) {
+                    targetObj = cat.products.find(p => p.name === name);
+                    let info = getStepAndUnit(category);
+                    isWeight = info.isWeight;
+                    unit = info.unit;
+                }
             }
 
             if (!targetObj && category !== 'طلبات خارجية') return;
@@ -583,17 +651,24 @@
                     price: targetObj ? targetObj.price : null, 
                     qty: 0, 
                     category: category, 
-                    showPrice: true 
+                    isWeight: isWeight,
+                    unit: unit
                 };
             }
 
-            cart[key].qty += deltaDir;
-            if (cart[key].qty < 0) cart[key].qty = 0;
+            // تحديث الحساب بدقة مع مراعاة الأرقام العشرية (لـ 0.5 كيلو)
+            let currentQty = cart[key].qty || 0;
+            let newQty = Math.round((currentQty + deltaDir) * 10) / 10;
+            if (newQty < 0) newQty = 0;
+            
+            cart[key].qty = newQty;
             if (cart[key].qty === 0) delete cart[key];
 
             let safeId = btoa(encodeURIComponent(key));
             let el = document.getElementById(`qty-${safeId}`);
-            if (el) el.innerText = cart[key] ? cart[key].qty : 0;
+            if (el) {
+                el.innerText = formatQtyDisplay(cart[key] ? cart[key].qty : 0, cart[key] ? cart[key].isWeight : isWeight, cart[key] ? cart[key].unit : unit);
+            }
             updateCartSummary();
         }
 
@@ -603,7 +678,7 @@
             if (!name) { alert('أدخل اسم المادة'); return; }
 
             let key = `طلبات خارجية___${name}`;
-            if (!cart[key]) cart[key] = { name, price: null, qty: 0, category: 'طلبات خارجية', showPrice: false };
+            if (!cart[key]) cart[key] = { name, price: null, qty: 0, category: 'طلبات خارجية', isWeight: false, unit: 'قطعة' };
             cart[key].qty += qty;
             document.getElementById('customName').value = '';
             updateCartSummary();
@@ -613,7 +688,9 @@
         function updateCartSummary() {
             let total = 0;
             for (let k in cart) {
-                if (cart[k].price !== null) total += cart[k].price * cart[k].qty;
+                if (cart[k].price !== null) {
+                    total += cart[k].price * cart[k].qty;
+                }
             }
             document.getElementById('cartTotal').innerText = `${total.toLocaleString()} د.ع`;
         }
@@ -624,13 +701,14 @@
             let region = document.getElementById('custRegion').value.trim();
             if (!name || !phone || !region) { alert('الرجاء إدخال الاسم ورقم الهاتف والمنطقة'); return; }
 
-            let msg = `🛒 *طلب جديد من أمازون هايبر ماركت*\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 المنطقة: ${region}\n\n*المنتجات:*\n`;
+            let msg = `🛒 *طلب جديد من أمازون هايبر ماركت*\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 المنطقة: ${region}\n\n*المنتجات المطلوبة:*\n`;
             let total = 0;
             for (let [k, item] of Object.entries(cart)) {
-                msg += `▪️ ${item.name} (الكمية: ${item.qty})\n`;
+                let qtyText = item.isWeight ? `${item.qty} ${item.unit}` : `${item.qty} قطعة`;
+                msg += `▪️ ${item.name} (${qtyText})\n`;
                 if (item.price) total += item.price * item.qty;
             }
-            msg += `\n💰 المجموع: ${total.toLocaleString()} د.ع`;
+            msg += `\n💰 المجموع الكلي: ${total.toLocaleString()} د.ع`;
             window.open(`https://wa.me/9647842000516?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -683,7 +761,7 @@
                         <td>${off.name}</td>
                         <td>${off.price ? off.price.toLocaleString() + ' د.ع' : '-'}</td>
                         <td style="text-align:center;"><input type="checkbox" ${checked} onchange="toggleOfferStatus(${idx}, this.checked)" style="transform: scale(1.3); cursor:pointer;"></td>
-                        <td><button class="btn-del" onclick="deleteOffer(${idx})">` + 'حذف' + `</button></td>
+                        <td><button class="btn-del" onclick="deleteOffer(${idx})">حذف</button></td>
                     </tr>
                 `;
             });
