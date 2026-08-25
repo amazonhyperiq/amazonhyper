@@ -854,16 +854,16 @@ function getStepAndUnit(category) {
                 renderAdminTables();
                 renderOffers();
                 alert('تم إضافة العرض بنجاح');
-            } else {
-                alert('يرجى كتابة وصف العرض');
-            }
-        }
+} else {
+        alert('يرجى كتابة وصف العرض');
+    }
+}
 
-        async function deleteOffer(index) {
-            offersData.splice(index, 1);
-            await saveDataToSupabase();
-            renderAdminTables();
-            renderOffers();
+async function deleteOffer(index) {
+    await saveDataToSupabase();
+    renderAdminTables();
+    renderOffers();
+}
         }
     </script>
 </body>
