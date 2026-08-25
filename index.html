@@ -854,5 +854,9 @@ window.addEventListener('DOMContentLoaded', () => {
 
         window.onload = () => renderStore();
     </script>
+    // تفعيل جلب المنتجات من Supabase فور فتح الصفحة
+    window.addEventListener('DOMContentLoaded', () => {
+        loadProductsFromSupabase();
+    });
 </body>
 </html>
