@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>أمازون هايبر ماركت</title>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #1a252c;
@@ -338,8 +337,8 @@
     </div>
 
     <script>
-        // بيانات افتراضية قوية لضمان عمل المتجر بشكل فوري حتى لو لم يتصل السيرفر
-        let defaultStoreData = [
+        // بيانات المتجر الأساسية المستقرة
+        let storeData = [
             {
                 category: "قسم الأجبان والألبان",
                 products: [
@@ -364,48 +363,15 @@
             }
         ];
 
-        let storeData = defaultStoreData;
         let offersData = [
             { name: "عرض السلة الرمضانية المتكاملة", price: 25000, showPrice: true }
         ];
+        
         let cart = {};
 
-        // محاولة الاتصال بـ Supabase مع حماية تامة ضد أخطاء الاتصال
-        async function loadProductsFromSupabase() {
-            try {
-                const SUPABASE_URL = 'https://wvexorzjkpwduykinwsw.supabase.co';
-                const SUPABASE_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB';
-                const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-                const { data, error } = await supabaseClient.from('products').select('*');
-                if (!error && data && data.length > 0) {
-                    const categoriesMap = {};
-                    data.forEach(item => {
-                        const catName = item.category || "أقسام أخرى";
-                        if (!categoriesMap[catName]) {
-                            categoriesMap[catName] = { category: catName, products: [] };
-                        }
-                        categoriesMap[catName].products.push({
-                            name: item.name,
-                            price: Number(item.price),
-                            showPrice: item.show_price ?? true
-                        });
-                    });
-                    storeData = Object.values(categoriesMap);
-                }
-            } catch (err) {
-                console.log('الاعتماد على البيانات المحلية الافتراضية لعدم توفر السيرفر.');
-            }
-            renderStore();
-        }
-
         window.addEventListener('DOMContentLoaded', () => {
-            loadProductsFromSupabase();
+            renderStore();
         });
-
-        function isWeightCategory(categoryName) {
-            return categoryName === "قسم المخللات والزيتون" || categoryName === "قسم الأجبان والألبان";
-        }
 
         function renderStore(filterText = "") {
             renderOffers();
@@ -421,7 +387,6 @@
                 if (query !== "" && filteredProducts.length === 0) return;
 
                 let productsHtml = `<div class="products-grid">`;
-                let isWeight = isWeightCategory(cat.category);
 
                 filteredProducts.forEach((prod) => {
                     let priceText = (prod.showPrice && prod.price !== null) ? `${prod.price.toLocaleString()} د.ع` : 'السعر حسب الطلب';
