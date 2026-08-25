@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Amazon Hyper Market</title>
+    <!-- مكتبة Supabase للربط السحابي الفوري -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         :root {
             --primary: #1a252c;
@@ -66,6 +68,7 @@
             border-radius: 16px;
             padding: 18px;
             margin-bottom: 25px;
+            box-shadow: 0 4px 15px rgba(255, 94, 98, 0.25);
         }
         .offers-title-box {
             display: flex;
@@ -220,7 +223,6 @@
             font-size: 0.95rem;
         }
 
-        /* Modal Styles */
         .modal {
             display: none;
             position: fixed;
@@ -334,7 +336,7 @@
             </div>
 
             <div id="dashboardSection" style="display: none;">
-                <h2>لوحة التحكم والإدارة</h2>
+                <h2>لوحة التحكم والإدارة (سحابي متزامن)</h2>
                 <hr style="margin: 15px 0; border:0; border-top:1px solid var(--border);">
                 
                 <div class="admin-section-box" style="background: #fff3cd; border-color: #ffeeba;">
@@ -388,6 +390,11 @@
     </div>
 
     <script>
+        // إعدادات اتصال Supabase بالمفتاح الصحيح
+        const SUPABASE_URL = 'https://vvexorzjkpwduykinwsw.supabase.co';
+        const SUPABASE_ANON_KEY = 'sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB'; 
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
         const defaultStore = [
             {
                 category: "قسم الفواكة والخضار",
@@ -441,35 +448,86 @@
             { name: "عرض السلة الرمضانية المتكاملة", price: 25000, active: true }
         ];
 
-        let storeData = JSON.parse(localStorage.getItem('amazon_store')) || defaultStore;
-        let offersData = JSON.parse(localStorage.getItem('amazon_offers')) || defaultOffers;
-        let isMaintenance = JSON.parse(localStorage.getItem('amazon_maintenance')) || false;
-        
+        let storeData = defaultStore;
+        let offersData = defaultOffers;
+        let isMaintenance = false;
         let cart = {};
 
-        window.addEventListener('DOMContentLoaded', () => {
-            checkMaintenanceView();
-            renderStore();
+        window.addEventListener('DOMContentLoaded', async () => {
+            await loadDataFromSupabase();
+            setupRealtimeSync();
         });
 
-        function saveData() {
-            localStorage.setItem('amazon_store', JSON.stringify(storeData));
-            localStorage.setItem('amazon_offers', JSON.stringify(offersData));
-            localStorage.setItem('amazon_maintenance', JSON.stringify(isMaintenance));
-            window.dispatchEvent(new Event('storage'));
+        // سحب البيانات من Supabase
+        async function loadDataFromSupabase() {
+            try {
+                let { data, error } = await supabaseClient
+                    .from('products')
+                    .select('*')
+                    .limit(1);
+
+                if (data && data.length > 0 && data[0].data) {
+                    let cloudData = data[0].data;
+                    storeData = cloudData.store || defaultStore;
+                    offersData = cloudData.offers || defaultOffers;
+                    isMaintenance = cloudData.maintenance || false;
+                } else {
+                    await saveDataToSupabase();
+                }
+            } catch (err) {
+                console.log("خطأ في جلب البيانات:", err);
+            }
+            checkMaintenanceView();
+            renderStore();
         }
 
-        window.addEventListener('storage', () => {
-            storeData = JSON.parse(localStorage.getItem('amazon_store')) || defaultStore;
-            offersData = JSON.parse(localStorage.getItem('amazon_offers')) || defaultOffers;
-            isMaintenance = JSON.parse(localStorage.getItem('amazon_maintenance')) || false;
-            checkMaintenanceView();
-            renderStore();
-            if(document.getElementById('adminModal').style.display === 'flex' && document.getElementById('dashboardSection').style.display === 'block') {
-                updateMaintenanceUI();
-                renderAdminTables();
+        // حفظ وتحديث البيانات في Supabase
+        async function saveDataToSupabase() {
+            try {
+                let payload = {
+                    store: storeData,
+                    offers: offersData,
+                    maintenance: isMaintenance
+                };
+
+                let { data } = await supabaseClient.from('products').select('id').limit(1);
+                
+                if (data && data.length > 0) {
+                    await supabaseClient
+                        .from('products')
+                        .update({ data: payload })
+                        .eq('id', data[0].id);
+                } else {
+                    await supabaseClient
+                        .from('products')
+                        .insert([{ data: payload }]);
+                }
+            } catch (err) {
+                console.log("خطأ في حفظ البيانات:", err);
             }
-        });
+        }
+
+        // الاستماع الفعلي للتحديثات من أي جهاز آخر (Realtime)
+        function setupRealtimeSync() {
+            supabaseClient
+                .channel('public:products')
+                .on('postgres_changes', { event: '*', schema: 'public', table: 'products' }, payload => {
+                    if (payload.new && payload.new.data) {
+                        let cloudData = payload.new.data;
+                        storeData = cloudData.store || defaultStore;
+                        offersData = cloudData.offers || defaultOffers;
+                        isMaintenance = cloudData.maintenance || false;
+                        
+                        checkMaintenanceView();
+                        renderStore();
+                        if(document.getElementById('adminModal').style.display === 'flex' && document.getElementById('dashboardSection').style.display === 'block') {
+                            updateMaintenanceUI();
+                            renderAdminTables();
+                        }
+                    }
+                })
+                .subscribe();
+        }
 
         function checkMaintenanceView() {
             let screen = document.getElementById('maintenanceScreen');
@@ -480,9 +538,9 @@
             }
         }
 
-        function toggleMaintenance() {
+        async function toggleMaintenance() {
             isMaintenance = !isMaintenance;
-            saveData();
+            await saveDataToSupabase();
             checkMaintenanceView();
             updateMaintenanceUI();
         }
@@ -501,7 +559,6 @@
             }
         }
 
-        // تحديد نوع وحدة القياس بناءً على القسم المطلوب
         function getStepAndUnit(category) {
             if (category === "قسم الفواكة والخضار") {
                 return { step: 0.5, unit: "كغم", isWeight: true };
@@ -514,11 +571,7 @@
 
         function formatQtyDisplay(val, isWeight, unit) {
             if (val === 0) return "0";
-            if (isWeight) {
-                return `${val} ${unit}`;
-            } else {
-                return `${val} ${unit}`;
-            }
+            return `${val} ${unit}`;
         }
 
         function renderStore(filterText = "") {
@@ -656,7 +709,6 @@
                 };
             }
 
-            // تحديث الحساب بدقة مع مراعاة الأرقام العشرية (لـ 0.5 كيلو)
             let currentQty = cart[key].qty || 0;
             let newQty = Math.round((currentQty + deltaDir) * 10) / 10;
             if (newQty < 0) newQty = 0;
@@ -699,16 +751,24 @@
             let name = document.getElementById('custName').value.trim();
             let phone = document.getElementById('custPhone').value.trim();
             let region = document.getElementById('custRegion').value.trim();
+            let notes = document.getElementById('custNotes').value.trim();
+
             if (!name || !phone || !region) { alert('الرجاء إدخال الاسم ورقم الهاتف والمنطقة'); return; }
 
-            let msg = `🛒 *طلب جديد من أمازون هايبر ماركت*\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 المنطقة: ${region}\n\n*المنتجات المطلوبة:*\n`;
+            let msg = `🛒 *طلب جديد من أمازون هايبر ماركت*\n👤 الاسم: ${name}\n📞 الهاتف: ${phone}\n📍 المنطقة: ${region}\n`;
+            if(notes) msg += `📝 ملاحظات: ${notes}\n`;
+            msg += `\n*المنتجات المطلوبة:*\n`;
+
             let total = 0;
             for (let [k, item] of Object.entries(cart)) {
                 let qtyText = item.isWeight ? `${item.qty} ${item.unit}` : `${item.qty} قطعة`;
                 msg += `▪️ ${item.name} (${qtyText})\n`;
                 if (item.price) total += item.price * item.qty;
             }
-            msg += `\n💰 المجموع الكلي: ${total.toLocaleString()} د.ع`;
+
+            msg += `\n💰 المجموع الكلي التقريبي: ${total.toLocaleString()} د.ع\n`;
+            msg += `_ملاحظة: أسعار مواد الوزن (الخضار، اللحوم، والدجاج) تقريبية وقد يخضع السعر النهائي لتعديل طفيف حسب الوزن الفعلي عند التجهيز._`;
+
             window.open(`https://wa.me/9647842000516?text=${encodeURIComponent(msg)}`, '_blank');
         }
 
@@ -767,32 +827,32 @@
             });
         }
 
-        function toggleProductStatus(cIdx, pIdx, status) {
+        async function toggleProductStatus(cIdx, pIdx, status) {
             storeData[cIdx].products[pIdx].active = status;
-            saveData();
+            await saveDataToSupabase();
             renderStore();
         }
 
-        function toggleOfferStatus(idx, status) {
+        async function toggleOfferStatus(idx, status) {
             offersData[idx].active = status;
-            saveData();
+            await saveDataToSupabase();
             renderStore();
         }
 
-        function addNewCategory() {
+        async function addNewCategory() {
             let catName = document.getElementById('newCatName').value.trim();
             if (!catName) { alert('أدخل اسم القسم'); return; }
             if (storeData.some(c => c.category === catName)) { alert('القسم موجود مسبقاً'); return; }
             
             storeData.push({ category: catName, products: [] });
-            saveData();
+            await saveDataToSupabase();
             document.getElementById('newCatName').value = '';
             renderAdminTables();
             renderStore();
             alert('تمت إضافة القسم بنجاح');
         }
 
-        function addNewProduct() {
+        async function addNewProduct() {
             let catName = document.getElementById('prodCatSelect').value;
             let prodName = document.getElementById('newProdName').value.trim();
             let price = document.getElementById('newProdPrice').value.trim();
@@ -802,7 +862,7 @@
             let cat = storeData.find(c => c.category === catName);
             if (cat) {
                 cat.products.push({ name: prodName, price: price ? Number(price) : null, active: true });
-                saveData();
+                await saveDataToSupabase();
                 document.getElementById('newProdName').value = '';
                 document.getElementById('newProdPrice').value = '';
                 renderAdminTables();
@@ -811,19 +871,19 @@
             }
         }
 
-        function deleteProduct(cIdx, pIdx) {
+        async function deleteProduct(cIdx, pIdx) {
             storeData[cIdx].products.splice(pIdx, 1);
-            saveData();
+            await saveDataToSupabase();
             renderAdminTables();
             renderStore();
         }
 
-        function addOfferItem() {
+        async function addOfferItem() {
             let text = document.getElementById('admOfferText').value.trim();
             let price = document.getElementById('admOfferPrice').value.trim();
             if(text) {
                 offersData.push({ name: text, price: price ? Number(price) : null, active: true });
-                saveData();
+                await saveDataToSupabase();
                 document.getElementById('admOfferText').value = '';
                 document.getElementById('admOfferPrice').value = '';
                 renderAdminTables();
@@ -834,9 +894,9 @@
             }
         }
 
-        function deleteOffer(index) {
+        async function deleteOffer(index) {
             offersData.splice(index, 1);
-            saveData();
+            await saveDataToSupabase();
             renderAdminTables();
             renderOffers();
         }
