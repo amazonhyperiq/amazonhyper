@@ -60,17 +60,46 @@
         </div>
     </div>
 
-    <!-- محتوى لوحة التحكم (مخفي لحين تسجيل الدخول) -->
+    <!-- محتوى لوحة التحكم -->
     <div id="dashboardContent">
         <div class="top-bar">
             <h2>لوحة تحكم أمازون هايبر ماركت</h2>
             <div class="actions-group">
+                <!-- تم التأكد من توجيهها لصفحة index.html -->
                 <a href="index.html" class="view-store-btn" target="_blank">عرض المتجر 🔗</a>
                 <button class="logout-btn" onclick="logout()">تسجيل خروج</button>
             </div>
         </div>
 
-        <!-- إضافة قسم جديد -->
+        <!-- 1. التحكم بالشريط المتحرك -->
+        <div class="card">
+            <h3>📢 التحكم بالشريط المتحرك (الإعلان العلوي)</h3>
+            <div class="form-grid" style="grid-template-columns: 1fr auto;">
+                <div class="form-control">
+                    <label>نص الشريط المتحرك الجديد</label>
+                    <input type="text" id="marqueeTextInput" placeholder="أدخل النص الذي سيعرض في أعلى المتجر...">
+                </div>
+                <button class="btn-primary" onclick="saveMarquee()">تحديث الشريط</button>
+            </div>
+        </div>
+
+        <!-- 2. التحكم ببانر العروض الخاصة وتواريخها -->
+        <div class="card">
+            <h3>🎁 إدارة بانر العروض الخاصة وتواريخها</h3>
+            <div class="form-grid" style="grid-template-columns: 2fr 1fr auto;">
+                <div class="form-control">
+                    <label>نص العرض والتخفيضات</label>
+                    <input type="text" id="promoTitleInput" placeholder="مثال: خصومات كبرى على المواد الغذائية">
+                </div>
+                <div class="form-control">
+                    <label>فترة سريان العرض (التواريخ)</label>
+                    <input type="text" id="promoDateInput" placeholder="مثال: ساري لغاية الجمعة القادمة">
+                </div>
+                <button class="btn-primary" onclick="savePromo()">حفظ العرض</button>
+            </div>
+        </div>
+
+        <!-- 3. إضافة قسم جديد -->
         <div class="card">
             <h3>إضافة قسم جديد للمتجر</h3>
             <div class="form-grid" style="grid-template-columns: 1fr auto;">
@@ -82,7 +111,7 @@
             </div>
         </div>
 
-        <!-- إضافة مادة جديدة -->
+        <!-- 4. إضافة مادة جديدة -->
         <div class="card">
             <h3>إضافة منتج أو مادة جديدة</h3>
             <div class="form-grid">
@@ -102,7 +131,7 @@
             </div>
         </div>
 
-        <!-- جدول المواد -->
+        <!-- 5. جدول المواد -->
         <div class="card">
             <h3>قائمة المواد المضافة</h3>
             <table>
@@ -120,7 +149,6 @@
     </div>
 
     <script>
-        // بيانات الدخول (يمكنك تغييرها هنا بكل سهولة)
         const ADMIN_USER = "admin";
         const ADMIN_PASS = "123456";
 
@@ -144,7 +172,6 @@
             location.reload();
         }
 
-        // التحقق مما إذا كانت الجلسة مسجلة مسبقاً
         window.onload = function() {
             if (sessionStorage.getItem('isAdminLoggedIn') === 'true') {
                 document.getElementById('loginOverlay').style.display = 'none';
@@ -162,6 +189,31 @@
         function initDashboard() {
             updateCategoriesDropdown();
             renderAdminTable();
+            
+            // جلب القيم الحالية للشريط والعروض في الحقول
+            const currentMarquee = localStorage.getItem('amazon_marquee') || '📢 أهلاً بكم في أمازون هايبر ماركت - توصيل سريع لجميع مناطق بغداد';
+            document.getElementById('marqueeTextInput').value = currentMarquee;
+
+            const currentPromoTitle = localStorage.getItem('amazon_promo_title') || 'خصومات رائعة على قسم المواد الغذائية والبهارات لفترة محدودة';
+            const currentPromoDate = localStorage.getItem('amazon_promo_date') || 'ساري المفعول الآن';
+            document.getElementById('promoTitleInput').value = currentPromoTitle;
+            document.getElementById('promoDateInput').value = currentPromoDate;
+        }
+
+        function saveMarquee() {
+            const text = document.getElementById('marqueeTextInput').value.trim();
+            if(!text) return alert('يرجى كتابة نص الشريط المتحرك!');
+            localStorage.setItem('amazon_marquee', text);
+            alert('تم تحديث الشريط المتحرك وعرضه في المتجر بنجاح!');
+        }
+
+        function savePromo() {
+            const title = document.getElementById('promoTitleInput').value.trim();
+            const date = document.getElementById('promoDateInput').value.trim();
+            if(!title || !date) return alert('يرجى ملء تفاصيل وتاريخ العرض!');
+            localStorage.setItem('amazon_promo_title', title);
+            localStorage.setItem('amazon_promo_date', date);
+            alert('تم تحديث بانر العروض الخاصة بنجاح!');
         }
 
         function updateCategoriesDropdown() {
