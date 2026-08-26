@@ -97,16 +97,26 @@
         // مفتاح الربط السحابي
     const SUPABASE_ANON_KEY = "sb_publishable_RoMHq19grLJWNu95uPSwug_XwiKt2bB";
         let products = [];
-
-        async function loadProducts() {
-            try {
-                const res = await fetch('products.json?t=' + new Date().getTime());
-                products = await res.json();
-            } catch (e) {
-                products = [];
+const SUPABASE_URL = "https://vvexorzjkpwduykinwsw.supabase.co";
+  async function loadProducts() {
+    try {
+        const res = await fetch(`${SUPABASE_URL}/rest/v1/products?select=*`, {
+            headers: {
+                'apikey': SUPABASE_ANON_KEY,
+                'Authorization': `Bearer ${SUPABASE_ANON_KEY}`
             }
-            renderAdminTable();
+        });
+        if (res.ok) {
+            products = await res.json();
+        } else {
+            products = [];
         }
+    } catch (e) {
+        console.error("خطأ في الاتصال بالسحابة:", e);
+        products = [];
+    }
+    renderAdminTable();
+}
 
         function login() {
             const u = document.getElementById('username').value;
