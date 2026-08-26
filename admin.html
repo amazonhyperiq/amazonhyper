@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - أمازون هايبر ماركت</title>
+    <style>
+        :root {
+            --primary-color: #0b5e2e;
+            --bg-color: #f4f6f8;
+            --text-color: #333;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, sans-serif; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding: 20px; }
+        
+        .login-box, .admin-box { max-width: 600px; margin: 0 auto; background: #fff; padding: 20px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1, h2 { color: var(--primary-color); margin-bottom: 15px; }
+        
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        
+        button { background: var(--primary-color); color: #fff; border: none; padding: 10px 15px; border-radius: 6px; cursor: pointer; font-size: 1rem; }
+        button:hover { opacity: 0.9; }
+
+        .hidden { display: none !important; }
+        
+        table { width: 100%; border-collapse: collapse; margin-top: 15px; }
+        table th, table td { border: 1px solid #ddd; padding: 8px; text-align: center; font-size: 0.9rem; }
+        table th { background: #f0f0f0; }
+
+        .export-section { margin-top: 25px; background: #e8f5e9; padding: 15px; border-radius: 8px; border: 1px dashed var(--primary-color); text-align: center; }
+    </style>
+</head>
+<body>
+
+    <!-- Login Screen -->
+    <div id="loginScreen" class="login-box">
+        <h1>تسجيل دخول لوحة التحكم</h1>
+        <div class="form-group">
+            <label>اسم المستخدم</label>
+            <input type="text" id="username" placeholder="أدخل اسم المستخدم">
+        </div>
+        <div class="form-group">
+            <label>كلمة المرور</label>
+            <input type="password" id="password" placeholder="أدخل كلمة المرور">
+        </div>
+        <button onclick="login()">دخول</button>
+    </div>
+
+    <!-- Admin Panel -->
+    <div id="adminPanel" class="admin-box hidden">
+        <h2>إدارة منتجات أمازون هايبر ماركت</h2>
+        
+        <div class="form-group">
+            <label>اسم المنتج</label>
+            <input type="text" id="prodName" placeholder="مثال: طماطم فريش">
+        </div>
+        <div class="form-group">
+            <label>القسم</label>
+            <input type="text" id="prodCat" placeholder="مثال: خضراوات وفواكه">
+        </div>
+        <div class="form-group">
+            <label>السعر (دج)</label>
+            <input type="number" id="prodPrice" placeholder="مثال: 1500">
+        </div>
+        <div class="form-group">
+            <label>الوحدة</label>
+            <input type="text" id="prodUnit" placeholder="مثال: كغ / كيس / باكيت">
+        </div>
+        <button onclick="addProduct()">إضافة المنتج</button>
+
+        <h3 style="margin-top: 20px;">المنتجات الحالية</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>الاسم</th>
+                    <th>القسم</th>
+                    <th>السعر</th>
+                    <th>الوحدة</th>
+                    <th>حذف</th>
+                </tr>
+            </thead>
+            <tbody id="adminProductsTable">
+                <!-- Loaded dynamically -->
+            </tbody>
+        </table>
+
+        <div class="export-section">
+            <h3>💾 حفظ التعديلات ونشرها للموبايل</h3>
+            <p style="font-size: 0.85rem; margin: 8px 0; color: #555;">بعد إضافة أو تعديل المنتجات، اضغط الزر أدناه لتحميل ملف `products.json`، ثم ارفعه إلى جيت هب ليتحدث المتجر فوراً على الموبايل!</p>
+            <button onclick="downloadProductsJson()" style="background: #2e7d32;">تحميل ملف التحديث (products.json)</button>
+        </div>
+    </div>
+
+    <script>
+        let products = [];
+
+        async function loadProducts() {
+            try {
+                const res = await fetch('products.json?t=' + new Date().getTime());
+                products = await res.json();
+            } catch (e) {
+                products = [];
+            }
+            renderAdminTable();
+        }
+
+        function login() {
+            const u = document.getElementById('username').value;
+            const p = document.getElementById('password').value;
+            if (u === 'admin' && p === '123456') {
+                document.getElementById('loginScreen').classList.add('hidden');
+                document.getElementById('adminPanel').classList.remove('hidden');
+                loadProducts();
+            } else {
+                alert('اسم المستخدم أو كلمة المرور غير صحيحة');
+            }
+        }
+
+        function renderAdminTable() {
+            const tbody = document.getElementById('adminProductsTable');
+            if (products.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5">لا توجد منتجات</td></tr>';
+                return;
+            }
+            tbody.innerHTML = products.map((p, index) => `
+                <tr>
+                    <td>${p.name}</td>
+                    <td>${p.category}</td>
+                    <td>${p.price.toLocaleString()}</td>
+                    <td>${p.unit || 'قطعة'}</td>
+                    <td><button onclick="deleteProduct(${index})" style="background: #c62828; padding: 4px 8px; font-size: 0.8rem;">حذف</button></td>
+                </tr>
+            `).join('');
+        }
+
+        function addProduct() {
+            const name = document.getElementById('prodName').value.trim();
+            const category = document.getElementById('prodCat').value.trim();
+            const price = parseFloat(document.getElementById('prodPrice').value);
+            const unit = document.getElementById('prodUnit').value.trim() || 'قطعة';
+
+            if (!name || !category || isNaN(price)) {
+                alert('يرجى إكمال بيانات المنتج بشكل صحيح');
+                return;
+            }
+
+            const newId = products.length > 0 ? Math.max(...products.map(p => p.id)) + 1 : 1;
+            products.push({ id: newId, name, category, price, unit });
+
+            document.getElementById('prodName').value = '';
+            document.getElementById('prodCat').value = '';
+            document.getElementById('prodPrice').value = '';
+            document.getElementById('prodUnit').value = '';
+
+            renderAdminTable();
+            alert('تمت الإضافة بنجاح! لا تنسَ تحميل الملف أدناه ورفعه لجيت هب.');
+        }
+
+        function deleteProduct(index) {
+            products.splice(index, 1);
+            renderAdminTable();
+        }
+
+        function downloadProductsJson() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(products, null, 2));
+            const dlAnchorElem = document.createElement('a');
+            dlAnchorElem.setAttribute("href", dataStr);
+            dlAnchorElem.setAttribute("download", "products.json");
+            document.body.appendChild(dlAnchorElem);
+            dlAnchorElem.click();
+            dlAnchorElem.remove();
+        }
+    </script>
+</body>
+</html>
