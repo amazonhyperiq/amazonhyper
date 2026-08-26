@@ -12,51 +12,52 @@
             --text-color: #333;
         }
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
-        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 120px; }
+        body { background-color: var(--bg-color); color: var(--text-color); padding-bottom: 260px; }
         
         /* Header */
         header { background-color: var(--primary-color); color: #fff; padding: 15px; text-align: center; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
-        header h1 { font-size: 1.5rem; margin-bottom: 5px; }
-        header p { font-size: 0.9rem; opacity: 0.9; }
+        header h1 { font-size: 1.6rem; margin-bottom: 5px; }
+        header p { font-size: 0.85rem; opacity: 0.9; }
 
         /* Search & Categories */
-        .search-container { padding: 15px; background: #fff; display: flex; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
-        .search-container input { width: 100%; max-width: 600px; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 1rem; }
+        .search-container { padding: 12px; background: #fff; display: flex; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+        .search-container input { width: 100%; max-width: 600px; padding: 10px 15px; border: 1px solid #ddd; border-radius: 25px; outline: none; font-size: 0.95rem; text-align: right; }
         
-        .categories { display: flex; overflow-x: auto; padding: 10px; background: #fff; gap: 10px; scrollbar-width: none; }
+        .categories { display: flex; overflow-x: auto; padding: 12px; background: #fff; gap: 10px; scrollbar-width: none; border-bottom: 1px solid #eee; }
         .categories::-webkit-scrollbar { display: none; }
-        .category-card { min-width: 90px; padding: 10px; text-align: center; background: #f9f9f9; border-radius: 12px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; }
+        .category-card { min-width: 85px; padding: 8px; text-align: center; background: #fdfdfd; border-radius: 12px; cursor: pointer; border: 1px solid #eee; transition: 0.2s; flex-shrink: 0; }
         .category-card:hover { background: #eef5f1; border-color: var(--primary-color); }
-        .category-card img { width: 40px; height: 40px; object-fit: contain; margin-bottom: 5px; }
-        .category-card span { font-size: 0.8rem; display: block; font-weight: 600; }
+        .category-card img { width: 38px; height: 38px; object-fit: contain; margin: 0 auto 5px; display: block; }
+        .category-card span { font-size: 0.75rem; display: block; font-weight: 600; color: #444; }
 
         /* Products Grid */
         .container { max-width: 1200px; margin: 0 auto; padding: 15px; }
-        .section-title { font-size: 1.2rem; margin: 20px 0 10px; color: var(--primary-color); border-right: 4px solid var(--primary-color); padding-right: 8px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 15px; }
+        .section-title { font-size: 1.1rem; margin: 20px 0 10px; color: var(--primary-color); border-right: 4px solid var(--primary-color); padding-right: 8px; font-weight: bold; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 12px; }
         .product-card { background: #fff; border-radius: 12px; padding: 12px; text-align: center; border: 1px solid #eee; box-shadow: 0 1px 3px rgba(0,0,0,0.02); display: flex; flex-direction: column; justify-content: space-between; }
-        .product-card img { width: 100px; height: 100px; object-fit: contain; margin: 0 auto 10px; }
-        .product-card h3 { font-size: 0.95rem; margin-bottom: 5px; height: 40px; overflow: hidden; }
-        .product-card .price { color: var(--primary-color); font-weight: bold; margin-bottom: 10px; font-size: 0.9rem; }
+        .product-card img { width: 90px; height: 90px; object-fit: contain; margin: 0 auto 8px; }
+        .product-card h3 { font-size: 0.9rem; margin-bottom: 5px; color: #222; height: 38px; overflow: hidden; }
+        .product-card .price { color: var(--primary-color); font-weight: bold; margin-bottom: 8px; font-size: 0.9rem; }
         
         /* Weight Controls */
-        .weight-controls { display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 10px; }
-        .weight-controls button { background: var(--primary-color); color: #fff; border: none; width: 30px; height: 30px; border-radius: 50%; font-size: 1rem; cursor: pointer; }
-        .weight-controls span { font-size: 0.85rem; font-weight: bold; min-width: 50px; }
-        .weight-notice { font-size: 0.7rem; color: #e67e22; margin-bottom: 8px; }
+        .weight-controls { display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 8px; background: #f9f9f9; padding: 4px; border-radius: 20px; border: 1px solid #eee; }
+        .weight-controls button { background: var(--primary-color); color: #fff; border: none; width: 26px; height: 26px; border-radius: 50%; font-size: 0.9rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+        .weight-controls span { font-size: 0.8rem; font-weight: bold; min-width: 45px; }
+        .weight-notice { font-size: 0.65rem; color: #e67e22; margin-bottom: 6px; line-height: 1.2; }
 
-        .btn-add { background: var(--primary-color); color: #fff; border: none; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 0.85rem; font-weight: 600; }
-        .btn-add:hover { opacity: 0.9; }
+        .btn-add { background: var(--primary-color); color: #fff; border: none; padding: 8px; border-radius: 8px; cursor: pointer; width: 100%; font-size: 0.8rem; font-weight: 600; transition: 0.2s; }
+        .btn-add:hover { background: #084721; }
 
         /* Checkout Form Fixed Bottom */
-        .checkout-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 15px; box-shadow: 0 -2px 10px rgba(0,0,0,0.1); border-top-left-radius: 16px; border-top-right-radius: 16px; max-width: 800px; margin: 0 auto; }
-        .form-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 10px; }
-        .form-group input, .form-group textarea { width: 100%; padding: 8px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.85rem; outline: none; }
-        .form-group textarea { grid-column: span 2; height: 50px; resize: none; }
-        .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; font-weight: bold; font-size: 1rem; }
-        .btn-whatsapp { background: var(--secondary-color); color: #fff; border: none; width: 100%; padding: 12px; border-radius: 10px; font-size: 1rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; }
+        .checkout-bar { position: fixed; bottom: 0; left: 0; right: 0; background: #fff; padding: 12px 15px; box-shadow: 0 -4px 15px rgba(0,0,0,0.1); border-top-left-radius: 18px; border-top-right-radius: 18px; max-width: 800px; margin: 0 auto; z-index: 1000; }
+        .error-msg { background: #fde8e8; color: #c53030; font-size: 0.75rem; text-align: center; padding: 6px; border-radius: 6px; margin-bottom: 8px; display: none; font-weight: bold; border: 1px solid #f8d7da; }
+        .form-group { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-bottom: 8px; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px 10px; border: 1px solid #ddd; border-radius: 8px; font-size: 0.82rem; outline: none; background: #fafafa; }
+        .form-group input:focus, .form-group textarea:focus { border-color: var(--primary-color); background: #fff; }
+        .form-group textarea { grid-column: span 2; height: 42px; resize: none; }
+        .cart-summary { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; font-weight: bold; font-size: 0.95rem; border-top: 1px solid #eee; padding-top: 6px; }
+        .btn-whatsapp { background: var(--secondary-color); color: #fff; border: none; width: 100%; padding: 11px; border-radius: 10px; font-size: 0.95rem; font-weight: bold; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: 0.2s; }
         .btn-whatsapp:hover { background: #0f756b; }
-        .error-msg { color: #e74c3c; font-size: 0.75rem; text-align: center; margin-bottom: 5px; display: none; }
     </style>
 </head>
 <body>
@@ -71,42 +72,56 @@
     </div>
 
     <div class="categories" id="categoriesContainer">
-        <!-- الأقسام تولد ديناميكياً -->
+        <div class="category-card">
+            <img src="https://via.placeholder.com/40" alt="خضراوات">
+            <span>خضراوات وفواكة</span>
+        </div>
+        <div class="category-card">
+            <img src="https://via.placeholder.com/40" alt="مخللات">
+            <span>الدلي والمخللات</span>
+        </div>
+        <div class="category-card">
+            <img src="https://via.placeholder.com/40" alt="بهارات">
+            <span>البهارات والكرزات</span>
+        </div>
+        <div class="category-card">
+            <img src="https://via.placeholder.com/40" alt="مواد غذائية">
+            <span>مواد غذائية</span>
+        </div>
     </div>
 
     <div class="container">
         <div id="dynamicSections">
-            <!-- أقسام المنتجات -->
+            <!-- المنتجات تولد هنا ديناميكياً -->
         </div>
     </div>
 
     <!-- شريط إتمام الطلب السفلي -->
     <div class="checkout-bar">
-        <div class="error-msg" id="errorMsg">يرجى ملء جميع الحقول الإجبارية (الاسم، الهاتف، المنطقة) قبل إرسال الطلب!</div>
+        <div class="error-msg" id="errorMsg">⚠️ يرجى ملء حقول (اسم الزبون، رقم الهاتف، والمنطقة) قبل إرسال الطلب!</div>
         <div class="form-group">
             <input type="text" id="customerName" placeholder="اسم الزبون الكريم *" required>
             <input type="tel" id="customerPhone" placeholder="رقم الهاتف *" required>
             <input type="text" id="customerArea" placeholder="المنطقة / العنوان *" required>
-            <textarea id="customerNotes" placeholder="ملاحظات إضافية للطلب (اختياري)"></textarea>
+            <textarea id="customerNotes" placeholder="ملاحظات إضافية للطلب (اختياري)..."></textarea>
         </div>
         <div class="cart-summary">
             <span>المبلغ الإجمالي: <span id="totalAmount">0</span> د.ع</span>
             <span>عدد المواد بالسلة: <span id="cartCount">0</span></span>
         </div>
         <button class="btn-whatsapp" onclick="sendToWhatsApp()">
-            إرسال الطلب عبر واتساب 
+            🟢 إرسال الطلب عبر واتساب
         </button>
     </div>
 
     <script>
-        // عينة بيانات المنتجات (يمكن ربطها لاحقاً بـ Supabase أو لوحة التحكم)
         const products = [
-            { id: 1, name: "طماطم فريش", category: "خضراوات وفواكة", price: 1500, isWeight: true, weightStep: 0.5, currentWeight: 0.5, img: "https://via.placeholder.com/100" },
-            { id: 2, name: "خيار محلي", category: "خضراوات وفواكة", price: 1200, isWeight: true, weightStep: 0.5, currentWeight: 0.5, img: "https://via.placeholder.com/100" },
-            { id: 3, name: "مخلل خيار مشكل", category: "الدلي والمخللات", price: 2000, isWeight: true, weightStep: 0.5, currentWeight: 0.5, img: "https://via.placeholder.com/100" },
-            { id: 4, name: "هيل مطحون فاخر", category: "البهارات والكرزات", price: 15000, isWeight: true, weightStep: 0.5, currentWeight: 0.5, img: "https://via.placeholder.com/100" },
-            { id: 5, name: "رز بسمتي هندي 5 كغ", category: "مواد غذائية", price: 15000, isWeight: false, img: "https://via.placeholder.com/100" },
-            { id: 6, name: "زيت نباتي 1.8 لتر", category: "مواد غذائية", price: 5500, isWeight: false, img: "https://via.placeholder.com/100" }
+            { id: 1, name: "طماطم فريش", category: "خضراوات وفواكة", price: 1500, isWeight: true, currentWeight: 0.5, img: "https://via.placeholder.com/90" },
+            { id: 2, name: "خيار محلي", category: "خضراوات وفواكة", price: 1200, isWeight: true, currentWeight: 0.5, img: "https://via.placeholder.com/90" },
+            { id: 3, name: "مخلل خيار مشكل فاخر", category: "الدلي والمخللات", price: 2000, isWeight: true, currentWeight: 0.5, img: "https://via.placeholder.com/90" },
+            { id: 4, name: "هيل مطحون ممتاز", category: "البهارات والكرزات", price: 15000, isWeight: true, currentWeight: 0.5, img: "https://via.placeholder.com/90" },
+            { id: 5, name: "رز بسمتي هندي 5 كغ", category: "مواد غذائية", price: 15000, isWeight: false, img: "https://via.placeholder.com/90" },
+            { id: 6, name: "زيت نباتي 1.8 لتر", category: "مواد غذائية", price: 5500, isWeight: false, img: "https://via.placeholder.com/90" }
         ];
 
         let cart = [];
@@ -115,7 +130,6 @@
             const container = document.getElementById('dynamicSections');
             container.innerHTML = '';
             
-            // تجميع حسب الأقسام
             const categories = [...new Set(products.map(p => p.category))];
             
             categories.forEach(cat => {
@@ -181,14 +195,14 @@
             const notes = document.getElementById('customerNotes').value.trim();
             const errorMsg = document.getElementById('errorMsg');
 
-            // التحقق من تعبئة الحقول الإجبارية
             if (!name || !phone || !area) {
                 errorMsg.style.display = 'block';
+                window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
                 return;
             }
             errorMsg.style.display = 'none';
 
-            let message = `🛒 *طلب جديد من المتجر* 🛒\n\n`;
+            let message = `🛒 *طلب جديد من أمازون هايبر ماركت* 🛒\n\n`;
             message += `👤 *الاسم:* ${name}\n`;
             message += `📞 *الهاتف:* ${phone}\n`;
             message += `📍 *المنطقة:* ${area}\n`;
@@ -207,7 +221,6 @@
             window.open(whatsappUrl, '_blank');
         }
 
-        // التهيئة الأولية
         renderProducts();
     </script>
 </body>
