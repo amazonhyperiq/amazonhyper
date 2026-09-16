@@ -1,1 +1,278 @@
 
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>التحقق من صحة الوصل</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            min-height: 100vh;
+            font-family: Arial, Tahoma, sans-serif;
+            background: linear-gradient(135deg, #07182f, #102f52);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #172033;
+        }
+
+        .card {
+            width: 100%;
+            max-width: 520px;
+            background: #ffffff;
+            border-radius: 22px;
+            overflow: hidden;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.35);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #07182f, #163d67);
+            color: white;
+            text-align: center;
+            padding: 28px 20px;
+        }
+
+        .logo {
+            width: 70px;
+            height: 70px;
+            margin: 0 auto 12px;
+            border-radius: 50%;
+            background: #d4af37;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 30px;
+            font-weight: bold;
+            color: #07182f;
+        }
+
+        .header h1 {
+            margin: 5px 0;
+            font-size: 25px;
+        }
+
+        .header p {
+            margin: 8px 0 0;
+            opacity: 0.85;
+            font-size: 14px;
+        }
+
+        .content {
+            padding: 25px;
+        }
+
+        .status {
+            text-align: center;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 22px;
+            background: #fff8df;
+            color: #8a6a00;
+            border: 1px solid #e5c85c;
+            font-weight: bold;
+        }
+
+        .row {
+            display: flex;
+            justify-content: space-between;
+            gap: 20px;
+            padding: 13px 0;
+            border-bottom: 1px solid #eeeeee;
+        }
+
+        .label {
+            color: #777;
+            font-weight: bold;
+        }
+
+        .value {
+            text-align: left;
+            font-weight: bold;
+            color: #172033;
+        }
+
+        .footer {
+            background: #f7f7f7;
+            text-align: center;
+            padding: 18px;
+            color: #666;
+            font-size: 12px;
+            line-height: 1.8;
+        }
+
+        .error {
+            text-align: center;
+            padding: 30px 10px;
+            color: #a00000;
+            font-weight: bold;
+        }
+
+        @media (max-width: 500px) {
+            .content {
+                padding: 20px;
+            }
+
+            .row {
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .value {
+                text-align: right;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="card">
+
+    <div class="header">
+        <div class="logo">A</div>
+
+        <h1>شركة المجموعة الدولية للاستثمار</h1>
+
+        <p>التحقق من صحة وصل الإيجار</p>
+    </div>
+
+    <div class="content">
+
+        <div class="status" id="status">
+            جاري التحقق من الوصل...
+        </div>
+
+        <div id="receiptData">
+
+            <div class="row">
+                <span class="label">نوع الوصل</span>
+                <span class="value">وصل قبض إيجار</span>
+            </div>
+
+            <div class="row">
+                <span class="label">رقم الوصل</span>
+                <span class="value" id="receiptNumber">—</span>
+            </div>
+
+            <div class="row">
+                <span class="label">المستأجر</span>
+                <span class="value" id="tenant">—</span>
+            </div>
+
+            <div class="row">
+                <span class="label">الطابق</span>
+                <span class="value" id="floor">—</span>
+            </div>
+
+            <div class="row">
+                <span class="label">الفترة</span>
+                <span class="value" id="period">—</span>
+            </div>
+
+            <div class="row">
+                <span class="label">المبلغ</span>
+                <span class="value" id="amount">—</span>
+            </div>
+
+            <div class="row">
+                <span class="label">التاريخ</span>
+                <span class="value" id="date">—</span>
+            </div>
+
+        </div>
+    </div>
+
+    <div class="footer">
+        شركة المجموعة الدولية<br>
+        المنصور - شارع ابو جعفر المنصور - بناية امزون سوبر ماركت<br>
+        للاستعلام / 07826311408
+    </div>
+
+</div>
+
+<script>
+
+    // قراءة رقم الوصل من الرابط
+    const params = new URLSearchParams(window.location.search);
+    const receiptId = params.get("id");
+
+    /*
+       هذه بيانات تجريبية مؤقتة.
+       لاحقاً سنستبدلها بقاعدة بيانات حقيقية
+       حتى لا يستطيع أحد تعديل بيانات الوصل من الرابط.
+    */
+
+    const testReceipts = {
+
+        "1001": {
+            tenant: "شركة شارع الأعمال (بزنز أفنيو)",
+            floor: "الأول",
+            period: "تجريبي",
+            amount: "—",
+            date: "—"
+        },
+
+        "1002": {
+            tenant: "شركة البطاقة الذكية (Q)",
+            floor: "الثاني",
+            period: "تجريبي",
+            amount: "—",
+            date: "—"
+        },
+
+        "1003": {
+            tenant: "نادي جالنجر الرياضي",
+            floor: "الثالث",
+            period: "تجريبي",
+            amount: "—",
+            date: "—"
+        }
+
+    };
+
+    const status = document.getElementById("status");
+
+    if (!receiptId) {
+
+        status.textContent = "⚠️ لم يتم العثور على رقم الوصل";
+        status.style.background = "#fff0f0";
+        status.style.color = "#a00000";
+        status.style.borderColor = "#e0aaaa";
+
+    } else if (testReceipts[receiptId]) {
+
+        const receipt = testReceipts[receiptId];
+
+        document.getElementById("receiptNumber").textContent = receiptId;
+        document.getElementById("tenant").textContent = receipt.tenant;
+        document.getElementById("floor").textContent = receipt.floor;
+        document.getElementById("period").textContent = receipt.period;
+        document.getElementById("amount").textContent = receipt.amount;
+        document.getElementById("date").textContent = receipt.date;
+
+        status.textContent = "✓ تم العثور على الوصل";
+        status.style.background = "#eefaf1";
+        status.style.color = "#18733b";
+        status.style.borderColor = "#9bd2aa";
+
+    } else {
+
+        status.textContent = "✕ الوصل غير موجود";
+        status.style.background = "#fff0f0";
+        status.style.color = "#a00000";
+        status.style.borderColor = "#e0aaaa";
+
+    }
+
+</script>
+
+</body>
+</html>
