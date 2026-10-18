@@ -5,18 +5,16 @@ const companiesData = {
     sub: "AMAZON MARKET - SAVE YOUR MONEY",
     logo: "amazon_logo.jpg",
     firstPartyDefault: "أمازون سوبر ماركت",
-    stampText: "ختم أمازون سوبر ماركت",
     prefix: "AMZ",
     themeClass: "amazon-theme",
     address: "العراق - بغداد - الفرع الرئيسي",
     phone: "07700000000 | 07800000000"
   },
   international: {
-    name: "شركة المجموعة الدولية",
+    name: "شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني",
     sub: "INTERNATIONAL GROUP CO.",
-    logo: "international_logo.jpg", // أو استخدام شعار IG الذي أرسلته
-    firstPartyDefault: "شركة المجموعة الدولية",
-    stampText: "ختم المجموعة الدولية",
+    logo: "international_logo.jpg",
+    firstPartyDefault: "شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني",
     prefix: "IG",
     themeClass: "international-theme",
     address: "العراق - بغداد - الإدارة العامة",
@@ -97,18 +95,14 @@ const lblDocSubject = document.getElementById("lblDocSubject");
 const lblDocBody = document.getElementById("lblDocBody");
 const lblSigFirstParty = document.getElementById("lblSigFirstParty");
 const lblSigSecondParty = document.getElementById("lblSigSecondParty");
-const lblStampText = document.getElementById("lblStampText");
 const lblAddress = document.getElementById("lblAddress");
 const lblPhone = document.getElementById("lblPhone");
 
-// تخزين مؤقت للتعديل
 let editingDocId = null;
 
-// ضبط التواريخ والأرقام الأولية
 docDate.value = new Date().toISOString().slice(0, 10);
 docNumber.value = `AMZ-${new Date().getFullYear()}/001`;
 
-// تحديث الترويسة والثيم عند تغيير الشركة
 function onCompanyChange() {
   const compKey = companySelect.value;
   const comp = companiesData[compKey];
@@ -116,8 +110,8 @@ function onCompanyChange() {
   paperPrint.className = `paper-a4 ${comp.themeClass}`;
   lblCompanyName.textContent = comp.name;
   lblCompanySub.textContent = comp.sub;
+  lblCompanyLogo.src = comp.logo;
   firstPartyInput.value = comp.firstPartyDefault;
-  lblStampText.textContent = comp.stampText;
   addressInput.value = comp.address;
   phoneInput.value = comp.phone;
 
@@ -127,7 +121,6 @@ function onCompanyChange() {
   updatePreview();
 }
 
-// تحديث قوالب النص عند تغيير نوع الوثيقة
 function onDocTypeChange() {
   const tpl = docTemplates[docTypeSelect.value];
   lblDocTitle.textContent = tpl.title;
@@ -139,7 +132,6 @@ function onDocTypeChange() {
   updatePreview();
 }
 
-// تحديث المعاينة الحية للورقة
 function updatePreview() {
   lblDocNumber.textContent = docNumber.value || "---";
   lblDocDate.textContent = docDate.value || "---";
@@ -152,13 +144,11 @@ function updatePreview() {
   lblAddress.textContent = addressInput.value;
   lblPhone.textContent = "هاتف: " + phoneInput.value;
 
-  // معالجة نص البنود (مرقّم أو نص حر)
   const rawText = docBody.value || "";
   if (numberedModeToggle.checked) {
     const lines = rawText.split('\n').filter(line => line.trim() !== "");
     let olHtml = "<ol>";
     lines.forEach(line => {
-      // إزالة أي ترقيم قديم لو كان موجوداً بالخطأ
       const cleanLine = line.replace(/^\d+[\.\-]\s*/, '');
       olHtml += `<li>${cleanLine}</li>`;
     });
@@ -169,7 +159,6 @@ function updatePreview() {
   }
 }
 
-// نظام الأرشيف المحلي (قاعدة البيانات المؤقتة في المتصفح، جاهزة للربط مع Supabase)
 function saveToArchive() {
   const docData = {
     id: editingDocId || Date.now(),
@@ -195,14 +184,13 @@ function saveToArchive() {
     editingDocId = null;
   } else {
     archive.push(docData);
-    alert("تم حفظ الوثيقة في الأرشيف بنجاح بدون تمكين أي تلاعب!");
+    alert("تم حفظ الوثيقة في الأرشيف بنجاح!");
   }
 
   localStorage.setItem("official_docs_archive", JSON.stringify(archive));
   loadArchiveList();
 }
 
-// تحميل عرض الأرشيف
 function loadArchiveList() {
   const archiveList = document.getElementById("archiveList");
   const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
@@ -230,7 +218,6 @@ function loadArchiveList() {
   });
 }
 
-// استعراض وثيقة من الأرشيف
 window.viewDocument = function(id) {
   const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
   const doc = archive.find(item => item.id === id);
@@ -252,14 +239,12 @@ window.viewDocument = function(id) {
   }
 };
 
-// تعديل وثيقة
 window.editDocument = function(id) {
   viewDocument(id);
   editingDocId = id;
-  alert("تم فتح الوثيقة في وضع التعديل. يمكنك إجراء التعديلات ثم الضغط على 'حفظ في الأرشيف'.");
+  alert("تم فتح الوثيقة في وضع التعديل.");
 };
 
-// ربط الأحداث
 companySelect.addEventListener("change", onCompanyChange);
 docTypeSelect.addEventListener("change", onDocTypeChange);
 numberedModeToggle.addEventListener("change", updatePreview);
@@ -269,7 +254,6 @@ numberedModeToggle.addEventListener("change", updatePreview);
   el.addEventListener("change", updatePreview);
 });
 
-// أزرار الحفظ والطباعة والـ PDF
 document.getElementById("saveBtn").addEventListener("click", saveToArchive);
 document.getElementById("printBtn").addEventListener("click", () => window.print());
 
@@ -285,7 +269,6 @@ document.getElementById("pdfBtn").addEventListener("click", () => {
   html2pdf().set(opt).from(element).save();
 });
 
-// التشغيل الأولي
 onCompanyChange();
 onDocTypeChange();
 loadArchiveList();
