@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>نظام العقود والكتب الرسمية - أمازون & المجموعة الدولية</title>
+  <link rel="stylesheet" href="style.css">
+  <!-- مكتبة تصدير PDF -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+</head>
+<body>
+
+  <div class="app-container">
+    
+    <!-- شريط التحكم الجانبي -->
+    <aside class="sidebar no-print">
+      <div class="sidebar-header">
+        <h2>🏛 إدارة الكتب والعقود</h2>
+      </div>
+
+      <!-- اختيار الشركة -->
+      <div class="form-group">
+        <label>اختيار الشركة / الجهة المصدرة:</label>
+        <select id="companySelect">
+          <option value="amazon">أمازون سوبر ماركت (Amazon Market)</option>
+          <option value="international">شركة المجموعة الدولية (International Group)</option>
+        </select>
+      </div>
+
+      <!-- اختيار نوع الوثيقة -->
+      <div class="form-group">
+        <label>نوع الكتاب / العقد:</label>
+        <select id="docTypeSelect">
+          <option value="supply">عقد تجهيز</option>
+          <option value="partnership">عقد شراكة</option>
+          <option value="rent">عقد إيجار</option>
+          <option value="employment">عقد عمل</option>
+          <option value="reconciliation">مطابقة حساب</option>
+          <option value="authorization">تخويل خاص</option>
+          <option value="warning">إنذار / تنبيه إداري</option>
+        </select>
+      </div>
+
+      <hr>
+
+      <!-- خيار الترقيم أو النص الحر -->
+      <div class="form-group switch-group">
+        <label class="switch-label">
+          <input type="checkbox" id="numberedModeToggle">
+          <span class="slider"></span>
+          <span class="switch-text">تفعيل البنود المرقمة (1، 2، 3...)</span>
+        </label>
+      </div>
+
+      <!-- بيانات الوثيقة -->
+      <div class="form-group">
+        <label>الرقم الصادر:</label>
+        <input type="text" id="docNumber">
+      </div>
+
+      <div class="form-group">
+        <label>تاريخ الكتاب / العقد:</label>
+        <input type="date" id="docDate">
+      </div>
+
+      <div class="form-group">
+        <label id="firstPartyLabel">اسم الطرف الأول:</label>
+        <input type="text" id="firstPartyInput" value="أمازون سوبر ماركت">
+      </div>
+
+      <div class="form-group">
+        <label id="secondPartyLabel">اسم الطرف الثاني / الشخص المعني:</label>
+        <input type="text" id="secondPartyInput" placeholder="أدخل اسم الشركة، الموظف، أو الشريك">
+      </div>
+
+      <div class="form-group">
+        <label>موضوع الوثيقة:</label>
+        <input type="text" id="docSubject" placeholder="أدخل موضوع الكتاب">
+      </div>
+
+      <div class="form-group">
+        <label>تفاصيل الوثيقة / النص / البنود:</label>
+        <textarea id="docBody" rows="8" placeholder="اكتب التفاصيل هنا (أدخل كل بند في سطر جديد للبنود المرقمة)..."></textarea>
+      </div>
+
+      <hr>
+
+      <!-- العنوان والهواتف للفوتر -->
+      <div class="form-group">
+        <label>العنوان (التذييل):</label>
+        <input type="text" id="addressInput" value="العراق - بغداد - الفرع الرئيسي">
+      </div>
+
+      <div class="form-group">
+        <label>أرقام الهواتف:</label>
+        <input type="text" id="phoneInput" value="07700000000 | 07800000000">
+      </div>
+
+      <hr>
+
+      <!-- أزرار الإجراءات -->
+      <div class="actions">
+        <button id="saveBtn" class="btn btn-save">💾 حفظ في الأرشيف</button>
+        <button id="printBtn" class="btn btn-primary">🖨 طباعة مباشر</button>
+        <button id="pdfBtn" class="btn btn-pdf">📄 تصدير PDF</button>
+      </div>
+
+      <!-- سجل الأرشيف -->
+      <div class="archive-section">
+        <h3>📂 الأرشيف والسجلات المحفوظة</h3>
+        <div class="archive-list" id="archiveList">
+          <p class="empty-msg">لا توجد وثائق محفوظة حالياً.</p>
+        </div>
+      </div>
+    </aside>
+
+    <!-- منطقة المعاينة والورقة الرسمية A4 -->
+    <main class="preview-area">
+      <div class="paper-a4 amazon-theme" id="paperPrint">
+        
+        <!-- الترويسة العليا -->
+        <header class="paper-header">
+          <div class="header-right">
+            <h1 id="lblCompanyName">أمازون سوبر ماركت</h1>
+            <p id="lblCompanySub">AMAZON MARKET - SAVE YOUR MONEY</p>
+          </div>
+          <div class="header-center">
+            <img src="amazon_logo.jpg" alt="Logo" id="lblCompanyLogo" onerror="this.style.opacity='0'">
+          </div>
+          <div class="header-left">
+            <p>الرقم الصادر: <strong id="lblDocNumber">---</strong></p>
+            <p>التاريخ: <strong id="lblDocDate">---</strong></p>
+          </div>
+        </header>
+
+        <div class="header-divider"></div>
+
+        <!-- محتوى الوثيقة -->
+        <section class="paper-body">
+          <div class="doc-title-box">
+            <h2 id="lblDocTitle">عقد تجهيز</h2>
+          </div>
+
+          <div class="parties-box">
+            <p><strong>الطرف الأول:</strong> <span id="lblFirstParty">أمازون سوبر ماركت</span></p>
+            <p><strong>الطرف الثاني / الموجه إليه:</strong> <span id="lblSecondParty">........................................</span></p>
+            <p class="subject-line"><strong>الموضوع:</strong> <span id="lblDocSubject">........................................</span></p>
+          </div>
+
+          <!-- النص / البنود -->
+          <div class="content-text" id="lblDocBody">
+            <!-- يظهر هنا إما نص حر أو بنود مرقمة -->
+          </div>
+        </section>
+
+        <!-- التوقيعات والختم -->
+        <div class="footer-signatures">
+          <div class="sig-box">
+            <p class="sig-title">توقيع الطرف الأول</p>
+            <p class="sig-name" id="lblSigFirstParty">أمازون سوبر ماركت</p>
+          </div>
+          <div class="stamp-box">
+            <div class="stamp-circle" id="lblStampText">ختم أمازون سوبر ماركت</div>
+          </div>
+          <div class="sig-box">
+            <p class="sig-title">توقيع الطرف الثاني</p>
+            <p class="sig-name" id="lblSigSecondParty">....................</p>
+          </div>
+        </div>
+
+        <!-- تذييل الصفحة -->
+        <footer class="paper-footer">
+          <p id="lblAddress">العراق - بغداد - الفرع الرئيسي</p>
+          <p id="lblPhone">هاتف: 07700000000 | 07800000000</p>
+        </footer>
+
+      </div>
+    </main>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
