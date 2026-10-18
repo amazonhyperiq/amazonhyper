@@ -3,9 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>نظام العقود والكتب الرسمية - أمازون & المجموعة الدولية</title>
+  <title>نظام العقود والكتب الرسمية</title>
   <link rel="stylesheet" href="style.css">
-  <!-- مكتبة تصدير PDF -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
@@ -23,7 +22,7 @@
         <label>اختيار الشركة / الجهة المصدرة:</label>
         <select id="companySelect">
           <option value="amazon">أمازون سوبر ماركت (Amazon Market)</option>
-          <option value="international">شركة المجموعة الدولية (International Group)</option>
+          <option value="international">شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني</option>
         </select>
       </div>
 
@@ -80,7 +79,7 @@
 
       <div class="form-group">
         <label>تفاصيل الوثيقة / النص / البنود:</label>
-        <textarea id="docBody" rows="8" placeholder="اكتب التفاصيل هنا (أدخل كل بند في سطر جديد للبنود المرقمة)..."></textarea>
+        <textarea id="docBody" rows="8" placeholder="اكتب التفاصيل هنا..."></textarea>
       </div>
 
       <hr>
@@ -125,7 +124,7 @@
             <p id="lblCompanySub">AMAZON MARKET - SAVE YOUR MONEY</p>
           </div>
           <div class="header-center">
-            <img src="amazon_logo.jpg" alt="Logo" id="lblCompanyLogo" onerror="this.style.opacity='0'">
+            <img src="amazon_logo.jpg" alt="Logo" id="lblCompanyLogo">
           </div>
           <div class="header-left">
             <p>الرقم الصادر: <strong id="lblDocNumber">---</strong></p>
@@ -148,19 +147,14 @@
           </div>
 
           <!-- النص / البنود -->
-          <div class="content-text" id="lblDocBody">
-            <!-- يظهر هنا إما نص حر أو بنود مرقمة -->
-          </div>
+          <div class="content-text" id="lblDocBody"></div>
         </section>
 
-        <!-- التوقيعات والختم -->
+        <!-- التوقيعات فقط بدون الختم -->
         <div class="footer-signatures">
           <div class="sig-box">
             <p class="sig-title">توقيع الطرف الأول</p>
             <p class="sig-name" id="lblSigFirstParty">أمازون سوبر ماركت</p>
-          </div>
-          <div class="stamp-box">
-            <div class="stamp-circle" id="lblStampText">ختم أمازون سوبر ماركت</div>
           </div>
           <div class="sig-box">
             <p class="sig-title">توقيع الطرف الثاني</p>
