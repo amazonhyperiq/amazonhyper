@@ -194,43 +194,39 @@ input:checked + .slider:before { transform: translateX(20px); }
   position: relative;
 }
 
-/* ثيمات الشركات */
+/* ثيم أمازون سوبر ماركت */
 .paper-a4.amazon-theme { border-top: 6px solid #2e7d32; }
-.amazon-theme .header-right h1 { color: #2e7d32; font-size: 1.35rem; }
+.amazon-theme .header-right h1 { color: #2e7d32; font-size: 1.4rem; }
+.amazon-theme .header-left h1 { color: #2e7d32; font-size: 1.1rem; }
 .amazon-theme .header-divider { background: linear-gradient(90deg, #2e7d32 0%, #4caf50 100%); }
 .amazon-theme .doc-title-box h2 { border-bottom: 2px solid #2e7d32; color: #1b5e20; }
 .amazon-theme .paper-footer { border-top: 1px solid #2e7d32; }
 
+/* ثيم شركة المجموعة الدولية */
 .paper-a4.international-theme { border-top: 6px solid #1a365d; }
-.international-theme .header-right h1 { color: #1a365d; font-size: 1.15rem; } /* تصغير الحجم قليلاً ليناسب الاسم الطويل */
-.international-theme .header-right p { color: #c53030; }
+.international-theme .header-right h1 { color: #1a365d; font-size: 1.35rem; font-weight: 800; }
+.international-theme .header-right p { color: #1a365d; font-size: 0.82rem; font-weight: 600; }
+.international-theme .header-left h1 { color: #1a365d; font-size: 1.1rem; font-weight: 800; }
+.international-theme .header-left p { color: #c53030; font-size: 0.75rem; font-weight: 600; }
 .international-theme .header-divider { background: linear-gradient(90deg, #1a365d 0%, #c53030 100%); }
 .international-theme .doc-title-box h2 { border-bottom: 2px solid #c53030; color: #1a365d; }
 .international-theme .paper-footer { border-top: 1px solid #1a365d; }
 
-/* الترويسة */
+/* الترويسة الثلاثية */
 .paper-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.header-right p {
-  font-size: 0.75rem;
-  font-weight: bold;
-  letter-spacing: 0.5px;
-}
+.header-right { text-align: right; width: 38%; }
+.header-center { text-align: center; width: 24%; }
+.header-left { text-align: left; width: 38%; dir: ltr; }
 
 .header-center img {
-  max-width: 80px;
-  max-height: 80px;
+  max-width: 90px;
+  max-height: 90px;
   object-fit: contain;
-}
-
-.header-left {
-  text-align: left;
-  font-size: 0.88rem;
-  line-height: 1.6;
 }
 
 .header-divider {
@@ -252,13 +248,23 @@ input:checked + .slider:before { transform: translateX(20px); }
   border-radius: 6px;
   margin-bottom: 22px;
   line-height: 1.8;
-  font-size: 0.98rem;
+  font-size: 0.95rem;
 }
 
-.subject-line {
-  margin-top: 6px;
+.subject-row {
+  margin-top: 8px;
   border-top: 1px dashed #cbd5e1;
-  padding-top: 6px;
+  padding-top: 8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.doc-meta-right {
+  text-align: left;
+  font-size: 0.88rem;
+  line-height: 1.5;
+  color: #333;
 }
 
 .content-text { font-size: 1rem; line-height: 2; text-align: justify; }
@@ -266,7 +272,7 @@ input:checked + .slider:before { transform: translateX(20px); }
 .content-text ol { padding-right: 22px; }
 .content-text ol li { margin-bottom: 8px; line-height: 1.8; }
 
-/* التوقيعات فقط */
+/* التوقيعات */
 .footer-signatures {
   display: flex;
   justify-content: space-between;
@@ -290,12 +296,9 @@ input:checked + .slider:before { transform: translateX(20px); }
   justify-content: space-between;
 }
 
-/* إعدادات الطباعة (إخفاء المتصفح لأي ترويسة خارجية والتخلص من الأزرار الجانبية) */
+/* الطباعة */
 @media print {
-  @page {
-    size: A4;
-    margin: 0;
-  }
+  @page { size: A4; margin: 0; }
   body { background: white; }
   .no-print { display: none !important; }
   .preview-area { padding: 0; }
