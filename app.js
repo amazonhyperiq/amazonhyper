@@ -1,8 +1,10 @@
 // بيانات الشركتين
 const companiesData = {
   amazon: {
-    name: "أمازون سوبر ماركت",
-    sub: "AMAZON MARKET - SAVE YOUR MONEY",
+    nameAr: "أمازون سوبر ماركت",
+    subAr: "توفير - جودة - خيارات واسعة",
+    nameEn: "AMAZON MARKET",
+    subEn: "SAVE YOUR MONEY",
     logo: "amazon_logo.jpg",
     firstPartyDefault: "أمازون سوبر ماركت",
     prefix: "AMZ",
@@ -11,10 +13,12 @@ const companiesData = {
     phone: "07700000000 | 07800000000"
   },
   international: {
-    name: "شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني",
-    sub: "INTERNATIONAL GROUP CO.",
+    nameAr: "شركة المجموعة الدولية",
+    subAr: "للتجهيزات الزراعية والإنتاج الحيواني",
+    nameEn: "INTERNATIONAL GROUP",
+    subEn: "For Agricultural Equipment & Animal Production",
     logo: "international_logo.jpg",
-    firstPartyDefault: "شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني",
+    firstPartyDefault: "شركة المجموعة الدولية للتجهيزات الزراعية والإنتاج الحيواني",
     prefix: "IG",
     themeClass: "international-theme",
     address: "العراق - بغداد - الإدارة العامة",
@@ -81,11 +85,14 @@ const docBody = document.getElementById("docBody");
 const addressInput = document.getElementById("addressInput");
 const phoneInput = document.getElementById("phoneInput");
 
-// عناصر المعاينة الورقية
+// عناصر المعاينة
 const paperPrint = document.getElementById("paperPrint");
-const lblCompanyName = document.getElementById("lblCompanyName");
-const lblCompanySub = document.getElementById("lblCompanySub");
+const lblCompanyNameAr = document.getElementById("lblCompanyNameAr");
+const lblCompanySubAr = document.getElementById("lblCompanySubAr");
+const lblCompanyNameEn = document.getElementById("lblCompanyNameEn");
+const lblCompanySubEn = document.getElementById("lblCompanySubEn");
 const lblCompanyLogo = document.getElementById("lblCompanyLogo");
+
 const lblDocNumber = document.getElementById("lblDocNumber");
 const lblDocDate = document.getElementById("lblDocDate");
 const lblDocTitle = document.getElementById("lblDocTitle");
@@ -108,9 +115,12 @@ function onCompanyChange() {
   const comp = companiesData[compKey];
 
   paperPrint.className = `paper-a4 ${comp.themeClass}`;
-  lblCompanyName.textContent = comp.name;
-  lblCompanySub.textContent = comp.sub;
+  lblCompanyNameAr.textContent = comp.nameAr;
+  lblCompanySubAr.textContent = comp.subAr;
+  lblCompanyNameEn.textContent = comp.nameEn;
+  lblCompanySubEn.textContent = comp.subEn;
   lblCompanyLogo.src = comp.logo;
+
   firstPartyInput.value = comp.firstPartyDefault;
   addressInput.value = comp.address;
   phoneInput.value = comp.phone;
