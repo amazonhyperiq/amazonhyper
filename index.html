@@ -22,7 +22,7 @@
         <label>اختيار الشركة / الجهة المصدرة:</label>
         <select id="companySelect">
           <option value="amazon">أمازون سوبر ماركت (Amazon Market)</option>
-          <option value="international">شركة المجموعة الدولية للتجهيزات الزراعية والانتاج الحيواني</option>
+          <option value="international">شركة المجموعة الدولية للتجهيزات الزراعية والإنتاج الحيواني</option>
         </select>
       </div>
 
@@ -117,18 +117,18 @@
     <main class="preview-area">
       <div class="paper-a4 amazon-theme" id="paperPrint">
         
-        <!-- الترويسة العليا -->
+        <!-- الترويسة العليا الثلاثية -->
         <header class="paper-header">
           <div class="header-right">
-            <h1 id="lblCompanyName">أمازون سوبر ماركت</h1>
-            <p id="lblCompanySub">AMAZON MARKET - SAVE YOUR MONEY</p>
+            <h1 id="lblCompanyNameAr">شركة المجموعة الدولية</h1>
+            <p id="lblCompanySubAr">للتجهيزات الزراعية والإنتاج الحيواني</p>
           </div>
           <div class="header-center">
-            <img src="amazon_logo.jpg" alt="Logo" id="lblCompanyLogo">
+            <img src="international_logo.jpg" alt="Logo" id="lblCompanyLogo">
           </div>
           <div class="header-left">
-            <p>الرقم الصادر: <strong id="lblDocNumber">---</strong></p>
-            <p>التاريخ: <strong id="lblDocDate">---</strong></p>
+            <h1 id="lblCompanyNameEn">INTERNATIONAL GROUP</h1>
+            <p id="lblCompanySubEn">For Agricultural Equipment & Animal Production</p>
           </div>
         </header>
 
@@ -141,20 +141,29 @@
           </div>
 
           <div class="parties-box">
-            <p><strong>الطرف الأول:</strong> <span id="lblFirstParty">أمازون سوبر ماركت</span></p>
+            <p><strong>الطرف الأول:</strong> <span id="lblFirstParty">شركة المجموعة الدولية للتجهيزات الزراعية والإنتاج الحيواني</span></p>
             <p><strong>الطرف الثاني / الموجه إليه:</strong> <span id="lblSecondParty">........................................</span></p>
-            <p class="subject-line"><strong>الموضوع:</strong> <span id="lblDocSubject">........................................</span></p>
+            
+            <div class="subject-row">
+              <div class="subject-text">
+                <strong>الموضوع:</strong> <span id="lblDocSubject">........................................</span>
+              </div>
+              <div class="doc-meta-right">
+                <p><strong>الرقم الصادر:</strong> <span id="lblDocNumber">---</span></p>
+                <p><strong>التاريخ:</strong> <span id="lblDocDate">---</span></p>
+              </div>
+            </div>
           </div>
 
           <!-- النص / البنود -->
           <div class="content-text" id="lblDocBody"></div>
         </section>
 
-        <!-- التوقيعات فقط بدون الختم -->
+        <!-- التوقيعات -->
         <div class="footer-signatures">
           <div class="sig-box">
             <p class="sig-title">توقيع الطرف الأول</p>
-            <p class="sig-name" id="lblSigFirstParty">أمازون سوبر ماركت</p>
+            <p class="sig-name" id="lblSigFirstParty">شركة المجموعة الدولية للتجهيزات الزراعية والإنتاج الحيواني</p>
           </div>
           <div class="sig-box">
             <p class="sig-title">توقيع الطرف الثاني</p>
@@ -164,8 +173,8 @@
 
         <!-- تذييل الصفحة -->
         <footer class="paper-footer">
-          <p id="lblAddress">العراق - بغداد - الفرع الرئيسي</p>
-          <p id="lblPhone">هاتف: 07700000000 | 07800000000</p>
+          <p id="lblAddress">العراق - بغداد - الإدارة العامة</p>
+          <p id="lblPhone">هاتف: 07711111111 | 07811111111</p>
         </footer>
 
       </div>
