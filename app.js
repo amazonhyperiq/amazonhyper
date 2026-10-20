@@ -1,4 +1,4 @@
-// بيانات الشركتين باستخدام نفس اللوغو المسجل الرسمي
+// بيانات الشركتين
 const companiesData = {
   amazon: {
     nameAr: "أمازون سوبر ماركت",
@@ -76,7 +76,6 @@ const docTemplates = {
 const companySelect = document.getElementById("companySelect");
 const docTypeSelect = document.getElementById("docTypeSelect");
 
-// عناصر خيارات الخط والتنسيق
 const fontFamilySelect = document.getElementById("fontFamilySelect");
 const fontSizeRange = document.getElementById("fontSizeRange");
 const fontSizeVal = document.getElementById("fontSizeVal");
@@ -132,6 +131,7 @@ function onCompanyChange() {
   if (lblCompanyNameEn) lblCompanyNameEn.textContent = comp.nameEn;
   if (lblCompanySubEn) lblCompanySubEn.textContent = comp.subEn;
   
+  // تحديث الشعار بجانب الاسم والعلامة المائية
   if (lblCompanyLogo) lblCompanyLogo.src = comp.logo;
   if (watermarkBg) watermarkBg.style.backgroundImage = "url('" + comp.logo + "')";
 
