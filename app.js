@@ -1,5 +1,6 @@
-// بيانات الشركتين
-const companiesData = {
+// GitHub Pages Safe Version - UTF8 Clean Code
+
+var companiesData = {
   amazon: {
     nameAr: "أمازون سوبر ماركت",
     subAr: "توفير - جودة - خيارات واسعة",
@@ -26,8 +27,7 @@ const companiesData = {
   }
 };
 
-// قوالب النصوص لكل نوع وثيقة
-const docTemplates = {
+var docTemplates = {
   supply: {
     title: "عقد تجهيز بضائع ومواد",
     secondLabel: "اسم الشركة المجهزة / المورد:",
@@ -72,266 +72,264 @@ const docTemplates = {
   }
 };
 
-// عناصر الواجهة
-const companySelect = document.getElementById("companySelect");
-const docTypeSelect = document.getElementById("docTypeSelect");
+document.addEventListener("DOMContentLoaded", function () {
+  var companySelect = document.getElementById("companySelect");
+  var docTypeSelect = document.getElementById("docTypeSelect");
 
-const fontFamilySelect = document.getElementById("fontFamilySelect");
-const fontSizeRange = document.getElementById("fontSizeRange");
-const fontSizeVal = document.getElementById("fontSizeVal");
-const boldTextToggle = document.getElementById("boldTextToggle");
+  var fontFamilySelect = document.getElementById("fontFamilySelect");
+  var fontSizeRange = document.getElementById("fontSizeRange");
+  var fontSizeVal = document.getElementById("fontSizeVal");
+  var boldTextToggle = document.getElementById("boldTextToggle");
 
-const numberedModeToggle = document.getElementById("numberedModeToggle");
-const docNumber = document.getElementById("docNumber");
-const docDate = document.getElementById("docDate");
-const firstPartyInput = document.getElementById("firstPartyInput");
-const secondPartyInput = document.getElementById("secondPartyInput");
-const docSubject = document.getElementById("docSubject");
-const docBody = document.getElementById("docBody");
-const addressInput = document.getElementById("addressInput");
-const phoneInput = document.getElementById("phoneInput");
+  var numberedModeToggle = document.getElementById("numberedModeToggle");
+  var docNumber = document.getElementById("docNumber");
+  var docDate = document.getElementById("docDate");
+  var firstPartyInput = document.getElementById("firstPartyInput");
+  var secondPartyInput = document.getElementById("secondPartyInput");
+  var docSubject = document.getElementById("docSubject");
+  var docBody = document.getElementById("docBody");
+  var addressInput = document.getElementById("addressInput");
+  var phoneInput = document.getElementById("phoneInput");
 
-// عناصر المعاينة
-const paperPrint = document.getElementById("paperPrint");
-const watermarkBg = document.getElementById("watermarkBg");
-const lblCompanyNameAr = document.getElementById("lblCompanyNameAr");
-const lblCompanySubAr = document.getElementById("lblCompanySubAr");
-const lblCompanyNameEn = document.getElementById("lblCompanyNameEn");
-const lblCompanySubEn = document.getElementById("lblCompanySubEn");
-const lblCompanyLogo = document.getElementById("lblCompanyLogo");
+  var paperPrint = document.getElementById("paperPrint");
+  var watermarkBg = document.getElementById("watermarkBg");
+  var lblCompanyNameAr = document.getElementById("lblCompanyNameAr");
+  var lblCompanySubAr = document.getElementById("lblCompanySubAr");
+  var lblCompanyNameEn = document.getElementById("lblCompanyNameEn");
+  var lblCompanySubEn = document.getElementById("lblCompanySubEn");
+  var lblCompanyLogo = document.getElementById("lblCompanyLogo");
 
-const lblDocNumber = document.getElementById("lblDocNumber");
-const lblDocDate = document.getElementById("lblDocDate");
-const lblDocTitle = document.getElementById("lblDocTitle");
-const lblFirstParty = document.getElementById("lblFirstParty");
-const lblSecondParty = document.getElementById("lblSecondParty");
-const lblDocSubject = document.getElementById("lblDocSubject");
-const lblDocBody = document.getElementById("lblDocBody");
-const lblSigFirstParty = document.getElementById("lblSigFirstParty");
-const lblSigSecondParty = document.getElementById("lblSigSecondParty");
-const lblAddress = document.getElementById("lblAddress");
-const lblPhone = document.getElementById("lblPhone");
+  var lblDocNumber = document.getElementById("lblDocNumber");
+  var lblDocDate = document.getElementById("lblDocDate");
+  var lblDocTitle = document.getElementById("lblDocTitle");
+  var lblFirstParty = document.getElementById("lblFirstParty");
+  var lblSecondParty = document.getElementById("lblSecondParty");
+  var lblDocSubject = document.getElementById("lblDocSubject");
+  var lblDocBody = document.getElementById("lblDocBody");
+  var lblSigFirstParty = document.getElementById("lblSigFirstParty");
+  var lblSigSecondParty = document.getElementById("lblSigSecondParty");
+  var lblAddress = document.getElementById("lblAddress");
+  var lblPhone = document.getElementById("lblPhone");
 
-let editingDocId = null;
+  var editingDocId = null;
 
-if (docDate) {
-  docDate.value = new Date().toISOString().slice(0, 10);
-}
-if (docNumber) {
-  docNumber.value = "AMZ-" + new Date().getFullYear() + "/001";
-}
-
-function onCompanyChange() {
-  const compKey = companySelect.value;
-  const comp = companiesData[compKey];
-
-  if (paperPrint) paperPrint.className = "paper-a4 " + comp.themeClass;
-  if (lblCompanyNameAr) lblCompanyNameAr.textContent = comp.nameAr;
-  if (lblCompanySubAr) lblCompanySubAr.textContent = comp.subAr;
-  if (lblCompanyNameEn) lblCompanyNameEn.textContent = comp.nameEn;
-  if (lblCompanySubEn) lblCompanySubEn.textContent = comp.subEn;
-  
-  // تحديث الشعار بجانب الاسم والعلامة المائية
-  if (lblCompanyLogo) lblCompanyLogo.src = comp.logo;
-  if (watermarkBg) watermarkBg.style.backgroundImage = "url('" + comp.logo + "')";
-
-  if (firstPartyInput) firstPartyInput.value = comp.firstPartyDefault;
-  if (addressInput) addressInput.value = comp.address;
-  if (phoneInput) phoneInput.value = comp.phone;
-
-  if (!editingDocId && docNumber) {
-    docNumber.value = comp.prefix + "-" + new Date().getFullYear() + "/001";
-  }
-  updatePreview();
-}
-
-function onDocTypeChange() {
-  const tpl = docTemplates[docTypeSelect.value];
-  if (lblDocTitle) lblDocTitle.textContent = tpl.title;
-  
-  const secondPartyLbl = document.getElementById("secondPartyLabel");
-  if (secondPartyLbl) secondPartyLbl.textContent = tpl.secondLabel;
-
-  if (!editingDocId) {
-    if (docSubject) docSubject.value = tpl.defaultSubject;
-    if (docBody) docBody.value = tpl.defaultBody;
-  }
-  updatePreview();
-}
-
-function updateTextStyle() {
-  if (!lblDocBody) return;
-  if (fontFamilySelect) lblDocBody.style.fontFamily = fontFamilySelect.value;
-  
-  if (fontSizeRange) {
-    const size = fontSizeRange.value;
-    if (fontSizeVal) fontSizeVal.textContent = size + "px";
-    lblDocBody.style.fontSize = size + "px";
+  if (docDate) {
+    docDate.value = new Date().toISOString().slice(0, 10);
   }
 
-  if (boldTextToggle) {
-    lblDocBody.style.fontWeight = boldTextToggle.checked ? "bold" : "normal";
+  function onCompanyChange() {
+    if (!companySelect) return;
+    var compKey = companySelect.value;
+    var comp = companiesData[compKey];
+
+    if (paperPrint) paperPrint.className = "paper-a4 " + comp.themeClass;
+    if (lblCompanyNameAr) lblCompanyNameAr.textContent = comp.nameAr;
+    if (lblCompanySubAr) lblCompanySubAr.textContent = comp.subAr;
+    if (lblCompanyNameEn) lblCompanyNameEn.textContent = comp.nameEn;
+    if (lblCompanySubEn) lblCompanySubEn.textContent = comp.subEn;
+
+    if (lblCompanyLogo) lblCompanyLogo.src = comp.logo;
+    if (watermarkBg) watermarkBg.style.backgroundImage = "url('" + comp.logo + "')";
+
+    if (firstPartyInput) firstPartyInput.value = comp.firstPartyDefault;
+    if (addressInput) addressInput.value = comp.address;
+    if (phoneInput) phoneInput.value = comp.phone;
+
+    if (!editingDocId && docNumber) {
+      docNumber.value = comp.prefix + "-" + new Date().getFullYear() + "/001";
+    }
+    updatePreview();
   }
-}
 
-function updatePreview() {
-  if (lblDocNumber) lblDocNumber.textContent = docNumber.value || "---";
-  if (lblDocDate) lblDocDate.textContent = docDate.value || "---";
-  if (lblFirstParty) lblFirstParty.textContent = firstPartyInput.value || "---";
-  if (lblSigFirstParty) lblSigFirstParty.textContent = firstPartyInput.value || "---";
-  if (lblSecondParty) lblSecondParty.textContent = secondPartyInput.value || "........................................";
-  if (lblSigSecondParty) lblSigSecondParty.textContent = secondPartyInput.value || "....................";
-  if (lblDocSubject) lblDocSubject.textContent = docSubject.value || "........................................";
-  
-  if (lblAddress) lblAddress.textContent = addressInput.value;
-  if (lblPhone) lblPhone.textContent = "هاتف: " + phoneInput.value;
+  function onDocTypeChange() {
+    if (!docTypeSelect) return;
+    var tpl = docTemplates[docTypeSelect.value];
+    if (lblDocTitle) lblDocTitle.textContent = tpl.title;
 
-  const rawText = docBody ? docBody.value : "";
-  if (numberedModeToggle && numberedModeToggle.checked) {
-    const lines = rawText.split('\n').filter(function(line) { return line.trim() !== ""; });
-    let olHtml = "<ol>";
-    lines.forEach(function(line) {
-      const cleanLine = line.replace(/^\d+[\.\-]\s*/, '');
-      olHtml += "<li>" + cleanLine + "</li>";
+    var secondPartyLbl = document.getElementById("secondPartyLabel");
+    if (secondPartyLbl) secondPartyLbl.textContent = tpl.secondLabel;
+
+    if (!editingDocId) {
+      if (docSubject) docSubject.value = tpl.defaultSubject;
+      if (docBody) docBody.value = tpl.defaultBody;
+    }
+    updatePreview();
+  }
+
+  function updateTextStyle() {
+    if (!lblDocBody) return;
+    if (fontFamilySelect) lblDocBody.style.fontFamily = fontFamilySelect.value;
+
+    if (fontSizeRange) {
+      var size = fontSizeRange.value;
+      if (fontSizeVal) fontSizeVal.textContent = size + "px";
+      lblDocBody.style.fontSize = size + "px";
+    }
+
+    if (boldTextToggle) {
+      lblDocBody.style.fontWeight = boldTextToggle.checked ? "bold" : "normal";
+    }
+  }
+
+  function updatePreview() {
+    if (lblDocNumber && docNumber) lblDocNumber.textContent = docNumber.value || "---";
+    if (lblDocDate && docDate) lblDocDate.textContent = docDate.value || "---";
+    if (lblFirstParty && firstPartyInput) lblFirstParty.textContent = firstPartyInput.value || "---";
+    if (lblSigFirstParty && firstPartyInput) lblSigFirstParty.textContent = firstPartyInput.value || "---";
+    if (lblSecondParty && secondPartyInput) lblSecondParty.textContent = secondPartyInput.value || "........................................";
+    if (lblSigSecondParty && secondPartyInput) lblSigSecondParty.textContent = secondPartyInput.value || "....................";
+    if (lblDocSubject && docSubject) lblDocSubject.textContent = docSubject.value || "........................................";
+
+    if (lblAddress && addressInput) lblAddress.textContent = addressInput.value;
+    if (lblPhone && phoneInput) lblPhone.textContent = phoneInput.value;
+
+    var rawText = docBody ? docBody.value : "";
+    if (numberedModeToggle && numberedModeToggle.checked) {
+      var lines = rawText.split('\n').filter(function (line) { return line.trim() !== ""; });
+      var olHtml = "<ol>";
+      lines.forEach(function (line) {
+        var cleanLine = line.replace(/^\d+[\.\-]\s*/, '');
+        olHtml += "<li>" + cleanLine + "</li>";
+      });
+      olHtml += "</ol>";
+      if (lblDocBody) lblDocBody.innerHTML = olHtml;
+    } else {
+      if (lblDocBody) lblDocBody.innerHTML = "<p>" + rawText.replace(/\n/g, '<br>') + "</p>";
+    }
+
+    updateTextStyle();
+  }
+
+  function saveToArchive() {
+    var docData = {
+      id: editingDocId || Date.now(),
+      company: companySelect.value,
+      type: docTypeSelect.value,
+      number: docNumber.value,
+      date: docDate.value,
+      firstParty: firstPartyInput.value,
+      secondParty: secondPartyInput.value,
+      subject: docSubject.value,
+      body: docBody.value,
+      address: addressInput.value,
+      phone: phoneInput.value,
+      isNumbered: numberedModeToggle.checked,
+      fontFamily: fontFamilySelect.value,
+      fontSize: fontSizeRange.value,
+      isBold: boldTextToggle.checked,
+      updatedAt: new Date().toLocaleString()
+    };
+
+    var archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
+
+    if (editingDocId) {
+      archive = archive.map(function (item) { return item.id === editingDocId ? docData : item; });
+      alert("Done!");
+      editingDocId = null;
+    } else {
+      archive.push(docData);
+      alert("Saved!");
+    }
+
+    localStorage.setItem("official_docs_archive", JSON.stringify(archive));
+    loadArchiveList();
+  }
+
+  function loadArchiveList() {
+    var archiveList = document.getElementById("archiveList");
+    if (!archiveList) return;
+
+    var archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
+
+    if (archive.length === 0) {
+      archiveList.innerHTML = '<p class="empty-msg">No saved documents.</p>';
+      return;
+    }
+
+    archiveList.innerHTML = "";
+    archive.forEach(function (item) {
+      var div = document.createElement("div");
+      div.className = "archive-item";
+      div.innerHTML =
+        '<div class="archive-info">' +
+        '<strong>' + item.number + '</strong> - ' + item.subject.substring(0, 20) + '...<br>' +
+        '<small>' + item.date + '</small>' +
+        '</div>' +
+        '<div class="archive-actions">' +
+        '<button class="btn-sm btn-sm-edit" onclick="viewDocument(' + item.id + ')">Open</button>' +
+        '</div>';
+      archiveList.appendChild(div);
     });
-    olHtml += "</ol>";
-    if (lblDocBody) lblDocBody.innerHTML = olHtml;
-  } else {
-    if (lblDocBody) lblDocBody.innerHTML = "<p>" + rawText.replace(/\n/g, '<br>') + "</p>";
   }
 
-  updateTextStyle();
-}
+  window.viewDocument = function (id) {
+    var archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
+    var doc = archive.find(function (item) { return item.id === id; });
+    if (doc) {
+      editingDocId = doc.id;
+      companySelect.value = doc.company;
+      onCompanyChange();
+      docTypeSelect.value = doc.type;
+      docNumber.value = doc.number;
+      docDate.value = doc.date;
+      firstPartyInput.value = doc.firstParty;
+      secondPartyInput.value = doc.secondParty;
+      docSubject.value = doc.subject;
+      docBody.value = doc.body;
+      addressInput.value = doc.address;
+      phoneInput.value = doc.phone;
+      numberedModeToggle.checked = doc.isNumbered;
 
-function saveToArchive() {
-  const docData = {
-    id: editingDocId || Date.now(),
-    company: companySelect.value,
-    type: docTypeSelect.value,
-    number: docNumber.value,
-    date: docDate.value,
-    firstParty: firstPartyInput.value,
-    secondParty: secondPartyInput.value,
-    subject: docSubject.value,
-    body: docBody.value,
-    address: addressInput.value,
-    phone: phoneInput.value,
-    isNumbered: numberedModeToggle.checked,
-    fontFamily: fontFamilySelect.value,
-    fontSize: fontSizeRange.value,
-    isBold: boldTextToggle.checked,
-    updatedAt: new Date().toLocaleString()
+      if (doc.fontFamily) fontFamilySelect.value = doc.fontFamily;
+      if (doc.fontSize) fontSizeRange.value = doc.fontSize;
+      if (doc.isBold !== undefined) boldTextToggle.checked = doc.isBold;
+
+      updatePreview();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
   };
 
-  let archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
-  
-  if (editingDocId) {
-    archive = archive.map(function(item) { return item.id === editingDocId ? docData : item; });
-    alert("تم تحديث وثيقة الأرشيف بنجاح!");
-    editingDocId = null;
-  } else {
-    archive.push(docData);
-    alert("تم حفظ الوثيقة في الأرشيف بنجاح!");
-  }
+  if (companySelect) companySelect.addEventListener("change", onCompanyChange);
+  if (docTypeSelect) docTypeSelect.addEventListener("change", onDocTypeChange);
 
-  localStorage.setItem("official_docs_archive", JSON.stringify(archive));
-  loadArchiveList();
-}
+  if (fontFamilySelect) fontFamilySelect.addEventListener("change", updatePreview);
+  if (fontSizeRange) fontSizeRange.addEventListener("input", updatePreview);
+  if (boldTextToggle) boldTextToggle.addEventListener("change", updatePreview);
+  if (numberedModeToggle) numberedModeToggle.addEventListener("change", updatePreview);
 
-function loadArchiveList() {
-  const archiveList = document.getElementById("archiveList");
-  if (!archiveList) return;
-
-  const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
-
-  if (archive.length === 0) {
-    archiveList.innerHTML = '<p class="empty-msg">لا توجد وثائق محفوظة حالياً.</p>';
-    return;
-  }
-
-  archiveList.innerHTML = "";
-  archive.forEach(function(item) {
-    const div = document.createElement("div");
-    div.className = "archive-item";
-    div.innerHTML = 
-      '<div class="archive-info">' +
-        '<strong>' + item.number + '</strong> - ' + item.subject.substring(0, 22) + '...<br>' +
-        '<small>' + item.date + ' | ' + (item.secondParty || 'بدون طرف ثاني') + '</small>' +
-      '</div>' +
-      '<div class="archive-actions">' +
-        '<button class="btn-sm btn-sm-edit" onclick="viewDocument(' + item.id + ')">فتح للتعديل</button>' +
-      '</div>';
-    archiveList.appendChild(div);
-  });
-}
-
-window.viewDocument = function(id) {
-  const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
-  const doc = archive.find(function(item) { return item.id === id; });
-  if (doc) {
-    editingDocId = doc.id;
-    companySelect.value = doc.company;
-    onCompanyChange();
-    docTypeSelect.value = doc.type;
-    docNumber.value = doc.number;
-    docDate.value = doc.date;
-    firstPartyInput.value = doc.firstParty;
-    secondPartyInput.value = doc.secondParty;
-    docSubject.value = doc.subject;
-    docBody.value = doc.body;
-    addressInput.value = doc.address;
-    phoneInput.value = doc.phone;
-    numberedModeToggle.checked = doc.isNumbered;
-    
-    if (doc.fontFamily) fontFamilySelect.value = doc.fontFamily;
-    if (doc.fontSize) fontSizeRange.value = doc.fontSize;
-    if (doc.isBold !== undefined) boldTextToggle.checked = doc.isBold;
-
-    updatePreview();
-    window.scrollTo({top: 0, behavior: 'smooth'});
-  }
-};
-
-if (companySelect) companySelect.addEventListener("change", onCompanyChange);
-if (docTypeSelect) docTypeSelect.addEventListener("change", onDocTypeChange);
-
-if (fontFamilySelect) fontFamilySelect.addEventListener("change", updatePreview);
-if (fontSizeRange) fontSizeRange.addEventListener("input", updatePreview);
-if (boldTextToggle) boldTextToggle.addEventListener("change", updatePreview);
-if (numberedModeToggle) numberedModeToggle.addEventListener("change", updatePreview);
-
-[docNumber, docDate, firstPartyInput, secondPartyInput, docSubject, docBody, addressInput, phoneInput].forEach(function(el) {
-  if (el) {
-    el.addEventListener("input", updatePreview);
-    el.addEventListener("change", updatePreview);
-  }
-});
-
-const saveBtn = document.getElementById("saveBtn");
-if (saveBtn) saveBtn.addEventListener("click", saveToArchive);
-
-const printBtn = document.getElementById("printBtn");
-if (printBtn) printBtn.addEventListener("click", function() { window.print(); });
-
-const pdfBtn = document.getElementById("pdfBtn");
-if (pdfBtn) {
-  pdfBtn.addEventListener("click", function() {
-    const element = document.getElementById("paperPrint");
-    const opt = {
-      margin: 0,
-      filename: (docNumber.value ? docNumber.value.replace(/\//g, '-') : 'document') + '.pdf',
-      image: { type: 'jpeg', quality: 0.98 },
-      html2canvas: { scale: 2 },
-      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-    };
-    if (typeof html2pdf !== 'undefined') {
-      html2pdf().set(opt).from(element).save();
-    } else {
-      window.print();
+  [docNumber, docDate, firstPartyInput, secondPartyInput, docSubject, docBody, addressInput, phoneInput].forEach(function (el) {
+    if (el) {
+      el.addEventListener("input", updatePreview);
+      el.addEventListener("change", updatePreview);
     }
   });
-}
 
-onCompanyChange();
-onDocTypeChange();
-loadArchiveList();
+  var saveBtn = document.getElementById("saveBtn");
+  if (saveBtn) saveBtn.addEventListener("click", saveToArchive);
+
+  var printBtn = document.getElementById("printBtn");
+  if (printBtn) printBtn.addEventListener("click", function () { window.print(); });
+
+  var pdfBtn = document.getElementById("pdfBtn");
+  if (pdfBtn) {
+    pdfBtn.addEventListener("click", function () {
+      var element = document.getElementById("paperPrint");
+      var opt = {
+        margin: 0,
+        filename: (docNumber.value ? docNumber.value.replace(/\//g, '-') : 'document') + '.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+      };
+      if (typeof html2pdf !== 'undefined') {
+        html2pdf().set(opt).from(element).save();
+      } else {
+        window.print();
+      }
+    });
+  }
+
+  onCompanyChange();
+  onDocTypeChange();
+  loadArchiveList();
+});
