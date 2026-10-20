@@ -4,6 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>نظام العقود والكتب الرسمية</title>
+
+  <!-- تحميل خطوط قوقل الرسمية -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@400;700&family=Amiri:wght@400;700&family=Cairo:wght@400;700&family=Tajawal:wght@400;700&display=swap" rel="stylesheet">
+
   <link rel="stylesheet" href="style.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
@@ -42,7 +48,37 @@
 
       <hr>
 
-      <!-- خيار الترقيم أو النص الحر -->
+      <!-- أدوات التحكم في الخط والتنسيق -->
+      <div class="style-controls-box">
+        <h3>🎨 التحكم بتنسيق الخط</h3>
+        
+        <div class="form-group">
+          <label>نوع الخط العربي:</label>
+          <select id="fontFamilySelect">
+            <option value="'Cairo', sans-serif">Cairo (القاهرة - حديث)</option>
+            <option value="'Tajawal', sans-serif">Tajawal (تجوال - عصري)</option>
+            <option value="'Amiri', serif">Amiri (الأميري - كلاسيكي/رسمي)</option>
+            <option value="'Almarai', sans-serif">Almarai (المراعي - واضح)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>حجم الخط للنص الرئيسي: <span id="fontSizeVal">16px</span></label>
+          <input type="range" id="fontSizeRange" min="12" max="22" value="16">
+        </div>
+
+        <div class="form-group switch-group">
+          <label class="switch-label">
+            <input type="checkbox" id="boldTextToggle">
+            <span class="slider"></span>
+            <span class="switch-text">خط عريض للنص (Bold)</span>
+          </label>
+        </div>
+      </div>
+
+      <hr>
+
+      <!-- خيار الترقيم -->
       <div class="form-group switch-group">
         <label class="switch-label">
           <input type="checkbox" id="numberedModeToggle">
@@ -84,7 +120,7 @@
 
       <hr>
 
-      <!-- العنوان والهواتف للفوتر -->
+      <!-- العنوان والهواتف -->
       <div class="form-group">
         <label>العنوان (التذييل):</label>
         <input type="text" id="addressInput" value="العراق - بغداد - الفرع الرئيسي">
@@ -97,14 +133,14 @@
 
       <hr>
 
-      <!-- أزرار الإجراءات -->
+      <!-- الأزرار -->
       <div class="actions">
         <button id="saveBtn" class="btn btn-save">💾 حفظ في الأرشيف</button>
         <button id="printBtn" class="btn btn-primary">🖨 طباعة مباشر</button>
         <button id="pdfBtn" class="btn btn-pdf">📄 تصدير PDF</button>
       </div>
 
-      <!-- سجل الأرشيف -->
+      <!-- الأرشيف -->
       <div class="archive-section">
         <h3>📂 الأرشيف والسجلات المحفوظة</h3>
         <div class="archive-list" id="archiveList">
@@ -117,7 +153,10 @@
     <main class="preview-area">
       <div class="paper-a4 amazon-theme" id="paperPrint">
         
-        <!-- الترويسة العليا الثلاثية -->
+        <!-- العلامة المائية الشفافة بالخلفية -->
+        <div class="watermark-bg" id="watermarkBg"></div>
+
+        <!-- الترويسة العليا الثلاثية البسيطة -->
         <header class="paper-header">
           <div class="header-right">
             <h1 id="lblCompanyNameAr">شركة المجموعة الدولية</h1>
@@ -155,7 +194,7 @@
             </div>
           </div>
 
-          <!-- النص / البنود -->
+          <!-- النص الرئيسي للوثيقة -->
           <div class="content-text" id="lblDocBody"></div>
         </section>
 
