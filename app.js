@@ -1,4 +1,4 @@
-// بيانات الشركتين
+// بيانات الشركتين باستخدام نفس اللوغو المسجل الرسمي
 const companiesData = {
   amazon: {
     nameAr: "أمازون سوبر ماركت",
@@ -75,6 +75,13 @@ const docTemplates = {
 // عناصر الواجهة
 const companySelect = document.getElementById("companySelect");
 const docTypeSelect = document.getElementById("docTypeSelect");
+
+// عناصر خيارات الخط والتنسيق
+const fontFamilySelect = document.getElementById("fontFamilySelect");
+const fontSizeRange = document.getElementById("fontSizeRange");
+const fontSizeVal = document.getElementById("fontSizeVal");
+const boldTextToggle = document.getElementById("boldTextToggle");
+
 const numberedModeToggle = document.getElementById("numberedModeToggle");
 const docNumber = document.getElementById("docNumber");
 const docDate = document.getElementById("docDate");
@@ -87,6 +94,7 @@ const phoneInput = document.getElementById("phoneInput");
 
 // عناصر المعاينة
 const paperPrint = document.getElementById("paperPrint");
+const watermarkBg = document.getElementById("watermarkBg");
 const lblCompanyNameAr = document.getElementById("lblCompanyNameAr");
 const lblCompanySubAr = document.getElementById("lblCompanySubAr");
 const lblCompanyNameEn = document.getElementById("lblCompanyNameEn");
@@ -119,7 +127,10 @@ function onCompanyChange() {
   lblCompanySubAr.textContent = comp.subAr;
   lblCompanyNameEn.textContent = comp.nameEn;
   lblCompanySubEn.textContent = comp.subEn;
+  
+  // تحديث الشعار في الترويسة والعلامة المائية في الخلفية
   lblCompanyLogo.src = comp.logo;
+  watermarkBg.style.backgroundImage = `url('${comp.logo}')`;
 
   firstPartyInput.value = comp.firstPartyDefault;
   addressInput.value = comp.address;
@@ -140,6 +151,23 @@ function onDocTypeChange() {
     docBody.value = tpl.defaultBody;
   }
   updatePreview();
+}
+
+function updateTextStyle() {
+  // تطبيق نوع الخط المختار
+  lblDocBody.style.fontFamily = fontFamilySelect.value;
+  
+  // تطبيق حجم الخط
+  const size = fontSizeRange.value;
+  fontSizeVal.textContent = size + "px";
+  lblDocBody.style.fontSize = size + "px";
+
+  // تطبيق سمك الخط (Bold)
+  if (boldTextToggle.checked) {
+    lblDocBody.style.fontWeight = "bold";
+  } else {
+    lblDocBody.style.fontWeight = "normal";
+  }
 }
 
 function updatePreview() {
@@ -167,6 +195,8 @@ function updatePreview() {
   } else {
     lblDocBody.innerHTML = `<p>${rawText.replace(/\n/g, '<br>')}</p>`;
   }
+
+  updateTextStyle();
 }
 
 function saveToArchive() {
@@ -183,6 +213,9 @@ function saveToArchive() {
     address: addressInput.value,
     phone: phoneInput.value,
     isNumbered: numberedModeToggle.checked,
+    fontFamily: fontFamilySelect.value,
+    fontSize: fontSizeRange.value,
+    isBold: boldTextToggle.checked,
     updatedAt: new Date().toLocaleString()
   };
 
@@ -216,12 +249,11 @@ function loadArchiveList() {
     div.className = "archive-item";
     div.innerHTML = `
       <div class="archive-info">
-        <strong>${item.number}</strong> - ${item.subject.substring(0, 25)}...<br>
+        <strong>${item.number}</strong> - ${item.subject.substring(0, 22)}...<br>
         <small>${item.date} | ${item.secondParty || 'بدون طرف ثاني'}</small>
       </div>
       <div class="archive-actions">
-        <button class="btn-sm btn-sm-view" onclick="viewDocument(${item.id})">عرض</button>
-        <button class="btn-sm btn-sm-edit" onclick="editDocument(${item.id})">تعديل</button>
+        <button class="btn-sm btn-sm-edit" onclick="viewDocument(${item.id})">فتح للتعديل</button>
       </div>
     `;
     archiveList.appendChild(div);
@@ -232,6 +264,7 @@ window.viewDocument = function(id) {
   const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
   const doc = archive.find(item => item.id === id);
   if(doc) {
+    editingDocId = doc.id;
     companySelect.value = doc.company;
     onCompanyChange();
     docTypeSelect.value = doc.type;
@@ -244,19 +277,22 @@ window.viewDocument = function(id) {
     addressInput.value = doc.address;
     phoneInput.value = doc.phone;
     numberedModeToggle.checked = doc.isNumbered;
+    
+    if(doc.fontFamily) fontFamilySelect.value = doc.fontFamily;
+    if(doc.fontSize) fontSizeRange.value = doc.fontSize;
+    if(doc.isBold !== undefined) boldTextToggle.checked = doc.isBold;
+
     updatePreview();
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 };
 
-window.editDocument = function(id) {
-  viewDocument(id);
-  editingDocId = id;
-  alert("تم فتح الوثيقة في وضع التعديل.");
-};
-
 companySelect.addEventListener("change", onCompanyChange);
 docTypeSelect.addEventListener("change", onDocTypeChange);
+
+fontFamilySelect.addEventListener("change", updatePreview);
+fontSizeRange.addEventListener("input", updatePreview);
+boldTextToggle.addEventListener("change", updatePreview);
 numberedModeToggle.addEventListener("change", updatePreview);
 
 [docNumber, docDate, firstPartyInput, secondPartyInput, docSubject, docBody, addressInput, phoneInput].forEach(el => {
