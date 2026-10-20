@@ -115,85 +115,89 @@ const lblPhone = document.getElementById("lblPhone");
 
 let editingDocId = null;
 
-docDate.value = new Date().toISOString().slice(0, 10);
-docNumber.value = `AMZ-${new Date().getFullYear()}/001`;
+if (docDate) {
+  docDate.value = new Date().toISOString().slice(0, 10);
+}
+if (docNumber) {
+  docNumber.value = "AMZ-" + new Date().getFullYear() + "/001";
+}
 
 function onCompanyChange() {
   const compKey = companySelect.value;
   const comp = companiesData[compKey];
 
-  paperPrint.className = `paper-a4 ${comp.themeClass}`;
-  lblCompanyNameAr.textContent = comp.nameAr;
-  lblCompanySubAr.textContent = comp.subAr;
-  lblCompanyNameEn.textContent = comp.nameEn;
-  lblCompanySubEn.textContent = comp.subEn;
+  if (paperPrint) paperPrint.className = "paper-a4 " + comp.themeClass;
+  if (lblCompanyNameAr) lblCompanyNameAr.textContent = comp.nameAr;
+  if (lblCompanySubAr) lblCompanySubAr.textContent = comp.subAr;
+  if (lblCompanyNameEn) lblCompanyNameEn.textContent = comp.nameEn;
+  if (lblCompanySubEn) lblCompanySubEn.textContent = comp.subEn;
   
-  // تحديث الشعار في الترويسة والعلامة المائية في الخلفية
-  lblCompanyLogo.src = comp.logo;
-  watermarkBg.style.backgroundImage = `url('${comp.logo}')`;
+  if (lblCompanyLogo) lblCompanyLogo.src = comp.logo;
+  if (watermarkBg) watermarkBg.style.backgroundImage = "url('" + comp.logo + "')";
 
-  firstPartyInput.value = comp.firstPartyDefault;
-  addressInput.value = comp.address;
-  phoneInput.value = comp.phone;
+  if (firstPartyInput) firstPartyInput.value = comp.firstPartyDefault;
+  if (addressInput) addressInput.value = comp.address;
+  if (phoneInput) phoneInput.value = comp.phone;
 
-  if(!editingDocId) {
-    docNumber.value = `${comp.prefix}-${new Date().getFullYear()}/001`;
+  if (!editingDocId && docNumber) {
+    docNumber.value = comp.prefix + "-" + new Date().getFullYear() + "/001";
   }
   updatePreview();
 }
 
 function onDocTypeChange() {
   const tpl = docTemplates[docTypeSelect.value];
-  lblDocTitle.textContent = tpl.title;
-  document.getElementById("secondPartyLabel").textContent = tpl.secondLabel;
+  if (lblDocTitle) lblDocTitle.textContent = tpl.title;
+  
+  const secondPartyLbl = document.getElementById("secondPartyLabel");
+  if (secondPartyLbl) secondPartyLbl.textContent = tpl.secondLabel;
+
   if (!editingDocId) {
-    docSubject.value = tpl.defaultSubject;
-    docBody.value = tpl.defaultBody;
+    if (docSubject) docSubject.value = tpl.defaultSubject;
+    if (docBody) docBody.value = tpl.defaultBody;
   }
   updatePreview();
 }
 
 function updateTextStyle() {
-  // تطبيق نوع الخط المختار
-  lblDocBody.style.fontFamily = fontFamilySelect.value;
+  if (!lblDocBody) return;
+  if (fontFamilySelect) lblDocBody.style.fontFamily = fontFamilySelect.value;
   
-  // تطبيق حجم الخط
-  const size = fontSizeRange.value;
-  fontSizeVal.textContent = size + "px";
-  lblDocBody.style.fontSize = size + "px";
+  if (fontSizeRange) {
+    const size = fontSizeRange.value;
+    if (fontSizeVal) fontSizeVal.textContent = size + "px";
+    lblDocBody.style.fontSize = size + "px";
+  }
 
-  // تطبيق سمك الخط (Bold)
-  if (boldTextToggle.checked) {
-    lblDocBody.style.fontWeight = "bold";
-  } else {
-    lblDocBody.style.fontWeight = "normal";
+  if (boldTextToggle) {
+    lblDocBody.style.fontWeight = boldTextToggle.checked ? "bold" : "normal";
   }
 }
 
 function updatePreview() {
-  lblDocNumber.textContent = docNumber.value || "---";
-  lblDocDate.textContent = docDate.value || "---";
-  lblFirstParty.textContent = firstPartyInput.value || "---";
-  lblSigFirstParty.textContent = firstPartyInput.value || "---";
-  lblSecondParty.textContent = secondPartyInput.value || "........................................";
-  lblSigSecondParty.textContent = secondPartyInput.value || "....................";
-  lblDocSubject.textContent = docSubject.value || "........................................";
+  if (lblDocNumber) lblDocNumber.textContent = docNumber.value || "---";
+  if (lblDocDate) lblDocDate.textContent = docDate.value || "---";
+  if (lblFirstParty) lblFirstParty.textContent = firstPartyInput.value || "---";
+  if (lblSigFirstParty) lblSigFirstParty.textContent = firstPartyInput.value || "---";
+  if (lblSecondParty) lblSecondParty.textContent = secondPartyInput.value || "........................................";
+  if (lblSigSecondParty) lblSigSecondParty.textContent = secondPartyInput.value || "....................";
+  if (lblDocSubject) lblDocSubject.textContent = docSubject.value || "........................................";
   
-  lblAddress.textContent = addressInput.value;
-  lblPhone.textContent = "هاتف: " + phoneInput.value;
+  if (lblAddress) lblAddress.textContent = addressInput.value;
+  if (lblPhone) lblPhone.textContent = "هاتف: " + phoneInput.value;
 
-  const rawText = docBody.value || "";
-  if (numberedModeToggle.checked) {
-    const lines = rawText.split('\n').filter(line => line.trim() !== "");
+  const rawText = docBody ? docBody.value : "";
+  if (numberedModeToggle && numberedModeToggle.checked) {
+    const lines = rawText.split('\n').filter(function(line) { return line.trim() !== ""; });
     let olHtml = "<ol>";
-    lines.forEach(line => {
+    lines.forEach(function(line) {
       const cleanLine = line.replace(/^\d+[\.\-]\s*/, '');
-      olHtml += `<li>${cleanLine}</li>`;
+      olHtml += "<li>" + cleanLine + "</li>";
     });
     olHtml += "</ol>";
-    lblDocBody.innerHTML = olHtml;
+    if (lblDocBody) lblDocBody.innerHTML = olHtml;
   } else {
-    lblDocBody.innerHTML = `<p>${rawText.replace(/\n/g, '<br>')}</p>`;
+    if (lblDocBody) lblDocBody.innerHTML = "<p>" + rawText.replace(/\n/g, '<br>') + "</p>";
   }
 
   updateTextStyle();
@@ -221,8 +225,8 @@ function saveToArchive() {
 
   let archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
   
-  if(editingDocId) {
-    archive = archive.map(item => item.id === editingDocId ? docData : item);
+  if (editingDocId) {
+    archive = archive.map(function(item) { return item.id === editingDocId ? docData : item; });
     alert("تم تحديث وثيقة الأرشيف بنجاح!");
     editingDocId = null;
   } else {
@@ -236,34 +240,35 @@ function saveToArchive() {
 
 function loadArchiveList() {
   const archiveList = document.getElementById("archiveList");
+  if (!archiveList) return;
+
   const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
 
-  if(archive.length === 0) {
-    archiveList.innerHTML = `<p class="empty-msg">لا توجد وثائق محفوظة حالياً.</p>`;
+  if (archive.length === 0) {
+    archiveList.innerHTML = '<p class="empty-msg">لا توجد وثائق محفوظة حالياً.</p>';
     return;
   }
 
   archiveList.innerHTML = "";
-  archive.forEach(item => {
+  archive.forEach(function(item) {
     const div = document.createElement("div");
     div.className = "archive-item";
-    div.innerHTML = `
-      <div class="archive-info">
-        <strong>${item.number}</strong> - ${item.subject.substring(0, 22)}...<br>
-        <small>${item.date} | ${item.secondParty || 'بدون طرف ثاني'}</small>
-      </div>
-      <div class="archive-actions">
-        <button class="btn-sm btn-sm-edit" onclick="viewDocument(${item.id})">فتح للتعديل</button>
-      </div>
-    `;
+    div.innerHTML = 
+      '<div class="archive-info">' +
+        '<strong>' + item.number + '</strong> - ' + item.subject.substring(0, 22) + '...<br>' +
+        '<small>' + item.date + ' | ' + (item.secondParty || 'بدون طرف ثاني') + '</small>' +
+      '</div>' +
+      '<div class="archive-actions">' +
+        '<button class="btn-sm btn-sm-edit" onclick="viewDocument(' + item.id + ')">فتح للتعديل</button>' +
+      '</div>';
     archiveList.appendChild(div);
   });
 }
 
 window.viewDocument = function(id) {
   const archive = JSON.parse(localStorage.getItem("official_docs_archive") || "[]");
-  const doc = archive.find(item => item.id === id);
-  if(doc) {
+  const doc = archive.find(function(item) { return item.id === id; });
+  if (doc) {
     editingDocId = doc.id;
     companySelect.value = doc.company;
     onCompanyChange();
@@ -278,42 +283,54 @@ window.viewDocument = function(id) {
     phoneInput.value = doc.phone;
     numberedModeToggle.checked = doc.isNumbered;
     
-    if(doc.fontFamily) fontFamilySelect.value = doc.fontFamily;
-    if(doc.fontSize) fontSizeRange.value = doc.fontSize;
-    if(doc.isBold !== undefined) boldTextToggle.checked = doc.isBold;
+    if (doc.fontFamily) fontFamilySelect.value = doc.fontFamily;
+    if (doc.fontSize) fontSizeRange.value = doc.fontSize;
+    if (doc.isBold !== undefined) boldTextToggle.checked = doc.isBold;
 
     updatePreview();
     window.scrollTo({top: 0, behavior: 'smooth'});
   }
 };
 
-companySelect.addEventListener("change", onCompanyChange);
-docTypeSelect.addEventListener("change", onDocTypeChange);
+if (companySelect) companySelect.addEventListener("change", onCompanyChange);
+if (docTypeSelect) docTypeSelect.addEventListener("change", onDocTypeChange);
 
-fontFamilySelect.addEventListener("change", updatePreview);
-fontSizeRange.addEventListener("input", updatePreview);
-boldTextToggle.addEventListener("change", updatePreview);
-numberedModeToggle.addEventListener("change", updatePreview);
+if (fontFamilySelect) fontFamilySelect.addEventListener("change", updatePreview);
+if (fontSizeRange) fontSizeRange.addEventListener("input", updatePreview);
+if (boldTextToggle) boldTextToggle.addEventListener("change", updatePreview);
+if (numberedModeToggle) numberedModeToggle.addEventListener("change", updatePreview);
 
-[docNumber, docDate, firstPartyInput, secondPartyInput, docSubject, docBody, addressInput, phoneInput].forEach(el => {
-  el.addEventListener("input", updatePreview);
-  el.addEventListener("change", updatePreview);
+[docNumber, docDate, firstPartyInput, secondPartyInput, docSubject, docBody, addressInput, phoneInput].forEach(function(el) {
+  if (el) {
+    el.addEventListener("input", updatePreview);
+    el.addEventListener("change", updatePreview);
+  }
 });
 
-document.getElementById("saveBtn").addEventListener("click", saveToArchive);
-document.getElementById("printBtn").addEventListener("click", () => window.print());
+const saveBtn = document.getElementById("saveBtn");
+if (saveBtn) saveBtn.addEventListener("click", saveToArchive);
 
-document.getElementById("pdfBtn").addEventListener("click", () => {
-  const element = document.getElementById("paperPrint");
-  const opt = {
-    margin: 0,
-    filename: `${docNumber.value.replace(/\//g, '-')}.pdf`,
-    image: { type: 'jpeg', quality: 0.98 },
-    html2canvas: { scale: 2 },
-    jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
-  };
-  html2pdf().set(opt).from(element).save();
-});
+const printBtn = document.getElementById("printBtn");
+if (printBtn) printBtn.addEventListener("click", function() { window.print(); });
+
+const pdfBtn = document.getElementById("pdfBtn");
+if (pdfBtn) {
+  pdfBtn.addEventListener("click", function() {
+    const element = document.getElementById("paperPrint");
+    const opt = {
+      margin: 0,
+      filename: (docNumber.value ? docNumber.value.replace(/\//g, '-') : 'document') + '.pdf',
+      image: { type: 'jpeg', quality: 0.98 },
+      html2canvas: { scale: 2 },
+      jsPDF: { unit: 'mm', format: 'a4', orientation: 'portrait' }
+    };
+    if (typeof html2pdf !== 'undefined') {
+      html2pdf().set(opt).from(element).save();
+    } else {
+      window.print();
+    }
+  });
+}
 
 onCompanyChange();
 onDocTypeChange();
