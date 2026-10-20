@@ -82,7 +82,7 @@ hr {
   margin: 16px 0;
 }
 
-/* المفتاح Swicth */
+/* المفتاح Switch */
 .switch-group {
   background-color: #ffffff;
   padding: 8px 10px;
@@ -190,7 +190,7 @@ input:checked + .slider:before { transform: translateX(18px); }
 
 .btn-sm-edit { background-color: #f39c12; color: white; }
 
-/* منطقة المعاينة الورقية A4 النظيفة خالية من الزخارف */
+/* منطقة المعاينة الورقية A4 */
 .preview-area {
   flex: 1;
   padding: 30px;
@@ -213,7 +213,7 @@ input:checked + .slider:before { transform: translateX(18px); }
   overflow: hidden;
 }
 
-/* العلامة المائية بالخلفية */
+/* العلامة المائية المائية الشفافة بالوسط */
 .watermark-bg {
   position: absolute;
   top: 55%;
@@ -224,26 +224,26 @@ input:checked + .slider:before { transform: translateX(18px); }
   background-repeat: no-repeat;
   background-position: center;
   background-size: contain;
-  opacity: 0.05; /* درجة الشفافية خفيفة ورسمية جداً */
+  opacity: 0.06;
   pointer-events: none;
   z-index: 0;
 }
 
 /* ثيم أمازون سوبر ماركت */
-.amazon-theme .header-right h1 { color: #1e7e34; font-size: 1.35rem; }
-.amazon-theme .header-left h1 { color: #1e7e34; font-size: 1.1rem; }
+.amazon-theme .header-titles-ar h1 { color: #1e7e34; }
+.amazon-theme .header-left h1 { color: #1e7e34; }
 .amazon-theme .header-divider { border-bottom: 2px solid #2e7d32; }
 .amazon-theme .doc-title-box h2 { border-bottom: 2px solid #2e7d32; color: #1b5e20; }
 
 /* ثيم شركة المجموعة الدولية */
-.international-theme .header-right h1 { color: #1a365d; font-size: 1.3rem; font-weight: 800; }
-.international-theme .header-right p { color: #1a365d; font-size: 0.8rem; font-weight: 600; }
-.international-theme .header-left h1 { color: #1a365d; font-size: 1.1rem; font-weight: 800; }
-.international-theme .header-left p { color: #c53030; font-size: 0.75rem; font-weight: 600; }
+.international-theme .header-titles-ar h1 { color: #1a365d; }
+.international-theme .header-titles-ar p { color: #1a365d; }
+.international-theme .header-left h1 { color: #1a365d; }
+.international-theme .header-left p { color: #c53030; }
 .international-theme .header-divider { border-bottom: 2px solid #1a365d; }
 .international-theme .doc-title-box h2 { border-bottom: 2px solid #c53030; color: #1a365d; }
 
-/* الترويسة الثلاثية */
+/* الترويسة الرسمية */
 .paper-header {
   display: flex;
   justify-content: space-between;
@@ -252,14 +252,51 @@ input:checked + .slider:before { transform: translateX(18px); }
   z-index: 1;
 }
 
-.header-right { text-align: right; width: 38%; }
-.header-center { text-align: center; width: 24%; }
-.header-left { text-align: left; width: 38%; dir: ltr; }
+/* اللوغو بجانب الاسم بالعربي في اليمين */
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 60%;
+}
 
-.header-center img {
-  max-width: 95px;
-  max-height: 95px;
+.header-right img {
+  max-width: 65px;
+  max-height: 65px;
   object-fit: contain;
+  flex-shrink: 0;
+}
+
+.header-titles-ar h1 {
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.header-titles-ar p {
+  font-size: 0.8rem;
+  margin-top: 3px;
+  color: #555;
+}
+
+/* الاسم بالإنكليزي في اليسار */
+.header-left {
+  text-align: left;
+  width: 40%;
+  dir: ltr;
+}
+
+.header-left h1 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.header-left p {
+  font-size: 0.75rem;
+  margin-top: 3px;
+  color: #666;
 }
 
 .header-divider {
