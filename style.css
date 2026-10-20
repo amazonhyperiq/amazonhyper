@@ -2,7 +2,7 @@
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Cairo', sans-serif;
 }
 
 body {
@@ -27,11 +27,25 @@ body {
 }
 
 .sidebar-header h2 {
-  font-size: 1.25rem;
+  font-size: 1.2rem;
   color: #1a252c;
-  margin-bottom: 20px;
-  padding-bottom: 10px;
+  margin-bottom: 18px;
+  padding-bottom: 8px;
   border-bottom: 2px solid #3498db;
+}
+
+.style-controls-box {
+  background-color: #f1f5f9;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  margin-bottom: 15px;
+}
+
+.style-controls-box h3 {
+  font-size: 0.9rem;
+  margin-bottom: 10px;
+  color: #1e293b;
 }
 
 .form-group {
@@ -41,19 +55,25 @@ body {
 .form-group label {
   display: block;
   font-weight: 600;
-  font-size: 0.88rem;
+  font-size: 0.85rem;
   margin-bottom: 5px;
   color: #333;
 }
 
-.form-group input,
+.form-group input[type="text"],
+.form-group input[type="date"],
 .form-group select,
 .form-group textarea {
   width: 100%;
-  padding: 9px 12px;
+  padding: 8px 10px;
   border: 1px solid #ccc;
   border-radius: 6px;
-  font-size: 0.9rem;
+  font-size: 0.88rem;
+}
+
+.form-group input[type="range"] {
+  width: 100%;
+  margin-top: 5px;
 }
 
 hr {
@@ -62,10 +82,10 @@ hr {
   margin: 16px 0;
 }
 
-/* مفتاح التبديل */
+/* المفتاح Swicth */
 .switch-group {
-  background-color: #f8fafc;
-  padding: 10px;
+  background-color: #ffffff;
+  padding: 8px 10px;
   border-radius: 6px;
   border: 1px solid #e2e8f0;
 }
@@ -81,10 +101,10 @@ hr {
 
 .slider {
   position: relative;
-  width: 42px;
-  height: 22px;
+  width: 38px;
+  height: 20px;
   background-color: #ccc;
-  border-radius: 22px;
+  border-radius: 20px;
   transition: 0.3s;
   margin-left: 10px;
   flex-shrink: 0;
@@ -93,8 +113,8 @@ hr {
 .slider:before {
   position: absolute;
   content: "";
-  height: 16px;
-  width: 16px;
+  height: 14px;
+  width: 14px;
   left: 3px;
   bottom: 3px;
   background-color: white;
@@ -102,13 +122,13 @@ hr {
   transition: 0.3s;
 }
 
-input:checked + .slider { background-color: #2e7d32; }
-input:checked + .slider:before { transform: translateX(20px); }
+input:checked + .slider { background-color: #2563eb; }
+input:checked + .slider:before { transform: translateX(18px); }
 
 .switch-text {
-  font-size: 0.88rem;
+  font-size: 0.82rem;
   font-weight: bold;
-  color: #2c3e50;
+  color: #334155;
 }
 
 /* الأزرار */
@@ -142,27 +162,26 @@ input:checked + .slider:before { transform: translateX(20px); }
   border: 1px solid #e2e8f0;
 }
 
-.archive-section h3 { font-size: 0.95rem; margin-bottom: 10px; }
-.archive-list { max-height: 220px; overflow-y: auto; }
-.empty-msg { font-size: 0.82rem; color: #888; text-align: center; padding: 10px 0; }
+.archive-section h3 { font-size: 0.9rem; margin-bottom: 10px; }
+.archive-list { max-height: 200px; overflow-y: auto; }
+.empty-msg { font-size: 0.8rem; color: #888; text-align: center; padding: 10px 0; }
 
 .archive-item {
   background: white;
-  padding: 8px 10px;
+  padding: 8px;
   border-radius: 5px;
   border: 1px solid #cbd5e1;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   display: flex;
   justify-content: space-between;
   align-items: center;
 }
 
-.archive-info { font-size: 0.8rem; line-height: 1.4; }
-.archive-actions { display: flex; gap: 5px; }
+.archive-info { font-size: 0.78rem; line-height: 1.4; }
 
 .btn-sm {
   padding: 4px 8px;
-  font-size: 0.75rem;
+  font-size: 0.72rem;
   border-radius: 4px;
   border: none;
   cursor: pointer;
@@ -170,9 +189,8 @@ input:checked + .slider:before { transform: translateX(20px); }
 }
 
 .btn-sm-edit { background-color: #f39c12; color: white; }
-.btn-sm-view { background-color: #3498db; color: white; }
 
-/* منطقة المعاينة الورقية A4 */
+/* منطقة المعاينة الورقية A4 النظيفة خالية من الزخارف */
 .preview-area {
   flex: 1;
   padding: 30px;
@@ -187,36 +205,51 @@ input:checked + .slider:before { transform: translateX(20px); }
   width: 210mm;
   min-height: 297mm;
   padding: 18mm 16mm 14mm 16mm;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.12);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.08);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
   position: relative;
+  overflow: hidden;
+}
+
+/* العلامة المائية بالخلفية */
+.watermark-bg {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 320px;
+  height: 320px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+  opacity: 0.05; /* درجة الشفافية خفيفة ورسمية جداً */
+  pointer-events: none;
+  z-index: 0;
 }
 
 /* ثيم أمازون سوبر ماركت */
-.paper-a4.amazon-theme { border-top: 6px solid #2e7d32; }
-.amazon-theme .header-right h1 { color: #2e7d32; font-size: 1.4rem; }
-.amazon-theme .header-left h1 { color: #2e7d32; font-size: 1.1rem; }
-.amazon-theme .header-divider { background: linear-gradient(90deg, #2e7d32 0%, #4caf50 100%); }
+.amazon-theme .header-right h1 { color: #1e7e34; font-size: 1.35rem; }
+.amazon-theme .header-left h1 { color: #1e7e34; font-size: 1.1rem; }
+.amazon-theme .header-divider { border-bottom: 2px solid #2e7d32; }
 .amazon-theme .doc-title-box h2 { border-bottom: 2px solid #2e7d32; color: #1b5e20; }
-.amazon-theme .paper-footer { border-top: 1px solid #2e7d32; }
 
 /* ثيم شركة المجموعة الدولية */
-.paper-a4.international-theme { border-top: 6px solid #1a365d; }
-.international-theme .header-right h1 { color: #1a365d; font-size: 1.35rem; font-weight: 800; }
-.international-theme .header-right p { color: #1a365d; font-size: 0.82rem; font-weight: 600; }
+.international-theme .header-right h1 { color: #1a365d; font-size: 1.3rem; font-weight: 800; }
+.international-theme .header-right p { color: #1a365d; font-size: 0.8rem; font-weight: 600; }
 .international-theme .header-left h1 { color: #1a365d; font-size: 1.1rem; font-weight: 800; }
 .international-theme .header-left p { color: #c53030; font-size: 0.75rem; font-weight: 600; }
-.international-theme .header-divider { background: linear-gradient(90deg, #1a365d 0%, #c53030 100%); }
+.international-theme .header-divider { border-bottom: 2px solid #1a365d; }
 .international-theme .doc-title-box h2 { border-bottom: 2px solid #c53030; color: #1a365d; }
-.international-theme .paper-footer { border-top: 1px solid #1a365d; }
 
 /* الترويسة الثلاثية */
 .paper-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
+  z-index: 1;
 }
 
 .header-right { text-align: right; width: 38%; }
@@ -224,19 +257,21 @@ input:checked + .slider:before { transform: translateX(20px); }
 .header-left { text-align: left; width: 38%; dir: ltr; }
 
 .header-center img {
-  max-width: 90px;
-  max-height: 90px;
+  max-width: 95px;
+  max-height: 95px;
   object-fit: contain;
 }
 
 .header-divider {
-  height: 3px;
   margin: 12px 0 20px 0;
-  border-radius: 2px;
 }
 
 /* جسم الوثيقة */
-.paper-body { flex: 1; }
+.paper-body { 
+  flex: 1; 
+  position: relative;
+  z-index: 1;
+}
 
 .doc-title-box { text-align: center; margin-bottom: 20px; }
 .doc-title-box h2 { display: inline-block; padding-bottom: 4px; font-size: 1.3rem; }
@@ -267,7 +302,10 @@ input:checked + .slider:before { transform: translateX(20px); }
   color: #333;
 }
 
-.content-text { font-size: 1rem; line-height: 2; text-align: justify; }
+.content-text { 
+  line-height: 1.9; 
+  text-align: justify; 
+}
 .content-text p { margin-bottom: 12px; white-space: pre-line; }
 .content-text ol { padding-right: 22px; }
 .content-text ol li { margin-bottom: 8px; line-height: 1.8; }
@@ -279,6 +317,8 @@ input:checked + .slider:before { transform: translateX(20px); }
   align-items: flex-end;
   margin-top: 40px;
   padding-top: 10px;
+  position: relative;
+  z-index: 1;
 }
 
 .sig-box { text-align: center; min-width: 180px; }
@@ -289,11 +329,14 @@ input:checked + .slider:before { transform: translateX(20px); }
 .paper-footer {
   margin-top: 25px;
   padding-top: 8px;
+  border-top: 1px solid #cbd5e1;
   text-align: center;
   font-size: 0.8rem;
   color: #475569;
   display: flex;
   justify-content: space-between;
+  position: relative;
+  z-index: 1;
 }
 
 /* الطباعة */
